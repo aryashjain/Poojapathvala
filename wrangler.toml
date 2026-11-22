@@ -2,6 +2,15 @@ name = "poojapathvala"
 main = "src/index.js"
 compatibility_date = "2025-01-01"
 
+# Custom domains. Both must be zones on this Cloudflare account.
+[[routes]]
+pattern = "poojapathvala.in"
+custom_domain = true
+
+[[routes]]
+pattern = "www.poojapathvala.in"
+custom_domain = true
+
 # Static files (logo, favicon, touch icon, social image) are served from public/.
 [assets]
 directory = "./public"
