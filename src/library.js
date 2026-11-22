@@ -1,7 +1,5 @@
-// Library = repo content (content/, built into the Worker) + texts added through
-// the admin UI (stored in the LIBRARY KV namespace). KV keys:
-//   topic:<topic-slug>            -> topic record
-//   doc:<topic-slug>:<doc-slug>   -> text record (includes its topic slug)
+// Library = repo content (content/, built into the Worker) + collections and texts
+// added through the admin UI, stored as one value under "library" in the LIBRARY KV namespace.
 import { TOPICS as REPO_TOPICS } from './content.generated.js';
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -23,6 +21,13 @@ export function slugify(text) {
     .replace(/-+$/, '');
 }
 
+// All admin-added content lives in one KV value, so a page view costs at most one
+// read, and that is cached in memory. Listing KV keys on every request exhausted
+// the free-tier list quota.
+const LIBRARY_KEY = 'library';
+const CACHE_MS = 5 * 60 * 1000;
+let cache = { at: 0, data: null };
+
 async function listKeys(kv, prefix) {
   const names = [];
   let cursor;
@@ -34,25 +39,58 @@ async function listKeys(kv, prefix) {
   return names;
 }
 
+// Reads the stored value. If it doesn't exist yet, migrates the older one-key-per-record
+// layout once, then writes the combined value so later reads never list keys again.
+async function readRecords(kv) {
+  const stored = await kv.get(LIBRARY_KEY, 'json');
+  if (stored) return stored;
+
+  const records = { topics: [], docs: [] };
+  const topicKeys = await listKeys(kv, 'topic:');
+  const docKeys = await listKeys(kv, 'doc:');
+  for (const key of topicKeys) {
+    const record = await kv.get(key, 'json');
+    if (record) records.topics.push(record);
+  }
+  for (const key of docKeys) {
+    const record = await kv.get(key, 'json');
+    if (record) records.docs.push(record);
+  }
+  await kv.put(LIBRARY_KEY, JSON.stringify(records));
+  return records;
+}
+
+async function cachedRecords(kv) {
+  if (cache.data && Date.now() - cache.at < CACHE_MS) return cache.data;
+  const data = await readRecords(kv);
+  cache = { at: Date.now(), data };
+  return data;
+}
+
+function invalidateCache() {
+  cache = { at: 0, data: null };
+}
+
 export async function loadLibrary(env) {
   const topics = REPO_TOPICS.map((topic) => ({ ...topic, docs: [...topic.docs] }));
 
   if (env && env.LIBRARY) {
-    const kv = env.LIBRARY;
-    const [topicKeys, docKeys] = await Promise.all([listKeys(kv, 'topic:'), listKeys(kv, 'doc:')]);
-    const [topicRecords, docRecords] = await Promise.all([
-      Promise.all(topicKeys.map((key) => kv.get(key, 'json'))),
-      Promise.all(docKeys.map((key) => kv.get(key, 'json'))),
-    ]);
+    // If KV is unavailable (quota exceeded, outage), serve the repo content rather than failing.
+    let records = { topics: [], docs: [] };
+    try {
+      records = await cachedRecords(env.LIBRARY);
+    } catch (error) {
+      console.error('[library] KV unavailable, serving repo content only:', error && error.message);
+    }
 
-    for (const record of topicRecords) {
-      if (record && !topics.some((topic) => topic.slug === record.slug)) {
+    for (const record of records.topics) {
+      if (!topics.some((topic) => topic.slug === record.slug)) {
         topics.push({ ...record, intro: record.intro || '', docs: [] });
       }
     }
 
-    for (const record of docRecords) {
-      const topic = record && topics.find((item) => item.slug === record.topic);
+    for (const record of records.docs) {
+      const topic = topics.find((item) => item.slug === record.topic);
       if (topic && !topic.docs.some((doc) => doc.slug === record.slug)) topic.docs.push(record);
     }
   }
@@ -162,10 +200,24 @@ export function validateDoc(fields, takenSlugs) {
 
 // ---- storage --------------------------------------------------------------
 
+async function updateRecords(kv, change) {
+  const records = await readRecords(kv);
+  change(records);
+  await kv.put(LIBRARY_KEY, JSON.stringify(records));
+  invalidateCache();
+}
+
 export async function saveTopic(env, topic) {
-  await env.LIBRARY.put('topic:' + topic.slug, JSON.stringify(topic));
+  await updateRecords(env.LIBRARY, (records) => {
+    records.topics = records.topics.filter((item) => item.slug !== topic.slug);
+    records.topics.push(topic);
+  });
 }
 
 export async function saveDoc(env, topicSlug, doc) {
-  await env.LIBRARY.put('doc:' + topicSlug + ':' + doc.slug, JSON.stringify({ ...doc, topic: topicSlug }));
+  const record = { ...doc, topic: topicSlug };
+  await updateRecords(env.LIBRARY, (records) => {
+    records.docs = records.docs.filter((item) => !(item.topic === topicSlug && item.slug === doc.slug));
+    records.docs.push(record);
+  });
 }
