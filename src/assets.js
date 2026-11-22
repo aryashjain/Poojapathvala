@@ -110,9 +110,22 @@ main { padding: 2.5rem 0 4rem; }
 }
 .brand:hover { text-decoration: none; }
 
-/* Header: lamp-and-book mark beside the brand name. */
-.brand img { display: block; flex: none; height: 30px; width: 30px; max-width: 30px; }
+/* Header: lamp-and-book mark in a small box beside the brand name. */
 .brand::before { display: none; }
+.brand-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+.brand-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.brand-name { font-size: 1.05rem; }
 
 /* ---- language toggle ---- */
 .lang-toggle {

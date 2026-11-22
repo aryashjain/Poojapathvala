@@ -81,7 +81,9 @@ function layout({
     (jsonLd ? '<script type="application/ld+json">' + safeJson(jsonLd) + '</script>\n' : '') +
     '</head>\n<body>\n' +
     '<header class="site-header"><div class="' + wrap + ' header-inner">' +
-    '<a class="brand" href="/" lang="' + lang + '"><img src="/mark.png" width="512" height="512" alt="">' + e(brand) + '</a>' +
+    '<a class="brand" href="/" lang="' + lang + '">' +
+    '<span class="brand-mark"><img src="/mark.png" width="512" height="512" alt=""></span>' +
+    '<span class="brand-name">' + e(brand) + '</span></a>' +
     (showLangToggle ? langToggle(lang, path) : '') +
     searchForm(lang, 'header') +
     '</div></header>\n' +
