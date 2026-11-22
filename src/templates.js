@@ -69,6 +69,11 @@ function layout({
     '<meta property="og:title" content="' + e(title) + '">\n' +
     '<meta property="og:description" content="' + e(description) + '">\n' +
     '<meta property="og:url" content="' + e(url) + '">\n' +
+    '<meta property="og:image" content="' + e(origin + '/og.png') + '">\n' +
+    '<meta name="twitter:image" content="' + e(origin + '/og.png') + '">\n' +
+    '<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">\n' +
+    '<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">\n' +
+    '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n' +
     '<meta name="twitter:card" content="summary">\n' +
     '<meta name="theme-color" content="#fbfaf6">\n' +
     '<link rel="stylesheet" href="/assets/site.css">\n' +
@@ -76,7 +81,7 @@ function layout({
     (jsonLd ? '<script type="application/ld+json">' + safeJson(jsonLd) + '</script>\n' : '') +
     '</head>\n<body>\n' +
     '<header class="site-header"><div class="' + wrap + ' header-inner">' +
-    '<a class="brand" href="/" lang="' + lang + '">' + e(brand) + '</a>' +
+    '<a class="brand" href="/" lang="' + lang + '"><img src="/mark.png" width="512" height="512" alt="">' + e(brand) + '</a>' +
     (showLangToggle ? langToggle(lang, path) : '') +
     searchForm(lang, 'header') +
     '</div></header>\n' +
