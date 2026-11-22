@@ -26,7 +26,7 @@ export function buildSearchDocs(topics, lang = 'en') {
         topic: pick(topic.title, topic.titleHi),
         url: '/t/' + topic.slug + '/' + doc.slug,
         text,
-        haystack: [doc.title, doc.hindiTitle, doc.description, doc.descriptionHi, topic.title, topic.titleHi, text]
+        haystack: [doc.title, doc.hindiTitle, doc.description, doc.descriptionHi, topic.title, topic.titleHi, text, ...(doc.tags || [])]
           .filter(Boolean)
           .join(' ')
           .toLowerCase(),

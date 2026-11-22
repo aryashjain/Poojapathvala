@@ -4,7 +4,13 @@ import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 
 const e = escapeHtml;
 
-const SITE_TAGLINE_EN = 'Sacred texts, stotras and poetry, clean and easy to share.';
+const SITE_TAGLINE_EN = 'Sacred texts, aartis, pooja, stotras and poetry, clean and easy to share.';
+
+// Keywords meta on every page. Aarti and pooja lead, in Hindi and English.
+const SITE_KEYWORDS =
+  'आरती, aarti, हिंदू आरती, hindu aarti, आरती संग्रह, aarti sangrah, ' +
+  'पूजा, pooja, पूजा विधि, pooja vidhi, puja vidhi, नित्य पूजा, daily puja, ' +
+  'चालीसा, chalisa, स्तोत्र, stotra, मंत्र, mantra, पवित्र ग्रंथ, sacred texts, Poojapaathwala';
 
 function safeJson(value) {
   return JSON.stringify(value).replace(/</g, '\\u003c');
@@ -61,6 +67,7 @@ function layout({
     '<script src="/assets/theme.js"></script>\n' +
     '<title>' + e(title) + '</title>\n' +
     '<meta name="description" content="' + e(description) + '">\n' +
+    '<meta name="keywords" content="' + e(SITE_KEYWORDS) + '">\n' +
     '<link rel="canonical" href="' + e(url) + '">\n' +
     (noindex ? '<meta name="robots" content="noindex">\n' : '') +
     '<meta property="og:site_name" content="' + e(brand) + '">\n' +

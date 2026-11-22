@@ -1,10 +1,10 @@
 ---
-title: "Jai Ganesh Deva Aarti"
-hindiTitle: "जय गणेश देवा आरती"
+title: "Om Jai Saraswati Mata"
+hindiTitle: "ॐ जय सरस्वती माता"
 description: "Aarti text, full version coming soon."
 descriptionHi: "आरती — पूरा पाठ जल्द जुड़ेगा।"
-order: 10
-tags: [aarti]
+order: 4
+tags: [aarti, pooja]
 ---
 *यह पाठ अभी जोड़ा जा रहा है।*
 

@@ -19,10 +19,10 @@ export function loc(lang, en, hi) {
 const STRINGS = {
   hi: {
     brandName: 'पूजापाठवाला',
-    tagline: 'पवित्र ग्रंथ, स्तोत्र और कविता — सरल, शांत और साझा करने योग्य।',
-    homeEyebrow: 'पवित्र ग्रंथों का डिजिटल पुस्तकालय',
+    tagline: 'पवित्र ग्रंथ, आरती, पूजा, स्तोत्र और कविता — सरल, शांत और साझा करने योग्य।',
+    homeEyebrow: 'आरती, पूजा और पवित्र ग्रंथों का डिजिटल पुस्तकालय',
     homeLede: 'हिंदी और अंग्रेज़ी में पढ़ें, बिना साइन-अप के। नीचे सभी रचनाएँ खोजें।',
-    homeDescription: 'चालीसा, स्तोत्र, मंत्र और मूल कविताएँ हिंदी और अंग्रेज़ी में पढ़ें और खोजें।',
+    homeDescription: 'आरती, पूजा विधि, चालीसा, स्तोत्र और मंत्र हिंदी और अंग्रेज़ी में पढ़ें और खोजें।',
     searchLabel: 'सभी रचनाएँ खोजें',
     searchPlaceholder: 'चालीसा, मंत्र, कविता खोजें…',
     searchButton: 'खोजें',
@@ -90,10 +90,10 @@ const STRINGS = {
   },
   en: {
     brandName: 'Poojapathvala',
-    tagline: 'Sacred texts, stotras and poetry, clean and easy to share.',
-    homeEyebrow: 'A digital library for sacred texts',
+    tagline: 'Sacred texts, aartis, pooja, stotras and poetry, clean and easy to share.',
+    homeEyebrow: 'A digital library of aartis, pooja and sacred texts',
     homeLede: 'Read in Hindi and English, with no sign-up. Search every text below.',
-    homeDescription: 'Read and search chalisas, stotras, mantras and original poems in Hindi and English.',
+    homeDescription: 'Read and search Hindu aartis, pooja vidhi, chalisas, stotras and mantras in Hindi and English.',
     searchLabel: 'Search all texts',
     searchPlaceholder: 'Search chalisas, mantras, poems…',
     searchButton: 'Search',
