@@ -111,7 +111,7 @@ main { padding: 2.5rem 0 4rem; }
 .brand:hover { text-decoration: none; }
 
 /* Header: lamp-and-book mark beside the brand name. */
-.brand img { display: block; height: 40px; width: auto; }
+.brand img { display: block; flex: none; height: 30px; width: 30px; max-width: 30px; }
 .brand::before { display: none; }
 
 /* ---- language toggle ---- */
