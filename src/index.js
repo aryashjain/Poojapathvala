@@ -80,6 +80,21 @@ export default {
       });
     }
 
+    // Static routes first: they don't need the library, so they never touch KV.
+    if (parts.length === 2 && parts[0] === 'assets') {
+      if (parts[1] === 'site.css') return asset(CSS, 'text/css; charset=utf-8');
+      if (parts[1] === 'theme.js') return asset(THEME_JS, 'application/javascript; charset=utf-8');
+      if (parts[1] === 'app.js') return asset(JS, 'application/javascript; charset=utf-8');
+      if (parts[1] === 'admin.css') return asset(ADMIN_CSS, 'text/css; charset=utf-8');
+      if (parts[1] === 'admin.js') return asset(ADMIN_JS, 'application/javascript; charset=utf-8');
+    }
+
+    if (parts.length === 1 && parts[0] === 'robots.txt') {
+      return new Response('User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ' + origin + '/sitemap.xml\n', {
+        headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'public, max-age=3600' },
+      });
+    }
+
     const lang = langFromRequest(request);
     const topics = await loadLibrary(env);
 
@@ -96,20 +111,6 @@ export default {
     if (parts.length === 2 && parts[0] === 'api' && parts[1] === 'search') {
       const query = url.searchParams.get('q') ?? '';
       return json({ query, results: searchDocs(buildSearchDocs(topics, lang), query) });
-    }
-
-    if (parts.length === 2 && parts[0] === 'assets') {
-      if (parts[1] === 'site.css') return asset(CSS, 'text/css; charset=utf-8');
-      if (parts[1] === 'theme.js') return asset(THEME_JS, 'application/javascript; charset=utf-8');
-      if (parts[1] === 'app.js') return asset(JS, 'application/javascript; charset=utf-8');
-      if (parts[1] === 'admin.css') return asset(ADMIN_CSS, 'text/css; charset=utf-8');
-      if (parts[1] === 'admin.js') return asset(ADMIN_JS, 'application/javascript; charset=utf-8');
-    }
-
-    if (parts.length === 1 && parts[0] === 'robots.txt') {
-      return new Response('User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ' + origin + '/sitemap.xml\n', {
-        headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'public, max-age=3600' },
-      });
     }
 
     if (parts.length === 1 && parts[0] === 'sitemap.xml') {
