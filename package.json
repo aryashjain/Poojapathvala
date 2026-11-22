@@ -1,0 +1,17 @@
+{
+  "name": "textbase",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A text-first library of shareable pages, deployed on Cloudflare Workers.",
+  "scripts": {
+    "build:content": "node scripts/build-content.mjs",
+    "dev": "npm run build:content && wrangler dev",
+    "build": "npm run build:content",
+    "deploy": "npm run build:content && wrangler deploy",
+    "test": "npm run build:content && node --test"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

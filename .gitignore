@@ -1,0 +1,5 @@
+node_modules/
+.wrangler/
+.dev.vars
+src/content.generated.js
+.DS_Store

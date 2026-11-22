@@ -1,0 +1,10 @@
+name = "textbase"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Texts added through /admin are stored here. Create it once with:
+#   npx wrangler kv namespace create LIBRARY
+# then paste the printed id below.
+[[kv_namespaces]]
+binding = "LIBRARY"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
