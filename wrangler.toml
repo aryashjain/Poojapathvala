@@ -1,4 +1,4 @@
-name = "textbase"
+name = "poojapathvala"
 main = "src/index.js"
 compatibility_date = "2025-01-01"
 
@@ -7,4 +7,4 @@ compatibility_date = "2025-01-01"
 # then paste the printed id below.
 [[kv_namespaces]]
 binding = "LIBRARY"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "d89648deeebf4ffaa8affd5c3fb9da14"
