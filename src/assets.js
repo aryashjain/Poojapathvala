@@ -47,6 +47,22 @@ html[data-theme="dark"] {
   color-scheme: dark;
 }
 
+/* Tiro Devanagari Hindi (SIL Open Font License), self-hosted from /fonts. Used for Hindi headings. */
+@font-face {
+  font-family: "Tiro Devanagari Hindi";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/tiro-devanagari-hindi-400.woff2") format("woff2");
+  unicode-range: U+0900-097F, U+1CD0-1CF4, U+1CF7-1CF9, U+200C-200D, U+20A8, U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B0A;
+}
+html[lang="hi"] h1,
+html[lang="hi"] h2,
+html[lang="hi"] .brand-name {
+  font-family: "Tiro Devanagari Hindi", var(--serif);
+  font-weight: 400;
+}
+
 /* Hindi is the default: Devanagari faces come first in both families. */
 html[lang="hi"] {
   --serif: "Kohinoor Devanagari", "Noto Serif Devanagari", Mangal, Charter, Georgia, serif;
