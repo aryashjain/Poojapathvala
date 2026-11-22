@@ -89,7 +89,7 @@ const STRINGS = {
     errMessageLong: 'संदेश 2000 अक्षरों से छोटा रखें।',
   },
   en: {
-    brandName: 'Poojapaathwala',
+    brandName: 'Poojapathvala',
     tagline: 'Sacred texts, stotras and poetry, clean and easy to share.',
     homeEyebrow: 'A digital library for sacred texts',
     homeLede: 'Read in Hindi and English, with no sign-up. Search every text below.',
