@@ -300,6 +300,7 @@ function readerBar(lang, shareUrl, shareText) {
     '<div class="reader-group" role="group" aria-label="' + e(t(lang, 'shareGroup')) + '">' +
     '<a class="chip" href="' + e(whatsapp) + '" target="_blank" rel="noopener">WhatsApp</a>' +
     '<button type="button" data-copy-url>' + e(t(lang, 'copyLink')) + '</button>' +
+    '<button type="button" data-print>' + e(t(lang, 'printText')) + '</button>' +
     '</div>' +
     '</div>'
   );

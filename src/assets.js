@@ -435,6 +435,15 @@ h2 { margin: 0 0 .35rem; font-size: 1.3rem; line-height: 1.3; }
 }
 .site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; }
 
+@media print {
+  .site-header, .reader-bar, .site-footer, .search, .pager, .related, .shop, .crumbs, .lang-toggle { display: none !important; }
+  body { background: #fff; color: #000; font-size: 12pt; }
+  main { padding: 0; }
+  .prose { font-size: 12pt; line-height: 1.7; }
+  a { color: #000; text-decoration: none; }
+  .article h1 { font-size: 22pt; }
+}
+
 @media (max-width: 640px) {
   body { font-size: 17px; }
   .header-inner { flex-wrap: wrap; gap: .75rem; }
@@ -529,6 +538,11 @@ export const JS = `
     document.addEventListener('click', function (event) {
       if (!form.contains(event.target)) close();
     });
+  });
+
+  // ---- print (text pages) ----
+  document.querySelectorAll('[data-print]').forEach(function (button) {
+    button.addEventListener('click', function () { window.print(); });
   });
 
   // ---- reader controls (only present on text pages) ----

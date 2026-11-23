@@ -8,7 +8,10 @@ export const DEFAULT_LANG = 'hi';
 export function langFromRequest(request) {
   const cookie = request.headers.get('cookie') || '';
   const match = cookie.match(/(?:^|;\s*)pp-lang=(hi|en)(?:;|$)/);
-  return match ? match[1] : DEFAULT_LANG;
+  if (match) return match[1];
+  // No saved choice: Indian visitors start in Hindi, everyone else in English.
+  const country = request.cf && request.cf.country;
+  return country && country !== 'IN' ? 'en' : DEFAULT_LANG;
 }
 
 // Pick the Hindi or English value of a field, falling back to English.
@@ -67,6 +70,7 @@ const STRINGS = {
     notFoundLede: 'यह पृष्ठ कहीं खो गया है।',
     returnHome: '{name} पर वापस जाएँ',
     relatedTitle: 'इससे मिलती-जुलती रचनाएँ',
+    printText: 'छापें',
     feedbackLink: 'प्रतिक्रिया',
     feedbackTitle: 'अपनी राय दें',
     feedbackLede: 'कोई त्रुटि, सुझाव या नया पाठ जोड़ने का अनुरोध? यहाँ लिखें। हम हर संदेश पढ़ते हैं।',
@@ -139,6 +143,7 @@ const STRINGS = {
     notFoundLede: 'This page has wandered off.',
     returnHome: 'Return to {name}',
     relatedTitle: 'Related texts',
+    printText: 'Print',
     feedbackLink: 'Feedback',
     feedbackTitle: 'Share your feedback',
     feedbackLede: 'Found a mistake, have an idea, or want a text added? Tell us. We read every message.',
