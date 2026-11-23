@@ -21,6 +21,9 @@ function affiliateBox(lang, doc) {
 
 const e = escapeHtml;
 
+// Shown at the bottom of every tarot page.
+const TAROT_NOTE = '<p class="tarot-note">Not a guide, just a sign from a deck of cards. We take no responsibility for what you decide.</p>';
+
 // Page titles carry both names in Hindi mode, e.g. "हिंदू आरती संग्रह (Hindu Aartis)",
 // so searches in either language match the page.
 function titleName(lang, en, hi) {
@@ -118,7 +121,7 @@ function layout({
     (showLangToggle ? langToggle(lang, path) : '') +
     searchForm(lang, 'header') +
     '</div></header>\n' +
-    '<main class="' + wrap + '">\n' + body + '\n</main>\n' +
+    '<main class="' + wrap + '">\n' + body + '\n' + (path.startsWith('/tarot') ? TAROT_NOTE : '') + '</main>\n' +
     '<footer class="site-footer"><div class="' + wrap + '">' +
     '<span>' + e(brand) + ' · ' + e(t(lang, 'tagline')) + '</span>' +
     '<span><a href="/sitemap.xml">' + e(t(lang, 'sitemap')) + '</a> · <a href="/feedback">' + e(t(lang, 'feedbackLink')) + '</a> · <a href="/admin">' + e(t(lang, 'addTexts')) + '</a></span>' +
