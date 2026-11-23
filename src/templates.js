@@ -16,7 +16,7 @@ const SITE_TAGLINE_EN = 'Sacred texts, aartis, pooja, stotras and poetry, clean 
 const SITE_KEYWORDS =
   'आरती, aarti, हिंदू आरती, hindu aarti, आरती संग्रह, aarti sangrah, ' +
   'पूजा, pooja, पूजा विधि, pooja vidhi, puja vidhi, नित्य पूजा, daily puja, ' +
-  'चालीसा, chalisa, स्तोत्र, stotra, मंत्र, mantra, पवित्र ग्रंथ, sacred texts, Poojapaathwala';
+  'चालीसा, chalisa, स्तोत्र, stotra, मंत्र, mantra, पवित्र ग्रंथ, sacred texts, Poojapathvala';
 
 function safeJson(value) {
   return JSON.stringify(value).replace(/</g, '\\u003c');
@@ -190,7 +190,7 @@ export function homePage({ lang, origin, topics }) {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: t(lang, 'brandName'),
-        alternateName: ['Poojapaathwala', 'पूजापाठवाला'],
+        alternateName: ['Poojapathvala', 'पूजापाठवाला'],
         url: origin + '/',
         inLanguage: ['hi', 'en'],
         potentialAction: {
@@ -202,7 +202,7 @@ export function homePage({ lang, origin, topics }) {
       {
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'Poojapaathwala',
+        name: 'Poojapathvala',
         url: origin + '/',
         logo: origin + '/logo.png',
       },

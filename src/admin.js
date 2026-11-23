@@ -29,7 +29,7 @@ function authRequired() {
   return new Response('Authentication required', {
     status: 401,
     headers: {
-      'www-authenticate': 'Basic realm="Poojapaathwala admin", charset="UTF-8"',
+      'www-authenticate': 'Basic realm="Poojapathvala admin", charset="UTF-8"',
       'cache-control': 'no-store',
     },
   });
