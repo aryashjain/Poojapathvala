@@ -120,11 +120,11 @@ export const CARDS = [
 ];
 
 export const SPREADS = {
-  daily: { label: 'Daily card', positions: ['Today'] },
-  three: { label: 'Past, Present, Future', positions: ['Past', 'Present', 'Future'] },
-  yesno: { label: 'Yes or No', positions: ['Answer'] },
-  love: { label: 'Love spread', positions: ['You', 'Them', 'Outcome'] },
-  career: { label: 'Career spread', positions: ['Current', 'Obstacle', 'Advice'] },
+  daily: { label: 'Daily card', hint: 'One card for today', positions: ['Today'] },
+  three: { label: 'Past, Present, Future', hint: 'What led here, where you are, and what comes next', positions: ['Past', 'Present', 'Future'] },
+  yesno: { label: 'Yes or No', hint: 'A quick answer to one clear question', positions: ['Answer'] },
+  love: { label: 'Love spread', hint: 'You, them, and the likely outcome', positions: ['You', 'Them', 'Outcome'] },
+  career: { label: 'Career spread', hint: 'Where you stand, what blocks you, and advice', positions: ['Current', 'Obstacle', 'Advice'] },
 };
 
 export const SUIT_LABELS = { major: 'Major Arcana', wands: 'Wands', cups: 'Cups', swords: 'Swords', pentacles: 'Pentacles' };

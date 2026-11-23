@@ -643,13 +643,20 @@ export function tarotReaderPage({ origin }) {
     cards: CARDS.map((c) => ({ id: c.id, name: c.name, suit: c.suit, number: c.number, arcana: c.arcana, tone: c.tone, upright: c.upright, reversed: c.reversed, love: TOPICS[c.id].love, career: TOPICS[c.id].career })),
     spreads: SPREADS,
   };
-  const spreadButtons = Object.entries(SPREADS)
-    .map(([key, spread]) => '<button type="button" class="spread" data-spread="' + key + '" aria-pressed="' + (key === 'three') + '">' + e(spread.label) + '</button>')
+  const spreadOptions = Object.entries(SPREADS)
+    .map(([key, spread]) =>
+      '<button type="button" class="spread-option" data-spread="' + key + '" aria-pressed="' + (key === 'three') + '">' +
+      '<strong>' + e(spread.label) + '</strong><span>' + e(spread.hint) + '</span></button>'
+    )
+    .join('');
+  const backs = [['1', 'Violet'], ['2', 'Gold'], ['3', 'Teal'], ['4', 'Rose']]
+    .map(([n, name]) =>
+      '<button type="button" class="swatch swatch-' + n + '" data-back="' + n + '" title="' + name + '" aria-label="' + name + ' card back" aria-pressed="' + (n === '1') + '"></button>'
+    )
     .join('');
   const body =
     '<header class="page-head tarot-head"><p class="eyebrow">Tarot reader</p><h1>Draw your cards</h1>' +
-    '<p class="lede">Choose a spread and draw. Then tap the face-down cards in the row to pick them.</p>' +
-    '</header>' +
+    '<p class="lede">Four steps: ask your question, choose a spread, pick a card back, then choose your cards from the row.</p></header>' +
     '<section class="tips" aria-labelledby="tips-title"><h2 id="tips-title">Before you begin</h2><ol>' +
     '<li>Take a breath and settle your mind.</li>' +
     '<li>Ask one clear question. Be specific about the situation.</li>' +
@@ -658,24 +665,31 @@ export function tarotReaderPage({ origin }) {
     '<li>A challenging card is a lesson, not a verdict.</li>' +
     '</ol></section>' +
     '<section class="reader" aria-label="Tarot reader">' +
-    '<label class="question-label" for="tarot-question">Your question (optional)</label>' +
-    '<input id="tarot-question" class="question-input" type="text" maxlength="160" placeholder="For example: Should I accept the new job?">' +
-    '<div class="back-chooser" role="group" aria-label="Card back colour">' +
-    '<button type="button" class="swatch swatch-1" data-back="1" aria-label="Violet card back" aria-pressed="true"></button>' +
-    '<button type="button" class="swatch swatch-2" data-back="2" aria-label="Gold card back" aria-pressed="false"></button>' +
-    '<button type="button" class="swatch swatch-3" data-back="3" aria-label="Teal card back" aria-pressed="false"></button>' +
-    '<button type="button" class="swatch swatch-4" data-back="4" aria-label="Rose card back" aria-pressed="false"></button>' +
+    '<div class="step-block">' +
+    '<h2 class="step-title"><span class="step-no">1</span> Ask your question</h2>' +
+    '<label class="field-help" for="tarot-question">Write one clear question. Leave it empty for a general reading.</label>' +
+    '<textarea id="tarot-question" class="question-input" rows="2" maxlength="160" placeholder="For example: Should I accept the new job?"></textarea>' +
     '</div>' +
-    '<div class="spreads" role="group" aria-label="Spread">' + spreadButtons + '</div>' +
+    '<div class="step-block">' +
+    '<h2 class="step-title"><span class="step-no">2</span> Choose a spread</h2>' +
+    '<div class="spread-grid" role="group" aria-label="Spread">' + spreadOptions + '</div>' +
+    '</div>' +
+    '<div class="step-block">' +
+    '<h2 class="step-title"><span class="step-no">3</span> Pick a card back</h2>' +
+    '<div class="back-chooser" role="group" aria-label="Card back">' + backs + '</div>' +
+    '</div>' +
+    '<div class="step-block">' +
+    '<h2 class="step-title"><span class="step-no">4</span> Shuffle, then choose your cards</h2>' +
     '<div class="reader-actions">' +
-    '<button type="button" class="btn" id="tarot-shuffle">Shuffle</button>' +
-    '<button type="button" class="btn btn-ghost" id="tarot-draw">Draw cards</button>' +
+    '<button type="button" class="btn btn-ghost" id="tarot-shuffle">Shuffle deck</button>' +
+    '<button type="button" class="btn" id="tarot-draw">Deal new cards</button>' +
     '<span class="streak" id="tarot-streak"></span>' +
     '</div>' +
-    '<p class="status" id="tarot-status" aria-live="polite">Tap Draw to begin.</p>' +
+    '<p class="status" id="tarot-status" aria-live="polite">Click Deal new cards to lay out the row.</p>' +
     '<div class="fan" id="tarot-fan" role="group" aria-label="Face-down cards: tap one to choose it"></div>' +
     '<div class="stage" id="tarot-stage"></div>' +
     '<div class="results" id="tarot-results" aria-live="polite"></div>' +
+    '</div>' +
     '</section>' +
     '<section class="library" aria-labelledby="library-title"><h2 id="library-title">The 78 cards</h2>' +
     '<p class="muted">Upright and reversed meanings for every card in the Major and Minor Arcana.</p>' +

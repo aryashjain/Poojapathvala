@@ -60,6 +60,22 @@ export const TAROT_CSS = `
 .card-links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .4rem .8rem; }
 .card-links a { font-family: var(--sans); font-size: .92rem; color: var(--ink); }
 .library { margin-top: 2rem; }
+
+/* Reader steps */
+.step-block { margin: 0 0 1.8rem; }
+.step-title { display: flex; align-items: center; gap: .6rem; margin: 0 0 .7rem; font-family: var(--sans); font-size: 1.02rem; font-weight: 700; color: var(--ink); }
+.step-no { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: .85rem; font-weight: 700; flex: none; }
+.field-help { display: block; font-family: var(--sans); font-size: .88rem; color: var(--muted); margin: 0 0 .5rem; }
+textarea.question-input { height: auto; min-height: 84px; padding: .8rem 1rem; line-height: 1.5; resize: vertical; max-width: 100%; }
+.spread-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .6rem; }
+.spread-option { display: flex; flex-direction: column; align-items: flex-start; gap: .25rem; text-align: left; padding: .85rem 1rem; font: inherit; font-family: var(--sans); background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
+.spread-option strong { font-size: .95rem; }
+.spread-option span { font-size: .84rem; line-height: 1.4; color: var(--muted); }
+.spread-option:hover { border-color: var(--muted); }
+.spread-option:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+.spread-option[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.spread-option[aria-pressed="true"] strong { color: var(--accent); }
+.back-chooser { margin: 0; }
 .tarot-note { margin: 3rem 0 0; padding-top: 1rem; border-top: 1px solid var(--line); font-family: var(--sans); font-size: .82rem; color: var(--muted); }
 .stage:empty { display: none; }
 
