@@ -621,9 +621,16 @@ function cardHtml(card, { reversed = false, faceDown = false } = {}) {
   );
 }
 
-function tarotLibrary() {
+const SUIT_SHORT = { major: 'Major Arcana', wands: 'Wands', cups: 'Cups', swords: 'Swords', pentacles: 'Pentacles' };
+
+// The 78 cards as a row of dark cards; each one links to its meaning page.
+function libraryDeck() {
   return CARDS.map(
-    (card) => '<li><a href="/tarot/card/' + e(card.id) + '">' + e(card.name) + '</a></li>'
+    (card) =>
+      '<a class="lib-card suit-' + card.suit + '" href="/tarot/card/' + e(card.id) + '" aria-label="' + e(card.name) + ' meaning">' +
+      '<span class="lib-glyph" aria-hidden="true">' + SUIT_GLYPH[card.suit] + '</span>' +
+      '<span class="lib-name">' + e(card.name) + '</span>' +
+      '<span class="lib-suit">' + e(SUIT_SHORT[card.suit]) + '</span></a>'
   ).join('');
 }
 
@@ -668,7 +675,7 @@ export function tarotReaderPage({ origin }) {
     '</section>' +
     '<section class="library" aria-labelledby="library-title"><h2 id="library-title">The 78 cards</h2>' +
     '<p class="muted">Upright and reversed meanings for every card in the Major and Minor Arcana.</p>' +
-    '<ul class="card-links">' + tarotLibrary() + '</ul></section>' +
+    '<div class="deck-row">' + libraryDeck() + '</div></section>' +
     '<script type="application/json" id="tarot-data">' + JSON.stringify(data).replace(/</g, '\\u003c') + '</script>';
 
   return layout({

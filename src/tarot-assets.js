@@ -59,7 +59,22 @@ export const TAROT_CSS = `
 .card-pair figcaption { font-family: var(--sans); font-size: .8rem; color: var(--muted); }
 .card-links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .4rem .8rem; }
 .card-links a { font-family: var(--sans); font-size: .92rem; color: var(--ink); }
-.library { margin-top: 3rem; }
+.library { margin-top: 2rem; }
+.stage:empty { display: none; }
+
+/* Deck row: the 78 cards as dark, heavy tiles */
+.deck-row { display: flex; overflow-x: auto; padding: 1.8rem 1.4rem 1.6rem; margin: 1rem 0 0; border-radius: 18px; border: 1px solid #241f33; background: radial-gradient(ellipse at 50% 0%, #1e1a2b, #09080d 72%); box-shadow: inset 0 0 50px rgba(0, 0, 0, .75), 0 18px 40px rgba(0, 0, 0, .25); -webkit-overflow-scrolling: touch; }
+.lib-card { position: relative; flex: none; width: 118px; height: 184px; margin-left: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 8px 12px; text-decoration: none; color: #cfc6b0; background: linear-gradient(175deg, #1c1c26 0%, #0b0b11 55%, #050508 100%); border: 2px solid #3b3a4c; border-radius: 12px; box-shadow: 0 16px 26px rgba(0, 0, 0, .7), inset 0 0 0 4px #0b0b11, inset 0 0 0 5px #2a2a3a; transition: transform .2s ease, border-color .2s ease; }
+.lib-card:first-child { margin-left: 0; }
+.lib-card:hover, .lib-card:focus-visible { transform: translateY(-12px); z-index: 2; border-color: #a8864a; color: #f1e4c3; text-decoration: none; }
+.lib-card.suit-major { border-color: #4a3c66; }
+.lib-card.suit-wands { border-color: #5a2c1c; }
+.lib-card.suit-cups { border-color: #1f3c5a; }
+.lib-card.suit-swords { border-color: #4a4f5c; }
+.lib-card.suit-pentacles { border-color: #3a4a24; }
+.lib-glyph { font-size: 1.5rem; line-height: 1; }
+.lib-name { font-family: var(--serif); font-size: .92rem; font-weight: 700; line-height: 1.2; text-align: center; }
+.lib-suit { font-family: var(--sans); font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: #8a7f66; }
 
 /* Before you begin */
 .tips { margin: 1.5rem 0; padding: 1.1rem 1.3rem; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; font-family: var(--sans); }
