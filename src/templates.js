@@ -186,6 +186,7 @@ export function homePage({ lang, origin, topics }) {
     '<h1>' + e(t(lang, 'tagline')) + '</h1>' +
     '<p class="lede">' + e(t(lang, 'homeLede')) + '</p>' +
     searchForm(lang, 'home') +
+    '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a></p>' +
     '</section>' +
     '<section class="topics" aria-label="' + e(t(lang, 'collectionsAria')) + '">' +
     (cards || '<p>' + e(t(lang, 'noCollections')) + '</p>') +

@@ -275,7 +275,7 @@ export const TAROT_JS = `
     });
   });
 
-  reshuffle();
+  startReading();
   showStreak();
 })();
 `;
