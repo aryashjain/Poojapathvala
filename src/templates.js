@@ -1,5 +1,6 @@
 import { escapeHtml, renderMarkdown } from './markdown.js';
 import { t, loc, minutes, textCount, formatDate } from './i18n.js';
+import { isPending } from './status.js';
 
 const e = escapeHtml;
 
@@ -373,6 +374,7 @@ export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) 
     description: description || doc.title + ' · ' + topic.title,
     body,
     type: 'article',
+    noindex: isPending(doc),
     jsonLd: [
       article,
       breadcrumbs(origin, [

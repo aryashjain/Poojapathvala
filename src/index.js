@@ -9,6 +9,7 @@ import * as view from './templates.js';
 import { escapeHtml } from './markdown.js';
 import { LANGS, langFromRequest } from './i18n.js';
 import { relatedDocs } from './related.js';
+import { isPending } from './status.js';
 
 function asset(body, type) {
   return new Response(body, {
@@ -40,7 +41,7 @@ function sitemap(origin, topics) {
   const entries = [{ loc: origin + '/' }];
   for (const topic of topics) {
     entries.push({ loc: origin + '/t/' + topic.slug });
-    for (const doc of topic.docs) entries.push({ loc: origin + '/t/' + topic.slug + '/' + doc.slug, lastmod: doc.date });
+    for (const doc of topic.docs) if (!isPending(doc)) entries.push({ loc: origin + '/t/' + topic.slug + '/' + doc.slug, lastmod: doc.date });
   }
   return (
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
@@ -58,6 +59,11 @@ function sitemap(origin, topics) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    // One host only: www redirects to the bare domain, so search engines see a single site.
+    if (url.hostname.startsWith('www.')) {
+      url.hostname = url.hostname.slice(4);
+      return new Response(null, { status: 301, headers: { location: url.toString(), 'cache-control': 'public, max-age=86400' } });
+    }
     const origin = url.origin;
     const parts = url.pathname.split('/').filter(Boolean).map(decode);
 
