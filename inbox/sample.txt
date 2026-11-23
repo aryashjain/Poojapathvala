@@ -1,0 +1,44 @@
+# SAMPLE FILE: shows the format for batch imports. Lines before the first "===" are ignored.
+#
+# Each text starts with a header line:
+#   === collection | slug | English title | Hindi title ===
+#
+#   collection  : hindu, jain or aarti (the folder under content/)
+#   slug        : lowercase letters, digits and hyphens (becomes the URL)
+#   titles      : shown on the page (Hindi title may be left empty)
+#
+# Optional lines right after the header (before the text):
+#   @description: English short summary
+#   @descriptionHi: Hindi short summary
+#   @order: a number (lower shows first)
+#   @tags: comma, separated, tags
+#
+# The text itself is Markdown. A line that reads ":::english" starts the English version.
+# Blank lines separate stanzas. A file whose name starts with "sample" is never imported.
+
+=== aarti | sample-aarti | Sample Aarti | नमूना आरती ===
+@description: A sample aarti, for checking the format.
+@descriptionHi: परखने के लिए नमूना आरती।
+@order: 90
+@tags: aarti, sample
+
+ॐ जय नमूना, प्रभु जय नमूना।
+यह केवल एक नमूना है॥
+
+जय जय नमूना॥
+
+:::english
+Om Jai Namuna, Prabhu Jai Namuna.
+Yeh keval ek namuna hai.
+
+Jai jai namuna.
+
+=== hindu | sample-stotra | Sample Stotra | नमूना स्तोत्र ===
+@description: A sample stotra, for checking the format.
+@descriptionHi: परखने के लिए नमूना स्तोत्र।
+@order: 91
+@tags: stotra, sample
+
+पहला श्लोक यहाँ लिखें।
+दूसरा श्लोक यहाँ लिखें॥
+
