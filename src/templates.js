@@ -1,6 +1,20 @@
 import { escapeHtml, renderMarkdown } from './markdown.js';
 import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 import { isPending } from './status.js';
+import { activeAffiliates, AFFILIATES } from './affiliates.js';
+
+// Shopping links for pooja and aarti texts. Shown only when affiliates are enabled.
+function affiliateBox(lang, doc) {
+  const tags = doc.tags || [];
+  const items = activeAffiliates();
+  if (!items.length || !(tags.includes('pooja') || tags.includes('aarti'))) return '';
+  return (
+    '<aside class="shop" aria-labelledby="shop-title">' +
+    '<h2 id="shop-title">Pooja samagri</h2><ul>' +
+    items.map((item) => '<li><a href="' + e(item.url) + '" rel="sponsored nofollow noopener" target="_blank">' + e(item.label) + '</a></li>').join('') +
+    '</ul><p class="disclosure">' + e(AFFILIATES.disclosure) + '</p></aside>'
+  );
+}
 
 const e = escapeHtml;
 
@@ -346,6 +360,7 @@ export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) 
     readerBar(lang, url, main) +
     '<div class="prose">' + renderMarkdown(lang === 'en' && doc.bodyEn ? doc.bodyEn : doc.body) + '</div>' +
     '</article>' +
+    affiliateBox(lang, doc) +
     pager +
     relatedSection(lang, related);
 

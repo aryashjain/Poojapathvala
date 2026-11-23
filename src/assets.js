@@ -143,6 +143,12 @@ main { padding: 2.5rem 0 4rem; }
 .brand-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .brand-name { font-size: 1.05rem; }
 
+/* Shopping box on pooja and aarti texts (Amazon affiliate links). */
+.shop { margin: 2.5rem 0 0; padding: 1.25rem 1.4rem; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; font-family: var(--sans); }
+.shop h2 { font-size: 1.1rem; margin-bottom: .5rem; }
+.shop ul { margin: 0; padding-left: 1.2em; }
+.shop .disclosure { margin: .9rem 0 0; font-size: .8rem; color: var(--muted); }
+
 /* ---- language toggle ---- */
 .lang-toggle {
   flex: none;
