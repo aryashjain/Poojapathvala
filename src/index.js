@@ -40,7 +40,7 @@ function safeNextPath(next) {
 }
 
 function sitemap(origin, topics) {
-  const entries = [{ loc: origin + '/' }, { loc: origin + '/tarot' }];
+  const entries = [{ loc: origin + '/' }, { loc: origin + '/tarot' }, { loc: origin + '/tarot/cards' }];
   for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {
     entries.push({ loc: origin + '/t/' + topic.slug });
@@ -107,6 +107,9 @@ export default {
     }
 
     // Tarot reader and card pages do not need the library, so they come before it.
+    if (parts[0] === 'tarot' && parts.length === 2 && parts[1] === 'cards') {
+      return html(view.tarotCardsPage({ origin }));
+    }
     if (parts[0] === 'tarot' && parts.length === 1) {
       return html(view.tarotReaderPage({ origin }));
     }

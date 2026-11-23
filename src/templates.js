@@ -691,9 +691,7 @@ export function tarotReaderPage({ origin }) {
     '<div class="results" id="tarot-results" aria-live="polite"></div>' +
     '</div>' +
     '</section>' +
-    '<section class="library" aria-labelledby="library-title"><h2 id="library-title">The 78 cards</h2>' +
-    '<p class="muted">Upright and reversed meanings for every card in the Major and Minor Arcana.</p>' +
-    '<div class="deck-row">' + libraryDeck() + '</div></section>' +
+    '<p class="reader-more"><a class="btn btn-ghost" href="/tarot/cards">Browse all 78 cards and their meanings</a></p>' +
     '<script type="application/json" id="tarot-data">' + JSON.stringify(data).replace(/</g, '\\u003c') + '</script>';
 
   return layout({
@@ -714,6 +712,26 @@ export function tarotReaderPage({ origin }) {
       applicationCategory: 'Entertainment',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     },
+  });
+}
+
+// The full library of cards, with a row of dark card tiles linking to each meaning page.
+export function tarotCardsPage({ origin }) {
+  const body =
+    '<header class="page-head tarot-head"><p class="eyebrow">Tarot</p><h1>The 78 cards</h1>' +
+    '<p class="lede">Upright and reversed meanings for every card in the Major and Minor Arcana, with love and career readings.</p>' +
+    '<p class="reader-more"><a class="btn btn-ghost" href="/tarot">Back to the reader</a></p></header>' +
+    '<section class="library" aria-label="All cards"><div class="deck-row">' + libraryDeck() + '</div></section>';
+
+  return layout({
+    lang: TAROT_LANG,
+    origin,
+    path: '/tarot/cards',
+    title: 'All 78 Tarot Cards: Meanings, Upright and Reversed · Poojapathvala',
+    description: 'Meanings of all 78 tarot cards, upright and reversed, with love and career readings.',
+    body,
+    showLangToggle: false,
+    extraCss: ['/assets/tarot.css'],
   });
 }
 

@@ -60,6 +60,7 @@ export const TAROT_CSS = `
 .card-links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .4rem .8rem; }
 .card-links a { font-family: var(--sans); font-size: .92rem; color: var(--ink); }
 .library { margin-top: 2rem; }
+.reader-more { margin: 2rem 0 0; }
 
 /* Reader steps */
 .step-block { margin: 0 0 1.8rem; }
