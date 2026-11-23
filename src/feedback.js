@@ -1,16 +1,18 @@
-// Reader feedback. Messages are stored in the LIBRARY KV namespace under
-// "feedback:<inverted-timestamp>-<id>" so a prefix list returns newest first.
-// Validation returns i18n keys for errors; the page translates them.
+// Reader feedback: the only data stored in KV. All messages live under one key, newest
+// first, capped at MAX_STORED. Reading is one get; saving is one get and one put.
+// Two saves at the exact same moment can overwrite each other; at this volume that is acceptable.
 
 export const FEEDBACK_TYPES = ['bug', 'content', 'idea', 'other'];
 export const FEEDBACK_LIMITS = { name: 80, email: 120, message: 2000 };
-const PREFIX = 'feedback:';
+const KEY = 'feedback';
+const MAX_STORED = 500;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function clean(value) {
   return String(value ?? '').replace(/\r\n?/g, '\n').trim();
 }
 
+// Errors are i18n keys; the page translates them.
 export function validateFeedback(fields) {
   const values = {
     name: clean(fields.name),
@@ -38,15 +40,13 @@ export function validateFeedback(fields) {
   };
 }
 
-export async function saveFeedback(env, record) {
-  const order = String(9999999999999 - Date.now()).padStart(13, '0');
-  const id = crypto.randomUUID().slice(0, 8);
-  await env.LIBRARY.put(PREFIX + order + '-' + id, JSON.stringify(record));
+export async function listFeedback(env) {
+  if (!env || !env.LIBRARY) return [];
+  const stored = await env.LIBRARY.get(KEY, 'json');
+  return Array.isArray(stored) ? stored : [];
 }
 
-export async function listFeedback(env, limit = 100) {
-  if (!env || !env.LIBRARY) return [];
-  const page = await env.LIBRARY.list({ prefix: PREFIX, limit });
-  const records = await Promise.all(page.keys.map((key) => env.LIBRARY.get(key.name, 'json')));
-  return records.filter(Boolean);
+export async function saveFeedback(env, record) {
+  const current = await listFeedback(env);
+  await env.LIBRARY.put(KEY, JSON.stringify([record, ...current].slice(0, MAX_STORED)));
 }

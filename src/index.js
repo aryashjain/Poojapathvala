@@ -96,7 +96,7 @@ export default {
     }
 
     const lang = langFromRequest(request);
-    const topics = await loadLibrary(env);
+    const topics = loadLibrary();
 
     if (parts.length === 0) {
       return html(view.homePage({ lang, origin, topics }));

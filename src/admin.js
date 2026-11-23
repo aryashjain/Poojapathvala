@@ -1,11 +1,8 @@
-// Admin UI: create a collection (step 1), add a text to one (step 2), and read feedback.
-// Protected by HTTP Basic auth using the ADMIN_PASSWORD secret.
-import { loadLibrary, validateTopic, validateDoc, saveTopic, saveDoc } from './library.js';
+// Admin: read-only view of reader feedback. Protected by HTTP Basic auth (ADMIN_PASSWORD).
+// Texts are not managed here; they are added to content/ and pushed.
 import { listFeedback } from './feedback.js';
-import { html, redirect } from './http.js';
+import { html } from './http.js';
 import * as view from './templates.js';
-
-const MAX_FORM_BYTES = 300000;
 
 function passwordFromRequest(request) {
   const match = (request.headers.get('authorization') || '').match(/^Basic\s+(.+)$/i);
@@ -32,14 +29,10 @@ function authRequired() {
   return new Response('Authentication required', {
     status: 401,
     headers: {
-      'www-authenticate': 'Basic realm="TextBase admin", charset="UTF-8"',
+      'www-authenticate': 'Basic realm="Poojapaathwala admin", charset="UTF-8"',
       'cache-control': 'no-store',
     },
   });
-}
-
-function emptyState(values = {}) {
-  return { values, errors: {} };
 }
 
 export async function handleAdmin(request, env, url, origin, parts) {
@@ -47,19 +40,8 @@ export async function handleAdmin(request, env, url, origin, parts) {
     return html(
       view.adminNoticePage({
         origin,
-        title: 'Adding texts is turned off',
+        title: 'Admin is turned off',
         message: 'Set the ADMIN_PASSWORD secret to enable the admin page.',
-      }),
-      503,
-      'no-store',
-    );
-  }
-  if (!env.LIBRARY) {
-    return html(
-      view.adminNoticePage({
-        origin,
-        title: 'Storage is not set up',
-        message: 'Bind a KV namespace called LIBRARY. See docs/CONTENT.md.',
       }),
       503,
       'no-store',
@@ -69,90 +51,9 @@ export async function handleAdmin(request, env, url, origin, parts) {
   const password = passwordFromRequest(request);
   if (password === null || !safeEqual(password, env.ADMIN_PASSWORD)) return authRequired();
 
-  if (parts.length === 1) {
-    if (request.method !== 'GET') return new Response('Method Not Allowed', { status: 405, headers: { allow: 'GET' } });
-    const topics = await loadLibrary(env);
-    const feedback = await listFeedback(env);
-    const topicSlug = url.searchParams.get('topic') || '';
-    return html(
-      view.adminPage({
-        origin,
-        topics,
-        feedback,
-        topicState: emptyState(),
-        textState: emptyState({ topic: topicSlug }),
-      }),
-      200,
-      'no-store',
-    );
-  }
+  if (parts.length !== 1) return html(view.notFoundPage({ lang: 'en', origin }), 404, 'no-store');
+  if (request.method !== 'GET') return new Response('Method Not Allowed', { status: 405, headers: { allow: 'GET' } });
 
-  const isCreate = parts.length === 2 && (parts[1] === 'topics' || parts[1] === 'texts');
-  if (!isCreate) return html(view.notFoundPage({ lang: 'en', origin }), 404, 'no-store');
-  if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405, headers: { allow: 'POST' } });
-
-  // Browsers send the Origin header on cross-site form posts; reject anything not from this site.
-  if (request.headers.get('origin') !== origin) return new Response('Forbidden', { status: 403 });
-  if (Number(request.headers.get('content-length') || 0) > MAX_FORM_BYTES) {
-    return new Response('Form too large', { status: 413 });
-  }
-
-  let form;
-  try {
-    form = await request.formData();
-  } catch {
-    return new Response('Bad request', { status: 400 });
-  }
-  const fields = Object.fromEntries([...form.entries()].filter(([, value]) => typeof value === 'string'));
-
-  const topics = await loadLibrary(env);
   const feedback = await listFeedback(env);
-
-  if (parts[1] === 'topics') {
-    const result = validateTopic(fields, topics.map((topic) => topic.slug));
-    if (!result.ok) {
-      return html(
-        view.adminPage({
-          origin,
-          topics,
-          feedback,
-          topicState: { values: result.values, errors: result.errors },
-          textState: emptyState({ topic: fields.topic || '' }),
-        }),
-        400,
-        'no-store',
-      );
-    }
-    await saveTopic(env, result.value);
-    return redirect('/t/' + result.value.slug);
-  }
-
-  // parts[1] === 'texts'
-  const topicSlug = clean(fields.topic);
-  const topic = topics.find((item) => item.slug === topicSlug);
-  const result = topic
-    ? validateDoc(fields, topic.docs.map((doc) => doc.slug))
-    : { ok: false, errors: {}, values: {}, value: null };
-  if (!topic) result.errors.topic = 'Choose the collection this text belongs to.';
-
-  if (!result.ok) {
-    return html(
-      view.adminPage({
-        origin,
-        topics,
-        feedback,
-        topicState: emptyState(),
-        textState: { values: { ...result.values, topic: topicSlug }, errors: result.errors },
-      }),
-      400,
-      'no-store',
-    );
-  }
-
-  await saveDoc(env, topic.slug, result.value);
-  return redirect('/t/' + topic.slug + '/' + result.value.slug);
-}
-
-function clean(value) {
-  return String(value ?? '').trim();
+  return html(view.adminPage({ origin, feedback }), 200, 'no-store');
 }

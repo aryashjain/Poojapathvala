@@ -1,5 +1,4 @@
 import { escapeHtml, renderMarkdown } from './markdown.js';
-import { slugify } from './library.js';
 import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 
 const e = escapeHtml;
@@ -397,222 +396,6 @@ export function notFoundPage({ lang, origin }) {
   });
 }
 
-// ---- admin (always English) -----------------------------------------------
-
-const ADMIN_LANG = 'en';
-
-function countWords(text) {
-  const trimmed = text.trim();
-  return trimmed ? trimmed.split(/\s+/).length : 0;
-}
-
-function countStanzas(text) {
-  const trimmed = text.trim();
-  return trimmed ? trimmed.split(/\n\s*\n/).length : 0;
-}
-
-function field(state, prefix, name, label, options = {}) {
-  const { type = 'text', required = false, hint = '', rows = 0, placeholder = '', className = '', extra = '' } = options;
-  const id = prefix + '-' + name;
-  const value = state.values[name] ?? '';
-  const error = state.errors[name];
-  const attrs =
-    'id="' + id + '" name="' + name + '"' +
-    (required ? ' required' : '') +
-    (placeholder ? ' placeholder="' + e(placeholder) + '"' : '') +
-    (error ? ' aria-invalid="true" aria-describedby="' + id + '-error"' : '');
-
-  let control;
-  if (rows) {
-    control = '<textarea ' + attrs + ' rows="' + rows + '" class="' + className + '">' + e(value) + '</textarea>';
-  } else {
-    const min = type === 'number' ? ' min="0" max="9999" step="1"' : '';
-    control = '<input type="' + type + '" ' + attrs + ' value="' + e(value) + '"' + min + '>';
-  }
-
-  const counter =
-    className === 'body-input'
-      ? '<p class="counter" data-counter-for="' + id + '">' + countWords(value) + ' words · ' + countStanzas(value) + ' stanzas</p>'
-      : '';
-
-  return (
-    '<div class="field' + (error ? ' has-error' : '') + '">' +
-    '<label for="' + id + '">' + e(label) + (required ? ' <span class="req" aria-hidden="true">*</span>' : '') + '</label>' +
-    control +
-    counter +
-    extra +
-    (hint ? '<p class="hint">' + e(hint) + '</p>' : '') +
-    (error ? '<p class="field-error" id="' + id + '-error">' + e(error) + '</p>' : '') +
-    '</div>'
-  );
-}
-
-function topicSelectField(topics, state) {
-  const selected = state.values.topic || '';
-  const options = topics
-    .map(
-      (topic) =>
-        '<option value="' + e(topic.slug) + '"' + (topic.slug === selected ? ' selected' : '') + '>' +
-        e(topic.title) +
-        '</option>',
-    )
-    .join('');
-  const error = state.errors.topic;
-  return (
-    '<div class="field' + (error ? ' has-error' : '') + '">' +
-    '<label for="text-topic">Collection <span class="req" aria-hidden="true">*</span></label>' +
-    '<select id="text-topic" name="topic" required' +
-    (error ? ' aria-invalid="true" aria-describedby="text-topic-error"' : '') + '>' +
-    '<option value="">Choose a collection…</option>' + options +
-    '</select>' +
-    (error ? '<p class="field-error" id="text-topic-error">' + e(error) + '</p>' : '') +
-    '</div>'
-  );
-}
-
-// Shows the address a visitor will get, updated live by admin.js.
-function addressPreview(state, prefix, withTopic) {
-  const slug = state.values.slug || slugify(state.values.title || '') || '…';
-  const topic = withTopic ? state.values.topic || '…' : '';
-  const path = withTopic ? '/t/' + topic + '/' + slug : '/t/' + slug;
-  return (
-    '<p class="slug-preview" data-slug-preview="' + prefix + '"' +
-    (withTopic ? ' data-topic-select="text-topic"' : '') +
-    '>Address: <code>' + e(path) + '</code></p>'
-  );
-}
-
-function errorSummary(state) {
-  const messages = Object.values(state.errors);
-  if (!messages.length) return '';
-  const heading = messages.length === 1 ? 'One thing needs fixing' : messages.length + ' things need fixing';
-  return (
-    '<div class="alert" role="alert"><strong>' + heading + '</strong><ul>' +
-    messages.map((message) => '<li>' + e(message) + '</li>').join('') +
-    '</ul></div>'
-  );
-}
-
-function collectionCard(topic) {
-  return (
-    '<article class="collection-card">' +
-    '<span class="count">' + e(textCount(ADMIN_LANG, topic.docs.length)) + '</span>' +
-    '<h3><a href="/t/' + e(topic.slug) + '">' + e(topic.title) + '</a></h3>' +
-    '<p>' + e(topic.description || 'No description yet.') + '</p>' +
-    '<div class="actions">' +
-    '<a class="btn btn-sm" href="/admin?topic=' + encodeURIComponent(topic.slug) + '#add-text">Add a text</a>' +
-    '<a class="btn btn-sm btn-ghost" href="/t/' + e(topic.slug) + '">View</a>' +
-    '</div>' +
-    '</article>'
-  );
-}
-
-export function adminPage({ origin, topics, topicState, textState, feedback = [] }) {
-  const textCountAll = topics.reduce((sum, topic) => sum + topic.docs.length, 0);
-
-  const topicForm =
-    '<form method="post" action="/admin/topics" class="form">' +
-    errorSummary(topicState) +
-    field(topicState, 'topic', 'title', 'Title', { required: true, placeholder: 'e.g. Hindu Religious Texts' }) +
-    field(topicState, 'topic', 'slug', 'Web address', {
-      placeholder: 'created-from-the-title',
-      hint: 'Optional. Lowercase letters, digits and hyphens.',
-      extra: addressPreview(topicState, 'topic', false),
-    }) +
-    field(topicState, 'topic', 'description', 'Short description', {
-      placeholder: 'What is in this collection?',
-      hint: 'Shown on the home page.',
-    }) +
-    field(topicState, 'topic', 'order', 'Order', {
-      type: 'number',
-      placeholder: 'Leave blank to put it last',
-      hint: 'Lower numbers appear first.',
-    }) +
-    field(topicState, 'topic', 'intro', 'Intro', {
-      rows: 4,
-      hint: 'Optional. Shown above the list of texts. Markdown is supported.',
-    }) +
-    '<button class="btn" type="submit">Create collection</button>' +
-    '</form>';
-
-  const textForm = topics.length
-    ? '<form method="post" action="/admin/texts" class="form">' +
-      errorSummary(textState) +
-      topicSelectField(topics, textState) +
-      field(textState, 'text', 'title', 'Title', { required: true, placeholder: 'e.g. Midnight Lamp' }) +
-      field(textState, 'text', 'slug', 'Web address', {
-        placeholder: 'created-from-the-title',
-        hint: 'Optional. Lowercase letters, digits and hyphens.',
-        extra: addressPreview(textState, 'text', true),
-      }) +
-      field(textState, 'text', 'description', 'Short description', {
-        placeholder: 'Shown in lists and search results',
-      }) +
-      '<div class="form-row">' +
-      field(textState, 'text', 'order', 'Order', {
-        type: 'number',
-        placeholder: 'Position in the collection',
-      }) +
-      field(textState, 'text', 'date', 'Date', { type: 'date', hint: 'Optional.' }) +
-      '</div>' +
-      field(textState, 'text', 'body', 'Text', {
-        required: true,
-        rows: 16,
-        className: 'body-input',
-        hint: 'Markdown. Single line breaks are kept. Leave a blank line between stanzas.',
-      }) +
-      '<button class="btn" type="submit">Add text</button>' +
-      '</form>'
-    : '<div class="empty-state">Create a collection first, then you can add texts to it.</div>';
-
-  const collections = topics.length
-    ? '<div class="collection-grid">' + topics.map(collectionCard).join('') + '</div>'
-    : '<div class="empty-state">No collections yet. Start with step 1.</div>';
-
-  const body =
-    '<header class="admin-top">' +
-    '<div><p class="eyebrow">Admin</p><h1>Add to the library</h1>' +
-    '<p class="lede">Create a collection, then add texts to it. Changes go live straight away.</p></div>' +
-    '<dl class="stats">' +
-    '<div class="stat"><dt>Collections</dt><dd>' + topics.length + '</dd></div>' +
-    '<div class="stat"><dt>Texts</dt><dd>' + textCountAll + '</dd></div>' +
-    '</dl>' +
-    '</header>' +
-    '<div class="admin-grid">' +
-    '<section class="panel" id="new-topic" aria-labelledby="step-1-title">' +
-    '<div class="panel-head"><span class="step" aria-hidden="true">1</span>' +
-    '<div><h2 id="step-1-title">Create a collection</h2>' +
-    '<p>A collection groups related texts, like “Hindu Religious Texts”.</p></div></div>' +
-    topicForm +
-    '</section>' +
-    '<section class="panel" id="add-text" aria-labelledby="step-2-title">' +
-    '<div class="panel-head"><span class="step" aria-hidden="true">2</span>' +
-    '<div><h2 id="step-2-title">Add a text</h2>' +
-    '<p>Choose a collection, then paste the text.</p></div></div>' +
-    textForm +
-    '</section>' +
-    '</div>' +
-    '<section class="collections" aria-labelledby="collections-title">' +
-    '<div class="collections-head"><h2 id="collections-title">Your collections</h2></div>' +
-    collections +
-    '</section>' +
-    feedbackSection(feedback);
-
-  return layout({
-    lang: ADMIN_LANG,
-    origin,
-    path: '/admin',
-    title: 'Add to the library · ' + t(ADMIN_LANG, 'brandName'),
-    description: 'Create collections and add texts.',
-    body,
-    noindex: true,
-    wide: true,
-    showLangToggle: false,
-    extraCss: ['/assets/admin.css'],
-    extraJs: ['/assets/admin.js'],
-  });
-}
-
 export function adminNoticePage({ origin, title, message }) {
   const body =
     '<header class="page-head"><h1>' + e(title) + '</h1>' +
@@ -723,4 +506,31 @@ function feedbackSection(feedback) {
       : '<div class="empty-state">No feedback yet.</div>') +
     '</section>'
   );
+}
+// ---- admin (always English) -----------------------------------------------
+
+const ADMIN_LANG = 'en';
+
+export function adminPage({ origin, feedback = [] }) {
+  const body =
+    '<header class="admin-top">' +
+    '<div><p class="eyebrow">Admin</p><h1>Reader feedback</h1>' +
+    '<p class="lede">Messages sent from the feedback page, newest first.</p></div>' +
+    '<dl class="stats"><div class="stat"><dt>Messages</dt><dd>' + feedback.length + '</dd></div></dl>' +
+    '</header>' +
+    feedbackSection(feedback) +
+    '<section class="panel"><p class="muted">Texts are not added here. Add a Markdown file under content/ and push; the site rebuilds from the repository.</p></section>';
+
+  return layout({
+    lang: ADMIN_LANG,
+    origin,
+    path: '/admin',
+    title: 'Feedback · ' + t(ADMIN_LANG, 'brandName'),
+    description: 'Reader feedback.',
+    body,
+    noindex: true,
+    wide: true,
+    showLangToggle: false,
+    extraCss: ['/assets/admin.css'],
+  });
 }
