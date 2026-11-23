@@ -60,6 +60,31 @@ export const TAROT_CSS = `
 .card-links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .4rem .8rem; }
 .card-links a { font-family: var(--sans); font-size: .92rem; color: var(--ink); }
 .library { margin-top: 3rem; }
+
+/* Before you begin */
+.tips { margin: 1.5rem 0; padding: 1.1rem 1.3rem; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; font-family: var(--sans); }
+.tips h2 { font-size: 1.05rem; margin: 0 0 .5rem; }
+.tips ol { margin: 0; padding-left: 1.3em; font-size: .92rem; line-height: 1.6; }
+
+/* Question and card-back colours */
+.question-label { display: block; font-family: var(--sans); font-size: .88rem; font-weight: 600; margin-bottom: .35rem; }
+.question-input { width: 100%; max-width: 540px; font: inherit; font-family: var(--sans); font-size: .95rem; padding: .65rem .9rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); }
+.question-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.back-chooser { display: flex; gap: .5rem; margin: .9rem 0 0; }
+.swatch { width: 28px; height: 40px; border-radius: 6px; border: 2px solid transparent; cursor: pointer; padding: 0; }
+.swatch[aria-pressed="true"] { border-color: var(--ink); }
+.swatch-1 { background: linear-gradient(160deg, #3b2f5c, #1d1733); }
+.swatch-2 { background: linear-gradient(160deg, #8a6a2b, #4a3614); }
+.swatch-3 { background: linear-gradient(160deg, #2f6b6b, #173636); }
+.swatch-4 { background: linear-gradient(160deg, #7a3550, #3d1a2a); }
+.fan.back-2 .tcard-back { background: radial-gradient(circle at 50% 40%, #8a6a2b, #4a3614 70%); }
+.fan.back-3 .tcard-back { background: radial-gradient(circle at 50% 40%, #2f6b6b, #173636 70%); }
+.fan.back-4 .tcard-back { background: radial-gradient(circle at 50% 40%, #7a3550, #3d1a2a 70%); }
+
+/* Shuffle animation */
+.fan.shuffling .tcard { animation: tarot-shuffle .65s ease; }
+@keyframes tarot-shuffle { 0% { transform: translateX(0); } 40% { transform: translateX(-26px) rotate(-3deg); } 70% { transform: translateX(18px) rotate(3deg); } 100% { transform: translateX(0); } }
+.question { font-family: var(--sans); margin: 0 0 .8rem; }
 `;
 
 export const TAROT_JS = `
@@ -75,7 +100,7 @@ export const TAROT_JS = `
   var results = document.getElementById('tarot-results');
   var status = document.getElementById('tarot-status');
   var streakEl = document.getElementById('tarot-streak');
-  var FAN_SIZE = 13;
+  var FAN_SIZE = 18;
   var current = 'three';
   var deck = [];
   var fan = [];
@@ -243,6 +268,8 @@ export const TAROT_JS = `
       updateStreak();
       showStreak();
     }
+    var question = document.getElementById('tarot-question').value.trim();
+    if (question) results.insertAdjacentHTML('afterbegin', '<p class="question"><strong>Your question:</strong> ' + esc(question) + '</p>');
     status.innerHTML = '<span class="done">Reading complete.</span>' + (current === 'daily' ? ' Come back tomorrow for your next daily card.' : '');
   }
 
@@ -255,9 +282,21 @@ export const TAROT_JS = `
   }
 
   document.getElementById('tarot-shuffle').addEventListener('click', function () {
-    reshuffle();
-    if (table.length === 0) fill();
-    status.textContent = 'Deck shuffled. Choose from the row.';
+    fanEl.classList.add('shuffling');
+    setTimeout(function () {
+      fanEl.classList.remove('shuffling');
+      reshuffle();
+      if (table.length === 0) fill();
+      status.textContent = 'Deck shuffled. Choose from the row.';
+    }, 650);
+  });
+  document.querySelectorAll('[data-back]').forEach(function (swatch) {
+    swatch.addEventListener('click', function () {
+      fanEl.className = 'fan back-' + swatch.getAttribute('data-back');
+      document.querySelectorAll('[data-back]').forEach(function (other) {
+        other.setAttribute('aria-pressed', other === swatch ? 'true' : 'false');
+      });
+    });
   });
   document.getElementById('tarot-draw').addEventListener('click', startReading);
   document.querySelectorAll('[data-spread]').forEach(function (button) {

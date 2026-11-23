@@ -639,7 +639,22 @@ export function tarotReaderPage({ origin }) {
     '<header class="page-head tarot-head"><p class="eyebrow">Tarot reader</p><h1>Draw your cards</h1>' +
     '<p class="lede">Choose a spread and draw. Then tap the face-down cards in the row to pick them.</p>' +
     '<p class="disclaimer">' + e(TAROT_DISCLAIMER) + '</p></header>' +
+    '<section class="tips" aria-labelledby="tips-title"><h2 id="tips-title">Before you begin</h2><ol>' +
+    '<li>Take a breath and settle your mind.</li>' +
+    '<li>Ask one clear question. Be specific about the situation.</li>' +
+    '<li>Keep your focus on that question while you choose.</li>' +
+    '<li>Trust the first reading, and read between the lines.</li>' +
+    '<li>A challenging card is a lesson, not a verdict.</li>' +
+    '</ol></section>' +
     '<section class="reader" aria-label="Tarot reader">' +
+    '<label class="question-label" for="tarot-question">Your question (optional)</label>' +
+    '<input id="tarot-question" class="question-input" type="text" maxlength="160" placeholder="For example: Should I accept the new job?">' +
+    '<div class="back-chooser" role="group" aria-label="Card back colour">' +
+    '<button type="button" class="swatch swatch-1" data-back="1" aria-label="Violet card back" aria-pressed="true"></button>' +
+    '<button type="button" class="swatch swatch-2" data-back="2" aria-label="Gold card back" aria-pressed="false"></button>' +
+    '<button type="button" class="swatch swatch-3" data-back="3" aria-label="Teal card back" aria-pressed="false"></button>' +
+    '<button type="button" class="swatch swatch-4" data-back="4" aria-label="Rose card back" aria-pressed="false"></button>' +
+    '</div>' +
     '<div class="spreads" role="group" aria-label="Spread">' + spreadButtons + '</div>' +
     '<div class="reader-actions">' +
     '<button type="button" class="btn" id="tarot-shuffle">Shuffle</button>' +
