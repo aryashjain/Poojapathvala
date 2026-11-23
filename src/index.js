@@ -119,7 +119,7 @@ export default {
     }
 
     if (parts.length === 1 && parts[0] === 'robots.txt') {
-      return new Response('User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ' + origin + '/sitemap.xml\n', {
+      return new Response('User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /lang/\nDisallow: /api/\nDisallow: /feedback\n\nSitemap: ' + origin + '/sitemap.xml\n', {
         headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'public, max-age=3600' },
       });
     }

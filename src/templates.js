@@ -543,6 +543,7 @@ export function feedbackPage({ lang, origin, enabled = true, sent = false, value
     path: '/feedback',
     title: title + ' · ' + t(lang, 'brandName'),
     description: t(lang, 'feedbackLede'),
+    noindex: true,
     body,
     extraCss: ['/assets/admin.css'],
   });
