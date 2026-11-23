@@ -310,7 +310,7 @@ export function docPage({ lang, origin, topic, doc, prev, next }) {
     (meta ? '<p class="byline">' + meta + '</p>' : '') +
     '</header>' +
     readerBar(lang, url, main) +
-    '<div class="prose">' + renderMarkdown(doc.body) + '</div>' +
+    '<div class="prose">' + renderMarkdown(lang === 'en' && doc.bodyEn ? doc.bodyEn : doc.body) + '</div>' +
     '</article>' +
     pager;
 

@@ -18,7 +18,7 @@ export function plainText(markdown) {
 export function buildSearchDocs(topics, lang = 'en') {
   return topics.flatMap((topic) =>
     topic.docs.map((doc) => {
-      const text = plainText(doc.body);
+      const text = plainText([doc.body, doc.bodyEn || ''].join('\n'));
       const pick = (en, hi) => (lang === 'hi' && hi ? hi : en);
       return {
         title: pick(doc.title, doc.hindiTitle),

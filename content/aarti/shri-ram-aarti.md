@@ -34,3 +34,32 @@ tags: [aarti, pooja]
 वानर सखा दीन दुख हर की॥
 आरती कीजै श्री रघुवर जी की,
 सत चित आनन्द शिव सुन्दर की॥
+
+:::english
+Aarti keejai Shri Raghuvar ji ki,
+Sat chit aanand Shiv sundar ki.
+
+Dasharath tanay Kaushalya nandan,
+Sur muni rakshak daitya nikandan.
+Anugat bhakt, bhakt ur chandan,
+Maryada Purushottam var ki.
+Aarti keejai Shri Raghuvar ji ki...
+
+Nirgun sagun anoop roop nidhi,
+Sakal lok vandit vibhinn vidhi.
+Haran shok-bhay daayak nav nidhi,
+Maya rahit divya nar var ki.
+Aarti keejai Shri Raghuvar ji ki...
+
+Janaki pati sur adhipati jagpati,
+Akhil lok paalak trilok gati.
+Vishwa vandya avanh amit gati,
+Ek maatra gati sacharaachar ki.
+Aarti keejai Shri Raghuvar ji ki...
+
+Sharanaagat vatsal vratdhaari,
+Bhakt kalp taruvar asuraari.
+Naam let jag paavankaari,
+Vaanar sakha deen dukh har ki.
+Aarti keejai Shri Raghuvar ji ki,
+Sat chit aanand Shiv sundar ki.

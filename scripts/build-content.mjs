@@ -70,7 +70,9 @@ async function main() {
         readingTime: data.readingTime || '',
         tags: Array.isArray(data.tags) ? data.tags : [],
         featured: data.featured === 'true' || data.featured === true,
-        body: body.trim(),
+        // Optional English version: everything after a line that reads ":::english".
+        body: body.trim().split(/\n:::english\s*\n/)[0].trim(),
+        bodyEn: (body.trim().split(/\n:::english\s*\n/)[1] || '').trim(),
       });
     }
 
