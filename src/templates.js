@@ -3,6 +3,7 @@ import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 import { isPending } from './status.js';
 import { CARDS, SPREADS, SUIT_LABELS, TAROT_DISCLAIMER } from './tarot-data.js';
 import { TOPICS } from './tarot-topics.js';
+import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 
 // Shopping links for pooja and aarti texts. Shown only when affiliates are enabled.
@@ -87,7 +88,7 @@ function layout({
     '<!doctype html>\n<html lang="' + lang + '">\n<head>\n' +
     '<meta charset="utf-8">\n' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
-    '<script src="/assets/theme.js"></script>\n' +
+    '<script src="/assets/theme.js?v=' + ASSET_VERSION + '"></script>\n' +
     '<title>' + e(title) + '</title>\n' +
     '<meta name="description" content="' + e(description) + '">\n' +
     '<meta name="keywords" content="' + e(SITE_KEYWORDS) + '">\n' +
@@ -106,8 +107,8 @@ function layout({
     '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n' +
     '<meta name="twitter:card" content="summary_large_image">\n' +
     '<meta name="theme-color" content="#fbfaf6">\n' +
-    '<link rel="stylesheet" href="/assets/site.css">\n' +
-    extraCss.map((href) => '<link rel="stylesheet" href="' + e(href) + '">\n').join('') +
+    '<link rel="stylesheet" href="/assets/site.css?v=' + ASSET_VERSION + '">\n' +
+    extraCss.map((href) => '<link rel="stylesheet" href="' + e(href) + '?v=' + ASSET_VERSION + '">\n').join('') +
     (jsonLd ? '<script type="application/ld+json">' + safeJson(jsonLd) + '</script>\n' : '') +
     '</head>\n<body>\n' +
     '<header class="site-header"><div class="' + wrap + ' header-inner">' +
@@ -122,8 +123,8 @@ function layout({
     '<span>' + e(brand) + ' · ' + e(t(lang, 'tagline')) + '</span>' +
     '<span><a href="/sitemap.xml">' + e(t(lang, 'sitemap')) + '</a> · <a href="/feedback">' + e(t(lang, 'feedbackLink')) + '</a> · <a href="/admin">' + e(t(lang, 'addTexts')) + '</a></span>' +
     '</div></footer>\n' +
-    '<script src="/assets/app.js" defer></script>\n' +
-    extraJs.map((src) => '<script src="' + e(src) + '" defer></script>\n').join('') +
+    '<script src="/assets/app.js?v=' + ASSET_VERSION + '" defer></script>\n' +
+    extraJs.map((src) => '<script src="' + e(src) + '?v=' + ASSET_VERSION + '" defer></script>\n').join('') +
     '</body>\n</html>\n'
   );
 }
