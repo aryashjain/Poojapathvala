@@ -41,7 +41,7 @@ export async function handleAdmin(request, env, url, origin, parts) {
       view.adminNoticePage({
         origin,
         title: 'Admin is turned off',
-        message: 'Set the ADMIN_PASSWORD secret to enable the admin page.',
+        message: 'This page is not available.',
       }),
       503,
       'no-store',
