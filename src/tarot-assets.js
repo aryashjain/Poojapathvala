@@ -8,7 +8,7 @@ export const TAROT_CSS = `
 .muted { color: var(--muted); font-family: var(--sans); font-size: .9rem; }
 .disclaimer { font-family: var(--sans); font-size: .85rem; color: var(--muted); border-left: 3px solid var(--accent); padding-left: .8rem; margin: 1.2rem 0; }
 
-.spreads { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.spreads { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.2rem 0 0; }
 .spread { font-family: var(--sans); font-size: .9rem; padding: .5rem .95rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); cursor: pointer; }
 .spread[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 .reader-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .5rem 0 1rem; }
@@ -67,12 +67,18 @@ export const TAROT_CSS = `
 .tips ol { margin: 0; padding-left: 1.3em; font-size: .92rem; line-height: 1.6; }
 
 /* Question and card-back colours */
-.question-label { display: block; font-family: var(--sans); font-size: .88rem; font-weight: 600; margin-bottom: .35rem; }
-.question-input { width: 100%; max-width: 540px; font: inherit; font-family: var(--sans); font-size: .95rem; padding: .65rem .9rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); }
+/* Question and card-back colours */
+.question-label { display: block; font-family: var(--sans); font-size: .9rem; font-weight: 700; color: var(--ink); margin: 0 0 .5rem; }
+.question-input { display: block; width: min(100%, 560px); height: 48px; padding: 0 1rem; font: inherit; font-family: var(--sans); font-size: 1rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, .04); }
+.question-input::placeholder { color: var(--muted); opacity: .8; }
+.question-input:hover { border-color: var(--muted); }
 .question-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.back-chooser { display: flex; gap: .5rem; margin: .9rem 0 0; }
-.swatch { width: 28px; height: 40px; border-radius: 6px; border: 2px solid transparent; cursor: pointer; padding: 0; }
-.swatch[aria-pressed="true"] { border-color: var(--ink); }
+.back-chooser { display: flex; align-items: center; gap: .6rem; margin: 1.1rem 0 1.4rem; }
+.back-chooser::before { content: "Card back"; font-family: var(--sans); font-size: .85rem; font-weight: 600; color: var(--muted); margin-right: .2rem; }
+.swatch { width: 34px; height: 46px; padding: 0; border-radius: 8px; border: 2px solid transparent; box-shadow: 0 1px 3px rgba(0, 0, 0, .2); cursor: pointer; transition: transform .15s ease; }
+.swatch:hover { transform: translateY(-2px); }
+.swatch:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+.swatch[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 3px var(--accent-soft); }
 .swatch-1 { background: linear-gradient(160deg, #3b2f5c, #1d1733); }
 .swatch-2 { background: linear-gradient(160deg, #8a6a2b, #4a3614); }
 .swatch-3 { background: linear-gradient(160deg, #2f6b6b, #173636); }
