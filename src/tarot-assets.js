@@ -16,10 +16,9 @@ export const TAROT_CSS = `
 .status { font-family: var(--sans); font-size: .95rem; color: var(--muted); }
 
 /* The face-down row: tap a card to choose it. Overlaps slightly and scrolls sideways on small screens. */
-.fan { display: flex; align-items: flex-end; overflow-x: auto; padding: 1.4rem .8rem 1.2rem; margin: .5rem -.8rem 0; -webkit-overflow-scrolling: touch; }
+.fan { display: flex; align-items: center; gap: 10px; overflow-x: auto; padding: 1.4rem .8rem 1.2rem; margin: .5rem -.8rem 0; -webkit-overflow-scrolling: touch; }
 .fan:empty { display: none; }
-.fan .tcard { width: 112px; height: 172px; flex: none; margin-left: -44px; }
-.fan .tcard:first-child { margin-left: 0; }
+.fan .tcard { width: 100px; height: 150px; flex: none; }
 .fan .tcard.pick { transition: transform .2s ease; }
 .fan .tcard.pick:hover, .fan .tcard.pick:focus-visible { transform: translateY(-14px); }
 .fan .tcard-back { font-size: .8rem; }
@@ -100,7 +99,7 @@ export const TAROT_JS = `
   var results = document.getElementById('tarot-results');
   var status = document.getElementById('tarot-status');
   var streakEl = document.getElementById('tarot-streak');
-  var FAN_SIZE = 18;
+  var FAN_SIZE = 22;
   var current = 'three';
   var deck = [];
   var fan = [];
