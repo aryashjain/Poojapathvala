@@ -53,6 +53,15 @@ export const TAROT_CSS = `
 .rev-tag { margin-left: .4rem; font-family: var(--sans); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
 .verdict { font-family: var(--sans); }
 .done { font-family: var(--sans); font-weight: 700; color: var(--accent); }
+.fate { margin: 0 0 1rem; padding: 1.1rem 1.3rem; border-radius: 16px; background: linear-gradient(170deg, #1b1726, #0e0c15); color: #f1e4c3; font-family: var(--sans); box-shadow: 0 12px 28px rgba(0, 0, 0, .25); }
+.fate p { margin: .25rem 0; }
+.fate-score { font-size: .95rem; color: #cfc6b0; }
+.fate-score strong { font-family: var(--serif); font-size: 1.6rem; color: #f1e4c3; }
+.fate-pct { font-size: .95rem; color: #cfc6b0; }
+.fate-pct strong { font-size: 1.2rem; color: #d9a85b; }
+.fate-pct span { margin-left: .4rem; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: #8a7f66; }
+.fate-detail { font-size: .85rem; color: #b8ad93; }
+.fate-note { font-size: .75rem; color: #7d7360; line-height: 1.5; }
 
 .card-pair { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin: 1.5rem 0; }
 .card-pair figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: .5rem; }
@@ -302,11 +311,38 @@ export const TAROT_JS = `
     writeStorage('tarot-streak', String(count));
   }
 
+  // +1 for an upright positive card, -1 for an upright challenging card, 0 for neutral.
+  // A reversed card flips its sign.
+  function contribution(item) {
+    var sign = item.card.tone === 'p' ? 1 : item.card.tone === 'n' ? -1 : 0;
+    return item.reversed ? -sign : sign;
+  }
+
+  function scoreHtml() {
+    var total = table.reduce(function (sum, item) { return sum + contribution(item); }, 0);
+    var max = table.length;
+    var pct = max ? Math.round((total + max) / (2 * max) * 100) : 0;
+    var band = pct >= 70 ? 'Favourable' : pct >= 40 ? 'Mixed' : 'Challenging';
+    var parts = table.map(function (item, index) {
+      var c = contribution(item);
+      return spreads[current].positions[index] + ' ' + (c > 0 ? '+1' : c < 0 ? '\u22121' : '0');
+    }).join(' \u00b7 ');
+    return (
+      '<div class="fate">' +
+      '<p class="fate-score">Tarot score <strong>' + (total > 0 ? '+' : '') + total + '</strong></p>' +
+      '<p class="fate-pct">Fate <strong>' + pct + '%</strong> <span>' + band + '</span></p>' +
+      '<p class="fate-detail">' + esc(parts) + '</p>' +
+      '<p class="fate-note">Worked out from the cards drawn: upright positive cards add 1, upright challenging cards take away 1, and reversed cards flip the sign.</p>' +
+      '</div>'
+    );
+  }
+
   function finish() {
     if (current === 'daily') {
       updateStreak();
       showStreak();
     }
+    results.insertAdjacentHTML('afterbegin', scoreHtml());
     var question = document.getElementById('tarot-question').value.trim();
     if (question) results.insertAdjacentHTML('afterbegin', '<p class="question"><strong>Your question:</strong> ' + esc(question) + '</p>');
     status.innerHTML = '<span class="done">Reading complete.</span>' + (current === 'daily' ? ' Come back tomorrow for your next daily card.' : '');
