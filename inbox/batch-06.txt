@@ -1,0 +1,59 @@
+# BATCH 6: paste the real text under each "# ADD HINDI TEXT" comment, then delete that comment line.
+# Lines starting with "# " are comments and are never published.
+# Keep the "=== ... ===" header lines as they are. Leave an entry alone to skip it.
+# Hindi text goes where "# ADD HINDI TEXT" is. English (optional) goes under ":::english".
+
+=== jain | tattvartha-sutra | Tattvartha Sutra (Moksha Shastra) | तत्वार्थ सूत्र ===
+@description: Sutra text, full version coming soon.
+@descriptionHi: सूत्र — पूरा पाठ जल्द जुड़ेगा।
+@order: 15
+@tags: sutra
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | uvasaggaharam-stotra | Uvasaggaharam Stotra | उवसग्गहरं स्तोत्र ===
+@description: Stotra text, full version coming soon.
+@descriptionHi: स्तोत्र — पूरा पाठ जल्द जुड़ेगा।
+@order: 4
+@tags: stotra
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | vishapahar-stotra | Vishapahar Stotra | विषापहार स्तोत्र ===
+@description: Stotra text, full version coming soon.
+@descriptionHi: स्तोत्र — पूरा पाठ जल्द जुड़ेगा।
+@order: 18
+@tags: stotra
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== pooja | durga-puja-vidhi | Durga Puja Vidhi | दुर्गा पूजा विधि ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 8
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== pooja | ganesh-puja-vidhi | Ganesh Puja Vidhi | श्री गणेश पूजा विधि ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 2
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)

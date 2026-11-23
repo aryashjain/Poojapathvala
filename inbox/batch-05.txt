@@ -1,0 +1,59 @@
+# BATCH 5: paste the real text under each "# ADD HINDI TEXT" comment, then delete that comment line.
+# Lines starting with "# " are comments and are never published.
+# Keep the "=== ... ===" header lines as they are. Leave an entry alone to skip it.
+# Hindi text goes where "# ADD HINDI TEXT" is. English (optional) goes under ":::english".
+
+=== jain | mangalashtak | Mangalashtak | श्री मंगलाष्टक ===
+@description: Prayer text, full version coming soon.
+@descriptionHi: प्रार्थना — पूरा पाठ जल्द जुड़ेगा।
+@order: 7
+@tags: prayer
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | meri-bhavna | Meri Bhavna | मेरी भावना ===
+@description: Prayer text, full version coming soon.
+@descriptionHi: प्रार्थना — पूरा पाठ जल्द जुड़ेगा।
+@order: 3
+@tags: prayer
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | padmavati-chalisa | Padmavati Chalisa | श्री पद्मावती चालीसा ===
+@description: Chalisa text, full version coming soon.
+@descriptionHi: चालीसा — पूरा पाठ जल्द जुड़ेगा।
+@order: 13
+@tags: chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | parshvanath-chalisa | Parshvanath Chalisa | श्री पार्श्वनाथ चालीसा ===
+@description: Chalisa text, full version coming soon.
+@descriptionHi: चालीसा — पूरा पाठ जल्द जुड़ेगा।
+@order: 11
+@tags: chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | ratnakar-pachisi | Ratnakar Pachisi | रत्नाकर पच्चीसी ===
+@description: Stuti text, full version coming soon.
+@descriptionHi: स्तुति — पूरा पाठ जल्द जुड़ेगा।
+@order: 16
+@tags: stuti
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)

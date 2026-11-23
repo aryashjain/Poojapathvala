@@ -1,0 +1,59 @@
+# BATCH 4: paste the real text under each "# ADD HINDI TEXT" comment, then delete that comment line.
+# Lines starting with "# " are comments and are never published.
+# Keep the "=== ... ===" header lines as they are. Leave an entry alone to skip it.
+# Hindi text goes where "# ADD HINDI TEXT" is. English (optional) goes under ":::english".
+
+=== jain | kalyan-mandir-stotra | Kalyan Mandir Stotra | कल्याण मंदिर स्तोत्र ===
+@description: Stotra text, full version coming soon.
+@descriptionHi: स्तोत्र — पूरा पाठ जल्द जुड़ेगा।
+@order: 5
+@tags: stotra
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | kshamavani-path | Kshamavani Path (Micchami Dukkadam) | क्षमावाणी पाठ ===
+@description: Prayer text, full version coming soon.
+@descriptionHi: प्रार्थना — पूरा पाठ जल्द जुड़ेगा।
+@order: 20
+@tags: prayer
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | logassa-sutra | Logassa Sutra | लोगस्स सूत्र ===
+@description: Sutra text, full version coming soon.
+@descriptionHi: सूत्र — पूरा पाठ जल्द जुड़ेगा।
+@order: 6
+@tags: sutra
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | mahavir-chalisa | Mahavir Chalisa | श्री महावीर चालीसा ===
+@description: Chalisa text, full version coming soon.
+@descriptionHi: चालीसा — पूरा पाठ जल्द जुड़ेगा।
+@order: 12
+@tags: chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | mahavir-swami-aarti | Jain Aarti (Om Jai Mahavir Prabhu) | श्री महावीर स्वामी आरती ===
+@description: Aarti text, full version coming soon.
+@descriptionHi: आरती — पूरा पाठ जल्द जुड़ेगा।
+@order: 19
+@tags: aarti
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)

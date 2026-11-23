@@ -1,0 +1,59 @@
+# BATCH 2: paste the real text under each "# ADD HINDI TEXT" comment, then delete that comment line.
+# Lines starting with "# " are comments and are never published.
+# Keep the "=== ... ===" header lines as they are. Leave an entry alone to skip it.
+# Hindi text goes where "# ADD HINDI TEXT" is. English (optional) goes under ":::english".
+
+=== hindu | madhurashtakam | Madhurashtakam | मधुराष्टकम् ===
+@description: Ashtakam text, full version coming soon.
+@descriptionHi: अष्टक — पूरा पाठ जल्द जुड़ेगा।
+@order: 17
+@tags: ashtakam
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== hindu | sankat-mochan-hanuman-ashtak | Sankat Mochan Hanuman Ashtak | संकट मोचन हनुमान अष्टक ===
+@description: Ashtak text, full version coming soon.
+@descriptionHi: अष्टक — पूरा पाठ जल्द जुड़ेगा।
+@order: 8
+@tags: ashtak
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== hindu | shani-chalisa | Shani Chalisa | श्री शनि चालीसा ===
+@description: Chalisa text, full version coming soon.
+@descriptionHi: चालीसा — पूरा पाठ जल्द जुड़ेगा।
+@order: 6
+@tags: chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== hindu | shiv-chalisa | Shiv Chalisa | श्री शिव चालीसा ===
+@description: Verses in praise of Lord Shiva. Work in progress.
+@descriptionHi: भगवान शिव की स्तुति के छंद। कार्य जारी।
+@order: 2
+@tags: shiv, chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | aadinath-chalisa | Aadinath Chalisa | श्री आदिनाथ चालीसा ===
+@description: Chalisa text, full version coming soon.
+@descriptionHi: चालीसा — पूरा पाठ जल्द जुड़ेगा।
+@order: 10
+@tags: chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)

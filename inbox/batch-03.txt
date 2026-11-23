@@ -1,0 +1,59 @@
+# BATCH 3: paste the real text under each "# ADD HINDI TEXT" comment, then delete that comment line.
+# Lines starting with "# " are comments and are never published.
+# Keep the "=== ... ===" header lines as they are. Leave an entry alone to skip it.
+# Hindi text goes where "# ADD HINDI TEXT" is. English (optional) goes under ":::english".
+
+=== jain | alochana-path | Alochana Path | आलोचना पाठ ===
+@description: Path text, full version coming soon.
+@descriptionHi: पाठ — पूरा पाठ जल्द जुड़ेगा।
+@order: 9
+@tags: path
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | barah-bhavna | Barah Bhavna | बारह भावना ===
+@description: Reflection text, full version coming soon.
+@descriptionHi: भावना — पूरा पाठ जल्द जुड़ेगा।
+@order: 8
+@tags: reflection
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | bhaktamar-stotra | Bhaktamar Stotra | भक्तामर स्तोत्र ===
+@description: Devotional hymn by Acharya Manatunga, addressed to the Jina. Work in progress.
+@descriptionHi: आचार्य मानतुंग रचित, जिनेंद्र भगवान की स्तुति। कार्य जारी।
+@order: 2
+@tags: bhaktamar, stotra, jain
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | chhahdhala | Chhahdhala (Dhal 1–6) | छहढाला ===
+@description: Granth text, full version coming soon.
+@descriptionHi: ग्रंथ — पूरा पाठ जल्द जुड़ेगा।
+@order: 14
+@tags: granth
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== jain | eki-bhav-stotra | Eki Bhav Stotra | एकीभाव स्तोत्र ===
+@description: Stotra text, full version coming soon.
+@descriptionHi: स्तोत्र — पूरा पाठ जल्द जुड़ेगा।
+@order: 17
+@tags: stotra
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)

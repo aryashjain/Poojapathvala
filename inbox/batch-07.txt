@@ -1,0 +1,59 @@
+# BATCH 7: paste the real text under each "# ADD HINDI TEXT" comment, then delete that comment line.
+# Lines starting with "# " are comments and are never published.
+# Keep the "=== ... ===" header lines as they are. Leave an entry alone to skip it.
+# Hindi text goes where "# ADD HINDI TEXT" is. English (optional) goes under ":::english".
+
+=== pooja | griha-pravesh-puja | Griha Pravesh Puja | गृह प्रवेश पूजा ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 5
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== pooja | lakshmi-puja-vidhi | Lakshmi Puja Vidhi | लक्ष्मी पूजा विधि ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 3
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== pooja | navgraha-puja-vidhi | Navgraha Puja Vidhi | नवग्रह पूजा विधि ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 6
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== pooja | nitya-puja-vidhi | Daily Puja Vidhi | नित्य पूजा विधि ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 1
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== pooja | saraswati-puja-vidhi | Saraswati Puja Vidhi | सरस्वती पूजा विधि ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 9
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)

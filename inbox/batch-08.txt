@@ -1,0 +1,26 @@
+# BATCH 8: paste the real text under each "# ADD HINDI TEXT" comment, then delete that comment line.
+# Lines starting with "# " are comments and are never published.
+# Keep the "=== ... ===" header lines as they are. Leave an entry alone to skip it.
+# Hindi text goes where "# ADD HINDI TEXT" is. English (optional) goes under ":::english".
+
+=== pooja | satyanarayan-katha-puja | Satyanarayan Katha and Puja | सत्यनारायण कथा और पूजा ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 4
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== pooja | shiv-puja-vidhi | Shiv Puja Vidhi | शिव पूजा विधि ===
+@description: Vidhi text, full version coming soon.
+@descriptionHi: पूजा विधि — पूरा पाठ जल्द जुड़ेगा।
+@order: 7
+@tags: pooja, puja, vidhi
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)

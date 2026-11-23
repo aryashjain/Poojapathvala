@@ -1,0 +1,59 @@
+# BATCH 1: paste the real text under each "# ADD HINDI TEXT" comment, then delete that comment line.
+# Lines starting with "# " are comments and are never published.
+# Keep the "=== ... ===" header lines as they are. Leave an entry alone to skip it.
+# Hindi text goes where "# ADD HINDI TEXT" is. English (optional) goes under ":::english".
+
+=== hindu | bajrang-baan | Bajrang Baan | श्री बजरंग बाण ===
+@description: Stotra text, full version coming soon.
+@descriptionHi: स्तोत्र — पूरा पाठ जल्द जुड़ेगा।
+@order: 7
+@tags: stotra
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== hindu | durga-chalisa | Durga Chalisa | श्री दुर्गा चालीसा ===
+@description: Chalisa text, full version coming soon.
+@descriptionHi: चालीसा — पूरा पाठ जल्द जुड़ेगा।
+@order: 3
+@tags: chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== hindu | ganesh-chalisa | Ganesh Chalisa | श्री गणेश चालीसा ===
+@description: Chalisa text, full version coming soon.
+@descriptionHi: चालीसा — पूरा पाठ जल्द जुड़ेगा।
+@order: 4
+@tags: chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== hindu | lakshmi-chalisa | Lakshmi Chalisa | श्री लक्ष्मी चालीसा ===
+@description: Chalisa text, full version coming soon.
+@descriptionHi: चालीसा — पूरा पाठ जल्द जुड़ेगा।
+@order: 5
+@tags: chalisa
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
+
+=== hindu | lingashtakam | Lingashtakam | लिंगाष्टकम् ===
+@description: Ashtakam text, full version coming soon.
+@descriptionHi: अष्टक — पूरा पाठ जल्द जुड़ेगा।
+@order: 16
+@tags: ashtakam
+
+# ADD HINDI TEXT HERE
+
+:::english
+# ADD ENGLISH TRANSLITERATION HERE (optional)
