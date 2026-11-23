@@ -636,7 +636,7 @@ export function tarotReaderPage({ origin }) {
     .join('');
   const body =
     '<header class="page-head tarot-head"><p class="eyebrow">Tarot reader</p><h1>Draw your cards</h1>' +
-    '<p class="lede">Choose a spread, shuffle the deck, then tap each card to reveal it.</p>' +
+    '<p class="lede">Choose a spread and draw. Then tap the face-down cards in the row to pick them.</p>' +
     '<p class="disclaimer">' + e(TAROT_DISCLAIMER) + '</p></header>' +
     '<section class="reader" aria-label="Tarot reader">' +
     '<div class="spreads" role="group" aria-label="Spread">' + spreadButtons + '</div>' +
@@ -646,6 +646,7 @@ export function tarotReaderPage({ origin }) {
     '<span class="streak" id="tarot-streak"></span>' +
     '</div>' +
     '<p class="status" id="tarot-status" aria-live="polite">Tap Draw to begin.</p>' +
+    '<div class="fan" id="tarot-fan" role="group" aria-label="Face-down cards: tap one to choose it"></div>' +
     '<div class="stage" id="tarot-stage"></div>' +
     '<div class="results" id="tarot-results" aria-live="polite"></div>' +
     '</section>' +

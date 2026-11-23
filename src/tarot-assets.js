@@ -15,7 +15,16 @@ export const TAROT_CSS = `
 .streak { margin-left: auto; font-family: var(--sans); font-size: .9rem; font-weight: 700; color: var(--accent); }
 .status { font-family: var(--sans); font-size: .95rem; color: var(--muted); }
 
-.stage { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; min-height: 260px; margin: 1.5rem 0; }
+/* The face-down row: tap a card to choose it. Overlaps slightly and scrolls sideways on small screens. */
+.fan { display: flex; align-items: flex-end; overflow-x: auto; padding: 1.4rem .8rem 1.2rem; margin: .5rem -.8rem 0; -webkit-overflow-scrolling: touch; }
+.fan:empty { display: none; }
+.fan .tcard { width: 112px; height: 172px; flex: none; margin-left: -44px; }
+.fan .tcard:first-child { margin-left: 0; }
+.fan .tcard.pick { transition: transform .2s ease; }
+.fan .tcard.pick:hover, .fan .tcard.pick:focus-visible { transform: translateY(-14px); }
+.fan .tcard-back { font-size: .8rem; }
+
+.stage { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; min-height: 240px; margin: 1.5rem 0; }
 .slot { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
 .position { font-family: var(--sans); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 
@@ -61,14 +70,16 @@ export const TAROT_JS = `
   var data = JSON.parse(dataEl.textContent);
   var cards = data.cards;
   var spreads = data.spreads;
+  var fanEl = document.getElementById('tarot-fan');
   var stage = document.getElementById('tarot-stage');
   var results = document.getElementById('tarot-results');
   var status = document.getElementById('tarot-status');
   var streakEl = document.getElementById('tarot-streak');
+  var FAN_SIZE = 13;
   var current = 'three';
   var deck = [];
-  var dealt = [];
-  var revealed = 0;
+  var fan = [];
+  var table = [];
 
   var ROMAN = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'];
   var RANK = { 1: 'Ace', 11: 'Page', 12: 'Knight', 13: 'Queen', 14: 'King' };
@@ -95,18 +106,51 @@ export const TAROT_JS = `
     }
     return copy;
   }
-  function reshuffle() {
-    deck = shuffle(cards);
-    status.textContent = 'Deck shuffled. Tap Draw cards.';
+  function keyActivates(handler) {
+    return function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        handler();
+      }
+    };
+  }
+  function needed() {
+    return spreads[current].positions.length;
   }
 
-  function buildCard(item, index) {
+  function reshuffle() {
+    deck = shuffle(cards);
+  }
+
+  // The row of face-down cards. Tap one to choose it.
+  function fill() {
+    if (deck.length < FAN_SIZE) reshuffle();
+    fan = deck.splice(0, FAN_SIZE).map(function (card) {
+      return { card: card, reversed: randomInt(100) < 30, el: null };
+    });
+    renderFan();
+  }
+  function renderFan() {
+    fanEl.innerHTML = '';
+    fan.forEach(function (item, index) {
+      var el = document.createElement('div');
+      el.className = 'tcard pick';
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-label', 'Choose face-down card ' + (index + 1));
+      el.innerHTML = '<div class="tcard-inner"><div class="tcard-back" aria-hidden="true"><span>☽ ✦ ☾</span></div></div>';
+      var pick = function () { choose(item); };
+      el.addEventListener('click', pick);
+      el.addEventListener('keydown', keyActivates(pick));
+      fanEl.appendChild(el);
+    });
+  }
+
+  function buildFace(item, position) {
     var card = item.card;
     var el = document.createElement('div');
     el.className = 'tcard suit-' + card.suit;
-    el.setAttribute('role', 'button');
-    el.setAttribute('tabindex', '0');
-    el.setAttribute('aria-label', 'Reveal card ' + (index + 1) + ' of ' + dealt.length);
+    el.setAttribute('aria-label', spreads[current].positions[position] + ': ' + card.name);
     el.innerHTML =
       '<div class="tcard-inner">' +
       '<div class="tcard-back" aria-hidden="true"><span>☽ ✦ ☾</span></div>' +
@@ -115,29 +159,36 @@ export const TAROT_JS = `
       '<span class="tcard-glyph" aria-hidden="true">' + GLYPH[card.suit] + '</span>' +
       '<span class="tcard-name">' + esc(card.name) + '</span>' +
       '</div></div></div>';
-    el.addEventListener('click', function () { reveal(index); });
-    el.addEventListener('keydown', function (event) {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        reveal(index);
-      }
-    });
     return el;
   }
 
-  function render() {
-    stage.innerHTML = '';
-    dealt.forEach(function (item, index) {
-      var slot = document.createElement('div');
-      slot.className = 'slot';
-      var label = document.createElement('span');
-      label.className = 'position';
-      label.textContent = spreads[current].positions[index];
-      slot.appendChild(label);
-      item.el = buildCard(item, index);
-      slot.appendChild(item.el);
-      stage.appendChild(slot);
-    });
+  // Choosing a card: it leaves the row and turns over in the next position.
+  function choose(item) {
+    if (table.length >= needed()) return;
+    var index = fan.indexOf(item);
+    if (index === -1) return;
+    fan.splice(index, 1);
+    table.push(item);
+    var position = table.length - 1;
+
+    var slot = document.createElement('div');
+    slot.className = 'slot';
+    var label = document.createElement('span');
+    label.className = 'position';
+    label.textContent = spreads[current].positions[position];
+    slot.appendChild(label);
+    var el = buildFace(item, position);
+    slot.appendChild(el);
+    stage.appendChild(slot);
+    requestAnimationFrame(function () { el.classList.add('flipped'); });
+    addResult(position);
+
+    renderFan();
+    if (table.length < needed()) {
+      status.textContent = 'Picked ' + table.length + ' of ' + needed() + '. Choose the next card from the row.';
+    } else {
+      finish();
+    }
   }
 
   function meaningOf(item) {
@@ -150,33 +201,18 @@ export const TAROT_JS = `
     if (base === 'Maybe' || !item.reversed) return base;
     return base === 'Yes' ? 'No' : 'Yes';
   }
-  function addResult(index) {
-    var item = dealt[index];
+  function addResult(position) {
+    var item = table[position];
     var box = document.createElement('article');
     box.className = 'result';
     var html =
-      '<h3>' + esc(spreads[current].positions[index]) + ': ' + esc(item.card.name) +
+      '<h3>' + esc(spreads[current].positions[position]) + ': ' + esc(item.card.name) +
       (item.reversed ? '<span class="rev-tag">Reversed</span>' : '') + '</h3>' +
       '<p>' + esc(meaningOf(item)) + '</p>';
     if (current === 'yesno') html += '<p class="verdict">Answer: <strong>' + verdict(item) + '</strong></p>';
     html += '<p><a href="/tarot/card/' + esc(item.card.id) + '">Full card page</a></p>';
     box.innerHTML = html;
     results.appendChild(box);
-  }
-
-  function reveal(index) {
-    var item = dealt[index];
-    if (!item || item.shown) return;
-    item.shown = true;
-    item.el.classList.add('flipped');
-    revealed++;
-    addResult(index);
-    var total = dealt.length;
-    if (revealed < total) {
-      status.textContent = 'Revealed ' + revealed + ' of ' + total + '. Tap the next card.';
-    } else {
-      finish();
-    }
   }
 
   function readStorage(key) {
@@ -210,30 +246,31 @@ export const TAROT_JS = `
     status.innerHTML = '<span class="done">Reading complete.</span>' + (current === 'daily' ? ' Come back tomorrow for your next daily card.' : '');
   }
 
-  function draw() {
-    var needed = spreads[current].positions.length;
-    if (deck.length < needed) reshuffle();
-    var picks = deck.splice(0, needed);
-    dealt = picks.map(function (card) {
-      return { card: card, reversed: randomInt(100) < 30, shown: false, el: null };
-    });
-    revealed = 0;
+  function startReading() {
+    table = [];
+    stage.innerHTML = '';
     results.innerHTML = '';
-    render();
-    status.textContent = 'Tap each card to reveal it.';
+    fill();
+    status.textContent = 'Choose ' + needed() + (needed() === 1 ? ' card' : ' cards') + ' from the row.';
   }
 
-  document.getElementById('tarot-shuffle').addEventListener('click', reshuffle);
-  document.getElementById('tarot-draw').addEventListener('click', draw);
+  document.getElementById('tarot-shuffle').addEventListener('click', function () {
+    reshuffle();
+    if (table.length === 0) fill();
+    status.textContent = 'Deck shuffled. Choose from the row.';
+  });
+  document.getElementById('tarot-draw').addEventListener('click', startReading);
   document.querySelectorAll('[data-spread]').forEach(function (button) {
     button.addEventListener('click', function () {
       current = button.getAttribute('data-spread');
       document.querySelectorAll('[data-spread]').forEach(function (other) {
         other.setAttribute('aria-pressed', other === button ? 'true' : 'false');
       });
-      dealt = [];
-      results.innerHTML = '';
+      table = [];
+      fan = [];
+      fanEl.innerHTML = '';
       stage.innerHTML = '';
+      results.innerHTML = '';
       status.textContent = 'Spread changed. Tap Draw cards.';
     });
   });
