@@ -1,7 +1,7 @@
 import { escapeHtml, renderMarkdown } from './markdown.js';
 import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 import { isPending } from './status.js';
-import { CARDS, SPREADS, SUIT_LABELS, TAROT_DISCLAIMER } from './tarot-data.js';
+import { CARDS, SPREADS, SUIT_LABELS } from './tarot-data.js';
 import { TOPICS } from './tarot-topics.js';
 import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
@@ -646,7 +646,7 @@ export function tarotReaderPage({ origin }) {
   const body =
     '<header class="page-head tarot-head"><p class="eyebrow">Tarot reader</p><h1>Draw your cards</h1>' +
     '<p class="lede">Choose a spread and draw. Then tap the face-down cards in the row to pick them.</p>' +
-    '<p class="disclaimer">' + e(TAROT_DISCLAIMER) + '</p></header>' +
+    '</header>' +
     '<section class="tips" aria-labelledby="tips-title"><h2 id="tips-title">Before you begin</h2><ol>' +
     '<li>Take a breath and settle your mind.</li>' +
     '<li>Ask one clear question. Be specific about the situation.</li>' +
@@ -719,7 +719,6 @@ export function tarotCardPage({ origin, card }) {
     '<section><h2>Reversed</h2><p>' + e(card.reversed) + '</p></section>' +
     '<section><h2>Love</h2><p><strong>Upright:</strong> ' + e(TOPICS[card.id].love[0]) + '</p><p><strong>Reversed:</strong> ' + e(TOPICS[card.id].love[1]) + '</p></section>' +
     '<section><h2>Career and money</h2><p><strong>Upright:</strong> ' + e(TOPICS[card.id].career[0]) + '</p><p><strong>Reversed:</strong> ' + e(TOPICS[card.id].career[1]) + '</p></section>' +
-    '<p class="disclaimer">' + e(TAROT_DISCLAIMER) + '</p>' +
     '<p><a class="btn" href="/tarot">Draw your own cards</a></p>' +
     '</article>' +
     '<section class="related"><h2>More ' + e(SUIT_LABELS[card.suit]) + '</h2><ul class="card-links">' + relatedList + '</ul></section>';

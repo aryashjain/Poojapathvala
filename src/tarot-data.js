@@ -129,4 +129,3 @@ export const SPREADS = {
 
 export const SUIT_LABELS = { major: 'Major Arcana', wands: 'Wands', cups: 'Cups', swords: 'Swords', pentacles: 'Pentacles' };
 
-export const TAROT_DISCLAIMER = 'For entertainment purposes only. Tarot is not a substitute for medical, legal, financial or professional advice.';
