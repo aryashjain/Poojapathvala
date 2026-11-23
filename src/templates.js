@@ -1,6 +1,7 @@
 import { escapeHtml, renderMarkdown } from './markdown.js';
 import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 import { isPending } from './status.js';
+import { CARDS, SPREADS, SUIT_LABELS, TAROT_DISCLAIMER } from './tarot-data.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 
 // Shopping links for pooja and aarti texts. Shown only when affiliates are enabled.
@@ -589,5 +590,128 @@ export function adminPage({ origin, feedback = [] }) {
     wide: true,
     showLangToggle: false,
     extraCss: ['/assets/admin.css'],
+  });
+}
+
+// ---- tarot ----------------------------------------------------------------
+
+const TAROT_LANG = 'en';
+const SUIT_GLYPH = { major: '✦', wands: '🔥', cups: '🌊', swords: '⚔', pentacles: '✺' };
+const ROMAN = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'];
+
+function cardNumber(card) {
+  if (card.arcana === 'major') return ROMAN[card.number];
+  const rank = { 1: 'Ace', 11: 'Page', 12: 'Knight', 13: 'Queen', 14: 'King' };
+  return rank[card.number] || String(card.number);
+}
+
+// A card drawn as an original design (not third-party artwork). Reversed cards show the content upside down.
+function cardHtml(card, { reversed = false, faceDown = false } = {}) {
+  return (
+    '<div class="tcard suit-' + card.suit + (faceDown ? '' : ' flipped') + '">' +
+    '<div class="tcard-inner">' +
+    '<div class="tcard-back" aria-hidden="true"><span>☽ ✦ ☾</span></div>' +
+    '<div class="tcard-face' + (reversed ? ' rev' : '') + '"><div class="tcard-content">' +
+    '<span class="tcard-num">' + e(cardNumber(card)) + '</span>' +
+    '<span class="tcard-glyph" aria-hidden="true">' + SUIT_GLYPH[card.suit] + '</span>' +
+    '<span class="tcard-name">' + e(card.name) + '</span>' +
+    '</div></div></div></div>'
+  );
+}
+
+function tarotLibrary() {
+  return CARDS.map(
+    (card) => '<li><a href="/tarot/card/' + e(card.id) + '">' + e(card.name) + '</a></li>'
+  ).join('');
+}
+
+export function tarotReaderPage({ origin }) {
+  const data = {
+    cards: CARDS.map(({ id, name, suit, number, arcana, tone, upright, reversed }) => ({ id, name, suit, number, arcana, tone, upright, reversed })),
+    spreads: SPREADS,
+  };
+  const spreadButtons = Object.entries(SPREADS)
+    .map(([key, spread]) => '<button type="button" class="spread" data-spread="' + key + '" aria-pressed="' + (key === 'three') + '">' + e(spread.label) + '</button>')
+    .join('');
+  const body =
+    '<header class="page-head tarot-head"><p class="eyebrow">Tarot reader</p><h1>Draw your cards</h1>' +
+    '<p class="lede">Choose a spread, shuffle the deck, then tap each card to reveal it.</p>' +
+    '<p class="disclaimer">' + e(TAROT_DISCLAIMER) + '</p></header>' +
+    '<section class="reader" aria-label="Tarot reader">' +
+    '<div class="spreads" role="group" aria-label="Spread">' + spreadButtons + '</div>' +
+    '<div class="reader-actions">' +
+    '<button type="button" class="btn" id="tarot-shuffle">Shuffle</button>' +
+    '<button type="button" class="btn btn-ghost" id="tarot-draw">Draw cards</button>' +
+    '<span class="streak" id="tarot-streak"></span>' +
+    '</div>' +
+    '<p class="status" id="tarot-status" aria-live="polite">Tap Draw to begin.</p>' +
+    '<div class="stage" id="tarot-stage"></div>' +
+    '<div class="results" id="tarot-results" aria-live="polite"></div>' +
+    '</section>' +
+    '<section class="library" aria-labelledby="library-title"><h2 id="library-title">The 78 cards</h2>' +
+    '<p class="muted">Upright and reversed meanings for every card in the Major and Minor Arcana.</p>' +
+    '<ul class="card-links">' + tarotLibrary() + '</ul></section>' +
+    '<script type="application/json" id="tarot-data">' + JSON.stringify(data).replace(/</g, '\\u003c') + '</script>';
+
+  return layout({
+    lang: TAROT_LANG,
+    origin,
+    path: '/tarot',
+    title: 'Tarot Reader: Free Card Draw, Yes or No, Love and Career · Poojapathvala',
+    description: 'Free online tarot reader. Draw a daily card, a three-card spread, a yes or no answer, or a love or career spread, with upright and reversed meanings.',
+    body,
+    showLangToggle: false,
+    extraCss: ['/assets/tarot.css'],
+    extraJs: ['/assets/tarot.js'],
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'Poojapathvala Tarot Reader',
+      url: origin + '/tarot',
+      applicationCategory: 'Entertainment',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+  });
+}
+
+export function tarotCardPage({ origin, card }) {
+  const path = '/tarot/card/' + card.id;
+  const related = CARDS.filter((other) => other.suit === card.suit && other.id !== card.id).slice(0, 4);
+  const relatedList = related
+    .map((other) => '<li><a href="/tarot/card/' + e(other.id) + '">' + e(other.name) + '</a></li>')
+    .join('');
+  const body =
+    '<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/tarot">Tarot</a><span>/</span>' + e(card.name) + '</nav>' +
+    '<article class="article tarot-card-page">' +
+    '<header class="page-head"><p class="eyebrow">' + e(SUIT_LABELS[card.suit]) + '</p><h1>' + e(card.name) + ' meaning</h1>' +
+    '<p class="lede">' + e(card.upright) + '</p></header>' +
+    '<div class="card-pair">' +
+    '<figure>' + cardHtml(card) + '<figcaption>Upright</figcaption></figure>' +
+    '<figure>' + cardHtml(card, { reversed: true }) + '<figcaption>Reversed</figcaption></figure>' +
+    '</div>' +
+    '<section><h2>Upright</h2><p>' + e(card.upright) + '</p></section>' +
+    '<section><h2>Reversed</h2><p>' + e(card.reversed) + '</p></section>' +
+    '<p class="disclaimer">' + e(TAROT_DISCLAIMER) + '</p>' +
+    '<p><a class="btn" href="/tarot">Draw your own cards</a></p>' +
+    '</article>' +
+    '<section class="related"><h2>More ' + e(SUIT_LABELS[card.suit]) + '</h2><ul class="card-links">' + relatedList + '</ul></section>';
+
+  return layout({
+    lang: TAROT_LANG,
+    origin,
+    path,
+    title: card.name + ' Meaning: Upright and Reversed · Tarot · Poojapathvala',
+    description: card.name + ' tarot card. Upright: ' + card.upright + ' Reversed: ' + card.reversed,
+    body,
+    type: 'article',
+    showLangToggle: false,
+    extraCss: ['/assets/tarot.css'],
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: card.name + ' tarot meaning',
+      description: card.upright,
+      mainEntityOfPage: origin + path,
+    },
   });
 }

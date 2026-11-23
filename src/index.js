@@ -2,6 +2,8 @@ import { loadLibrary } from './library.js';
 import { buildSearchDocs, searchDocs } from './search.js';
 import { CSS, JS, THEME_JS } from './assets.js';
 import { ADMIN_CSS, ADMIN_JS } from './admin-assets.js';
+import { TAROT_CSS, TAROT_JS } from './tarot-assets.js';
+import { CARDS } from './tarot-data.js';
 import { handleAdmin } from './admin.js';
 import { handleFeedback } from './feedback-route.js';
 import { html } from './http.js';
@@ -38,7 +40,8 @@ function safeNextPath(next) {
 }
 
 function sitemap(origin, topics) {
-  const entries = [{ loc: origin + '/' }];
+  const entries = [{ loc: origin + '/' }, { loc: origin + '/tarot' }];
+  for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {
     entries.push({ loc: origin + '/t/' + topic.slug });
     for (const doc of topic.docs) if (!isPending(doc)) entries.push({ loc: origin + '/t/' + topic.slug + '/' + doc.slug, lastmod: doc.date });
@@ -99,6 +102,17 @@ export default {
       if (parts[1] === 'app.js') return asset(JS, 'application/javascript; charset=utf-8');
       if (parts[1] === 'admin.css') return asset(ADMIN_CSS, 'text/css; charset=utf-8');
       if (parts[1] === 'admin.js') return asset(ADMIN_JS, 'application/javascript; charset=utf-8');
+      if (parts[1] === 'tarot.css') return asset(TAROT_CSS, 'text/css; charset=utf-8');
+      if (parts[1] === 'tarot.js') return asset(TAROT_JS, 'application/javascript; charset=utf-8');
+    }
+
+    // Tarot reader and card pages do not need the library, so they come before it.
+    if (parts[0] === 'tarot' && parts.length === 1) {
+      return html(view.tarotReaderPage({ origin }));
+    }
+    if (parts[0] === 'tarot' && parts[1] === 'card' && parts.length === 3) {
+      const card = CARDS.find((item) => item.id === parts[2]);
+      if (card) return html(view.tarotCardPage({ origin, card }));
     }
 
     if (parts.length === 1 && parts[0] === 'robots.txt') {
