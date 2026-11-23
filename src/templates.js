@@ -3,6 +3,13 @@ import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 
 const e = escapeHtml;
 
+// Page titles carry both names in Hindi mode, e.g. "हिंदू आरती संग्रह (Hindu Aartis)",
+// so searches in either language match the page.
+function titleName(lang, en, hi) {
+  if (lang === 'hi' && hi && en && en !== hi) return hi + ' (' + en + ')';
+  return loc(lang, en, hi);
+}
+
 const SITE_TAGLINE_EN = 'Sacred texts, aartis, pooja, stotras and poetry, clean and easy to share.';
 
 // Keywords meta on every page. Aarti and pooja lead, in Hindi and English.
@@ -172,7 +179,10 @@ export function homePage({ lang, origin, topics }) {
     lang,
     origin,
     path: '/',
-    title: t(lang, 'brandName') + ' · ' + t(lang, 'tagline'),
+    title:
+      t(lang, 'brandName') +
+      ' · ' +
+      (lang === 'hi' ? 'आरती, पूजा, स्तोत्र, मंत्र (Aarti, Pooja, Stotra, Mantra)' : 'Aarti, Pooja, Stotra, Mantra'),
     description: t(lang, 'homeDescription'),
     body,
     jsonLd: {
@@ -207,7 +217,7 @@ export function topicPage({ lang, origin, topic }) {
     lang,
     origin,
     path: '/t/' + topic.slug,
-    title: name + ' · ' + t(lang, 'brandName'),
+    title: titleName(lang, topic.title, topic.titleHi) + ' · ' + t(lang, 'brandName'),
     description: description || t(lang, 'topicDescription', { name: name }),
     body,
     jsonLd: [
@@ -330,7 +340,12 @@ export function docPage({ lang, origin, topic, doc, prev, next }) {
     lang,
     origin,
     path,
-    title: main + ' · ' + topicName + ' · ' + t(lang, 'brandName'),
+    title:
+      titleName(lang, doc.title, doc.hindiTitle) +
+      ' · ' +
+      titleName(lang, topic.title, topic.titleHi) +
+      ' · ' +
+      t(lang, 'brandName'),
     description: description || doc.title + ' · ' + topic.title,
     body,
     type: 'article',
