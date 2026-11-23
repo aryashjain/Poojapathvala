@@ -141,6 +141,8 @@ export const TAROT_JS = `
   }
 
   function meaningOf(item) {
+    var topic = (current === 'love' || current === 'career') ? item.card[current] : null;
+    if (topic) return topic[item.reversed ? 1 : 0];
     return item.reversed ? item.card.reversed : item.card.upright;
   }
   function verdict(item) {

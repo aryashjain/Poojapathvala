@@ -2,6 +2,7 @@ import { escapeHtml, renderMarkdown } from './markdown.js';
 import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 import { isPending } from './status.js';
 import { CARDS, SPREADS, SUIT_LABELS, TAROT_DISCLAIMER } from './tarot-data.js';
+import { TOPICS } from './tarot-topics.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 
 // Shopping links for pooja and aarti texts. Shown only when affiliates are enabled.
@@ -627,7 +628,7 @@ function tarotLibrary() {
 
 export function tarotReaderPage({ origin }) {
   const data = {
-    cards: CARDS.map(({ id, name, suit, number, arcana, tone, upright, reversed }) => ({ id, name, suit, number, arcana, tone, upright, reversed })),
+    cards: CARDS.map((c) => ({ id: c.id, name: c.name, suit: c.suit, number: c.number, arcana: c.arcana, tone: c.tone, upright: c.upright, reversed: c.reversed, love: TOPICS[c.id].love, career: TOPICS[c.id].career })),
     spreads: SPREADS,
   };
   const spreadButtons = Object.entries(SPREADS)
@@ -691,6 +692,8 @@ export function tarotCardPage({ origin, card }) {
     '</div>' +
     '<section><h2>Upright</h2><p>' + e(card.upright) + '</p></section>' +
     '<section><h2>Reversed</h2><p>' + e(card.reversed) + '</p></section>' +
+    '<section><h2>Love</h2><p><strong>Upright:</strong> ' + e(TOPICS[card.id].love[0]) + '</p><p><strong>Reversed:</strong> ' + e(TOPICS[card.id].love[1]) + '</p></section>' +
+    '<section><h2>Career and money</h2><p><strong>Upright:</strong> ' + e(TOPICS[card.id].career[0]) + '</p><p><strong>Reversed:</strong> ' + e(TOPICS[card.id].career[1]) + '</p></section>' +
     '<p class="disclaimer">' + e(TAROT_DISCLAIMER) + '</p>' +
     '<p><a class="btn" href="/tarot">Draw your own cards</a></p>' +
     '</article>' +
