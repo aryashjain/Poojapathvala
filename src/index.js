@@ -8,6 +8,7 @@ import { html } from './http.js';
 import * as view from './templates.js';
 import { escapeHtml } from './markdown.js';
 import { LANGS, langFromRequest } from './i18n.js';
+import { relatedDocs } from './related.js';
 
 function asset(body, type) {
   return new Response(body, {
@@ -36,15 +37,20 @@ function safeNextPath(next) {
 }
 
 function sitemap(origin, topics) {
-  const urls = [origin + '/'];
+  const entries = [{ loc: origin + '/' }];
   for (const topic of topics) {
-    urls.push(origin + '/t/' + topic.slug);
-    for (const doc of topic.docs) urls.push(origin + '/t/' + topic.slug + '/' + doc.slug);
+    entries.push({ loc: origin + '/t/' + topic.slug });
+    for (const doc of topic.docs) entries.push({ loc: origin + '/t/' + topic.slug + '/' + doc.slug, lastmod: doc.date });
   }
   return (
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-    urls.map((url) => '  <url><loc>' + escapeHtml(url) + '</loc></url>\n').join('') +
+    entries
+      .map(({ loc, lastmod }) => {
+        const date = lastmod && /^\d{4}-\d{2}-\d{2}$/.test(lastmod) ? '<lastmod>' + lastmod + '</lastmod>' : '';
+        return '  <url><loc>' + escapeHtml(loc) + '</loc>' + date + '</url>\n';
+      })
+      .join('') +
     '</urlset>\n'
   );
 }
@@ -136,6 +142,7 @@ export default {
               doc: topic.docs[docIndex],
               prev: topic.docs[docIndex - 1],
               next: topic.docs[docIndex + 1],
+              related: relatedDocs(topics, topic, topic.docs[docIndex]),
             }),
           );
         }

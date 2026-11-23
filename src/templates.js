@@ -87,7 +87,7 @@ function layout({
     '<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">\n' +
     '<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">\n' +
     '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n' +
-    '<meta name="twitter:card" content="summary">\n' +
+    '<meta name="twitter:card" content="summary_large_image">\n' +
     '<meta name="theme-color" content="#fbfaf6">\n' +
     '<link rel="stylesheet" href="/assets/site.css">\n' +
     extraCss.map((href) => '<link rel="stylesheet" href="' + e(href) + '">\n').join('') +
@@ -185,17 +185,28 @@ export function homePage({ lang, origin, topics }) {
       (lang === 'hi' ? 'आरती, पूजा, स्तोत्र, मंत्र (Aarti, Pooja, Stotra, Mantra)' : 'Aarti, Pooja, Stotra, Mantra'),
     description: t(lang, 'homeDescription'),
     body,
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: t(lang, 'brandName'),
-      url: origin + '/',
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: origin + '/search?q={search_term_string}',
-        'query-input': 'required name=search_term_string',
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: t(lang, 'brandName'),
+        alternateName: ['Poojapaathwala', 'पूजापाठवाला'],
+        url: origin + '/',
+        inLanguage: ['hi', 'en'],
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: origin + '/search?q={search_term_string}',
+          'query-input': 'required name=search_term_string',
+        },
       },
-    },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Poojapaathwala',
+        url: origin + '/',
+        logo: origin + '/logo.png',
+      },
+    ],
   });
 }
 
@@ -279,7 +290,19 @@ function readerBar(lang, shareUrl, shareText) {
   );
 }
 
-export function docPage({ lang, origin, topic, doc, prev, next }) {
+// Links to other texts that share tags with this one.
+function relatedSection(lang, related) {
+  if (!related.length) return '';
+  return (
+    '<section class="related" aria-labelledby="related-title">' +
+    '<h2 id="related-title">' + e(t(lang, 'relatedTitle')) + '</h2>' +
+    '<ol class="doc-list">' +
+    related.map(({ topic, doc }) => docItem(lang, topic, doc, docNote(lang, topic, doc))).join('') +
+    '</ol></section>'
+  );
+}
+
+export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) {
   const path = '/t/' + topic.slug + '/' + doc.slug;
   const url = origin + path;
   const main = loc(lang, doc.title, doc.hindiTitle);
@@ -322,7 +345,8 @@ export function docPage({ lang, origin, topic, doc, prev, next }) {
     readerBar(lang, url, main) +
     '<div class="prose">' + renderMarkdown(lang === 'en' && doc.bodyEn ? doc.bodyEn : doc.body) + '</div>' +
     '</article>' +
-    pager;
+    pager +
+    relatedSection(lang, related);
 
   const article = {
     '@context': 'https://schema.org',
