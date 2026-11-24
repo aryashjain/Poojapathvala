@@ -129,7 +129,6 @@ function layout({
     '</div></footer>\n' +
     '<script src="/assets/app.js?v=' + ASSET_VERSION + '" defer></script>\n' +
     extraJs.map((src) => '<script src="' + e(src) + '?v=' + ASSET_VERSION + '" defer></script>\n').join('') +
-    '<script src="https://quge5.com/88/tag.min.js" data-zone="314751" async data-cfasync="false"></script>\n' +
     '</body>\n</html>\n'
   );
 }
