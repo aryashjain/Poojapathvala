@@ -2,6 +2,7 @@
 import * as view from './templates.js';
 import { html, redirect } from './http.js';
 import { validateFeedback, saveFeedback } from './feedback.js';
+import { createPostHog } from './posthog-server.js';
 
 const MAX_FORM_BYTES = 20000;
 
@@ -33,8 +34,17 @@ export async function handleFeedback(request, env, url, origin, lang) {
   // Pretend success so the bot learns nothing.
   if (fields.website) return redirect('/feedback?sent=1');
 
+  const posthog = createPostHog(env);
   const result = validateFeedback(fields);
   if (!result.ok) {
+    if (posthog) {
+      posthog.logger.warn('feedback_submission_rejected', {
+        event: 'feedback_submission',
+        outcome: 'validation_failed',
+        language: lang,
+      });
+      await posthog.shutdown(2000).catch(() => {});
+    }
     return html(
       view.feedbackPage({ lang, origin, enabled: true, values: result.values, errors: result.errors }),
       400,
@@ -43,5 +53,20 @@ export async function handleFeedback(request, env, url, origin, lang) {
   }
 
   await saveFeedback(env, result.value);
+
+  if (posthog) {
+    posthog.capture({
+      event: 'feedback_submitted',
+      properties: { feedback_type: result.value.type, language: lang },
+    });
+    posthog.logger.info('feedback_submission_stored', {
+      event: 'feedback_submission',
+      outcome: 'stored',
+      feedback_type: result.value.type,
+      language: lang,
+    });
+    await posthog.shutdown(2000).catch(() => {});
+  }
+
   return redirect('/feedback?sent=1');
 }

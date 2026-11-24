@@ -12,6 +12,7 @@ import { escapeHtml } from './markdown.js';
 import { LANGS, langFromRequest } from './i18n.js';
 import { relatedDocs } from './related.js';
 import { isPending } from './status.js';
+import { captureWorkerException, posthogBrowserScript } from './posthog.js';
 
 function asset(body, type) {
   return new Response(body, {
@@ -61,7 +62,8 @@ function sitemap(origin, topics) {
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url);
+    try {
+      const url = new URL(request.url);
     // One host only: www redirects to the bare domain, so search engines see a single site.
     if (url.hostname.startsWith('www.')) {
       url.hostname = url.hostname.slice(4);
@@ -98,6 +100,11 @@ export default {
     // Static routes first: they don't need the library, so they never touch KV.
     if (parts.length === 2 && parts[0] === 'assets') {
       if (parts[1] === 'site.css') return asset(CSS, 'text/css; charset=utf-8');
+      if (parts[1] === 'posthog.js') {
+        return new Response(posthogBrowserScript(env), {
+          headers: { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'no-store' },
+        });
+      }
       if (parts[1] === 'theme.js') return asset(THEME_JS, 'application/javascript; charset=utf-8');
       if (parts[1] === 'app.js') return asset(JS, 'application/javascript; charset=utf-8');
       if (parts[1] === 'admin.css') return asset(ADMIN_CSS, 'text/css; charset=utf-8');
@@ -172,6 +179,10 @@ export default {
       }
     }
 
-    return html(view.notFoundPage({ lang, origin }), 404, 'no-store');
+      return html(view.notFoundPage({ lang, origin }), 404, 'no-store');
+    } catch (error) {
+      await captureWorkerException(error, env);
+      throw error;
+    }
   },
 };

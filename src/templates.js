@@ -141,6 +141,7 @@ function layout({
     '<span>' + e(brand) + ' · ' + e(t(lang, 'tagline')) + '</span>' +
     '<span><a href="/sitemap.xml">' + e(t(lang, 'sitemap')) + '</a> · <a href="/feedback">' + e(t(lang, 'feedbackLink')) + '</a> · <a href="/admin">' + e(t(lang, 'addTexts')) + '</a></span>' +
     '</div></footer>\n' +
+    '<script src="/assets/posthog.js" defer></script>\n' +
     '<script src="/assets/app.js?v=' + ASSET_VERSION + '" defer></script>\n' +
     extraJs.map((src) => '<script src="' + e(src) + '?v=' + ASSET_VERSION + '" defer></script>\n').join('') +
     '</body>\n</html>\n'
