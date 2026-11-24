@@ -16,9 +16,18 @@ function affiliateBox(lang, doc) {
   const tags = doc.tags || [];
   const items = activeAffiliates();
   if (!items.length) return '';
+  return shopBox('Pooja samagri', items);
+}
+
+function tarotShopBox() {
+  const items = activeAffiliates('tarot');
+  return items.length ? shopBox('Tarot shop', items) : '';
+}
+
+function shopBox(heading, items) {
   return (
     '<aside class="shop" aria-labelledby="shop-title">' +
-    '<h2 id="shop-title">Pooja samagri</h2><ul>' +
+    '<h2 id="shop-title">' + e(heading) + '</h2><ul>' +
     items.map((item) => '<li><a href="' + e(item.url) + '" rel="sponsored nofollow noopener" target="_blank">' + e(item.label) + '</a></li>').join('') +
     '</ul><p class="disclosure">' + e(AFFILIATES.disclosure) + '</p></aside>'
   );
@@ -127,7 +136,7 @@ function layout({
     (showLangToggle ? langToggle(lang, path) : '') +
     searchForm(lang, 'header') +
     '</div></header>\n' +
-    '<main class="' + wrap + '">\n' + body + '\n' + (path.startsWith('/tarot') ? TAROT_NOTE : '') + '</main>\n' +
+    '<main class="' + wrap + '">\n' + body + '\n' + (path.startsWith('/tarot') ? tarotShopBox() + TAROT_NOTE : '') + '</main>\n' +
     '<footer class="site-footer"><div class="' + wrap + '">' +
     '<span>' + e(brand) + ' · ' + e(t(lang, 'tagline')) + '</span>' +
     '<span><a href="/sitemap.xml">' + e(t(lang, 'sitemap')) + '</a> · <a href="/feedback">' + e(t(lang, 'feedbackLink')) + '</a> · <a href="/admin">' + e(t(lang, 'addTexts')) + '</a></span>' +
