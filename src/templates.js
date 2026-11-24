@@ -113,6 +113,7 @@ function layout({
     '<link rel="stylesheet" href="/assets/site.css?v=' + ASSET_VERSION + '">\n' +
     extraCss.map((href) => '<link rel="stylesheet" href="' + e(href) + '?v=' + ASSET_VERSION + '">\n').join('') +
     (jsonLd ? '<script type="application/ld+json">' + safeJson(jsonLd) + '</script>\n' : '') +
+    '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1842686497509208" crossorigin="anonymous"></script>\n' +
     '</head>\n<body>\n' +
     '<header class="site-header"><div class="' + wrap + ' header-inner">' +
     '<a class="brand" href="/" lang="' + lang + '">' +
