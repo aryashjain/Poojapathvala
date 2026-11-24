@@ -469,6 +469,10 @@ export const JS = `
   // ---- search ----
   var forms = document.querySelectorAll('[data-search-form]');
 
+  function capture(event, properties) {
+    if (window.posthog) window.posthog.capture(event, properties);
+  }
+
   forms.forEach(function (form) {
     var input = form.querySelector('input[name="q"]');
     var panel = form.querySelector('[data-search-panel]');
@@ -494,6 +498,9 @@ export const JS = `
       results.slice(0, 8).forEach(function (result) {
         var link = el('a');
         link.href = result.url;
+        link.addEventListener('click', function () {
+          capture('search_result_selected', { result_position: results.indexOf(result) + 1, search_surface: 'suggestion' });
+        });
         link.append(
           el('span', 'search-title', result.title),
           el('span', 'search-meta', result.topic),
@@ -539,12 +546,24 @@ export const JS = `
       timer = setTimeout(function () { run(query); }, 150);
     });
 
+    form.addEventListener('submit', function () {
+      capture('search_submitted', {
+        search_surface: form.classList.contains('search-home') ? 'home' : window.location.pathname === '/search' ? 'search_page' : 'header',
+      });
+    });
+
     input.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') close();
     });
 
     document.addEventListener('click', function (event) {
       if (!form.contains(event.target)) close();
+    });
+  });
+
+  document.querySelectorAll('.results a').forEach(function (link, index) {
+    link.addEventListener('click', function () {
+      capture('search_result_selected', { result_position: index + 1, search_surface: 'search_page' });
     });
   });
 

@@ -346,6 +346,7 @@ export const TAROT_JS = `
     var question = document.getElementById('tarot-question').value.trim();
     if (question) results.insertAdjacentHTML('afterbegin', '<p class="question"><strong>Your question:</strong> ' + esc(question) + '</p>');
     status.innerHTML = '<span class="done">Reading complete.</span>' + (current === 'daily' ? ' Come back tomorrow for your next daily card.' : '');
+    if (window.posthog) window.posthog.capture('tarot_reading_completed', { spread: current, cards_drawn: table.length });
   }
 
   function startReading() {
