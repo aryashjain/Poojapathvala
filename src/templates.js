@@ -15,7 +15,7 @@ function adBox() {
 function affiliateBox(lang, doc) {
   const tags = doc.tags || [];
   const items = activeAffiliates();
-  if (!items.length || !(tags.includes('pooja') || tags.includes('aarti'))) return '';
+  if (!items.length) return '';
   return (
     '<aside class="shop" aria-labelledby="shop-title">' +
     '<h2 id="shop-title">Pooja samagri</h2><ul>' +
