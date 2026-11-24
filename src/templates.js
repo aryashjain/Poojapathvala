@@ -6,6 +6,11 @@ import { TOPICS } from './tarot-topics.js';
 import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 
+// A small, fixed 300x250 ad box. The slot is filled by app.js.
+function adBox() {
+  return '<aside class="ad-box" aria-label="Advertisement"><ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-1842686497509208" data-ad-slot="1476188914"></ins></aside>';
+}
+
 // Shopping links for pooja and aarti texts. Shown only when affiliates are enabled.
 function affiliateBox(lang, doc) {
   const tags = doc.tags || [];
@@ -399,7 +404,8 @@ export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) 
     '</article>' +
     affiliateBox(lang, doc) +
     pager +
-    relatedSection(lang, related);
+    relatedSection(lang, related) +
+    adBox();
 
   const article = {
     '@context': 'https://schema.org',

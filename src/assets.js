@@ -144,6 +144,7 @@ main { padding: 2.5rem 0 4rem; }
 .brand-name { font-size: 1.05rem; }
 
 /* Ads: keep every ad box small, never full width or tall. */
+.ad-box { text-align: center; margin: 2rem 0 0; }
 ins.adsbygoogle, .adsbygoogle { display: block; max-width: 300px; max-height: 280px; margin: 1.2rem auto; overflow: hidden; }
 ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-height: 280px !important; }
 /* Tarot reader button on the homepage. */
@@ -545,6 +546,11 @@ export const JS = `
     document.addEventListener('click', function (event) {
       if (!form.contains(event.target)) close();
     });
+  });
+
+  // ---- ads: fill each fixed ad box once ----
+  document.querySelectorAll('ins.adsbygoogle').forEach(function () {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
   });
 
   // ---- print (text pages) ----
