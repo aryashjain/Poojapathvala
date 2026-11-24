@@ -10,7 +10,7 @@ export const AFFILIATES = {
     { label: 'Bhagavad Gita (hardbound)', url: 'https://link.amazon/B06eDAvTH' },
     { label: 'Brass diya', url: 'PLACEHOLDER' },
     { label: 'Agarbatti and dhoop', url: 'PLACEHOLDER' },
-    { label: 'Deity idol', url: 'PLACEHOLDER' },
+    { label: 'Lakshmi crystal figure', url: 'https://link.amazon/B03ZipQ78' },
   ],
 };
 
