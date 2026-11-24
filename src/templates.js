@@ -327,6 +327,34 @@ function relatedSection(lang, related) {
   );
 }
 
+// Search intent per kind of text, taken from the tags on each text.
+const KIND_SEO = [
+  ['chalisa', 'Chalisa lyrics in Hindi with meaning'],
+  ['aarti', 'Aarti lyrics in Hindi'],
+  ['mantra', 'Mantra meaning and benefits'],
+  ['pooja', 'Pooja vidhi step by step'],
+  ['stotra', 'Stotra in Hindi with meaning'],
+];
+
+function seoKind(doc) {
+  const tags = doc.tags || [];
+  const hit = KIND_SEO.find(([tag]) => tags.includes(tag));
+  return hit ? hit[1] : '';
+}
+
+function pageTitle(lang, doc, topic) {
+  const kind = seoKind(doc);
+  const name = titleName(lang, doc.title, doc.hindiTitle);
+  const brand = t(lang, 'brandName');
+  return kind ? name + ' · ' + kind + ' · ' + brand : name + ' · ' + titleName(lang, topic.title, topic.titleHi) + ' · ' + brand;
+}
+
+function pageDescription(lang, doc) {
+  const base = loc(lang, doc.description, doc.descriptionHi) || doc.title;
+  const kind = seoKind(doc);
+  return kind ? base + ' ' + kind + ' on Poojapathvala.' : base;
+}
+
 export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) {
   const path = '/t/' + topic.slug + '/' + doc.slug;
   const url = origin + path;
@@ -390,13 +418,8 @@ export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) 
     lang,
     origin,
     path,
-    title:
-      titleName(lang, doc.title, doc.hindiTitle) +
-      ' · ' +
-      titleName(lang, topic.title, topic.titleHi) +
-      ' · ' +
-      t(lang, 'brandName'),
-    description: description || doc.title + ' · ' + topic.title,
+    title: pageTitle(lang, doc, topic),
+    description: pageDescription(lang, doc),
     body,
     type: 'article',
     noindex: isPending(doc),
