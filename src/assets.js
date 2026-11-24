@@ -143,6 +143,9 @@ main { padding: 2.5rem 0 4rem; }
 .brand-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .brand-name { font-size: 1.05rem; }
 
+/* Ads: keep every ad box small, never full width or tall. */
+ins.adsbygoogle, .adsbygoogle { display: block; max-width: 300px; max-height: 280px; margin: 1.2rem auto; overflow: hidden; }
+ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-height: 280px !important; }
 /* Tarot reader button on the homepage. */
 .tarot-cta { display: inline-block; margin-top: 1rem; padding: .7rem 1.25rem; border-radius: 999px; background: var(--accent-soft); color: var(--ink); font-family: var(--sans); font-weight: 600; }
 .tarot-cta:hover { border: 0; text-decoration: none; filter: brightness(.97); }
