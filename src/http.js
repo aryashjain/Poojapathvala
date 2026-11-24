@@ -2,7 +2,7 @@ export const SECURITY_HEADERS = {
   'x-content-type-options': 'nosniff',
   'referrer-policy': 'strict-origin-when-cross-origin',
   'content-security-policy':
-    "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+    "default-src 'self'; style-src 'self'; script-src 'self' https://quge5.com; connect-src 'self' https://quge5.com; img-src 'self' data: https:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
 };
 
 export function html(body, status = 200, cache = 'public, max-age=300') {
