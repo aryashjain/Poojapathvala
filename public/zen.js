@@ -23,7 +23,7 @@
     var n = Math.min(240, Math.round((W * H) / 7000));
     for (var i = 0; i < n; i++) stars.push({ x: Math.random() * W, y: Math.random() * H * 0.95, s: 0.5 + Math.random() * 1.5, ph: Math.random() * 6.28, gold: Math.random() < 0.3 });
     candle.x = W * 0.5;
-    candle.baseY = H * 0.46;
+    candle.baseY = H * 0.56;
   }
   window.addEventListener('resize', resize);
 
