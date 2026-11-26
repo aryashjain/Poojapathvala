@@ -131,7 +131,7 @@ function layout({
     '</head>\n<body>\n' +
     '<header class="site-header"><div class="' + wrap + ' header-inner">' +
     '<a class="brand" href="/" lang="' + lang + '">' +
-    '<span class="brand-mark"><img src="/mark.png" width="512" height="512" alt=""></span>' +
+    '<span class="brand-mark"><img src="/mark-96.png" width="96" height="96" alt=""></span>' +
     '<span class="brand-name">' + e(brand) + '</span></a>' +
     (showLangToggle ? langToggle(lang, path) : '') +
     searchForm(lang, 'header') +
@@ -292,6 +292,21 @@ export function topicPage({ lang, origin, topic }) {
   });
 }
 
+// FAQPage markup. Every question and answer must also appear on the page.
+function faqPage(items) {
+  const entries = items.filter(([q, a]) => q && a);
+  if (!entries.length) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: entries.map(([q, a]) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+}
+
 function breadcrumbs(origin, items) {
   return {
     '@context': 'https://schema.org',
@@ -447,7 +462,13 @@ export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) 
         { name: topic.title, path: '/t/' + topic.slug },
         { name: doc.title, path },
       ]),
-    ],
+      doc.tags && doc.tags.includes('aarti')
+        ? faqPage([
+            ['What is the ' + doc.title + '?', doc.description],
+            ['Is the ' + doc.title + ' written in Hindi?', doc.hindiTitle ? 'Yes. The lyrics are in Hindi, in Devanagari script.' : ''],
+          ])
+        : null,
+    ].filter(Boolean),
   });
 }
 
@@ -813,13 +834,21 @@ export function tarotCardPage({ origin, card }) {
     type: 'article',
     showLangToggle: false,
     extraCss: ['/assets/tarot.css'],
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: card.name + ' tarot meaning',
-      description: card.upright,
-      mainEntityOfPage: origin + path,
-    },
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: card.name + ' tarot meaning',
+        description: card.upright,
+        mainEntityOfPage: origin + path,
+      },
+      faqPage([
+        ['What does ' + card.name + ' mean upright?', card.upright],
+        ['What does ' + card.name + ' mean reversed?', card.reversed],
+        ['What does ' + card.name + ' mean in love?', 'Upright: ' + TOPICS[card.id].love[0] + ' Reversed: ' + TOPICS[card.id].love[1]],
+        ['What does ' + card.name + ' mean for career and money?', 'Upright: ' + TOPICS[card.id].career[0] + ' Reversed: ' + TOPICS[card.id].career[1]],
+      ]),
+    ].filter(Boolean),
   });
 }
 
