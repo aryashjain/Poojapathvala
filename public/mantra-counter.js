@@ -81,8 +81,26 @@
   function chants() { return Math.max(0, parseInt(total.value, 10) || 0); }
   function clampSecs() { return Math.min(120, Math.max(1, parseFloat(secs.value) || 6)); }
 
+  // A session is live once the first chant is counted or the timer starts: the "Now chanting" band shows the mantra.
+  function setLive(on) {
+    app.classList.toggle('mc-live', on);
+    $('mc-focus-band').hidden = !on;
+  }
+  function updateFocusText() {
+    var v = text.value.trim();
+    $('mc-focus-text').textContent = v || 'Write or choose a mantra to begin.';
+  }
+  function endSession() {
+    stopAuto();
+    count = 0;
+    renderCount();
+    setLive(false);
+    msg.textContent = 'Session ended. Today\u2019s total is kept.';
+  }
   function renderCount() {
     countEl.textContent = String(count);
+    $('mc-focus-count').textContent = String(count);
+    if (count === 0 && !running) setLive(false);
     var t = chants();
     ofEl.textContent = t ? 'of ' + t : 'chants';
     var full = count === 0 ? 0 : (count % BEADS === 0 ? BEADS : count % BEADS);
@@ -125,6 +143,7 @@
   }
 
   function tap() {
+    setLive(true);
     count++;
     addToday();
     if (navigator.vibrate) navigator.vibrate(12);
@@ -147,6 +166,8 @@
   }
 
   function startAuto() {
+    setLive(true);
+    $('mc-focus-timer').textContent = 'Timer running';
     running = true;
     autoBtn.textContent = 'Pause timer';
     autoBtn.setAttribute('aria-pressed', 'true');
@@ -161,6 +182,7 @@
   }
 
   function stopAuto() {
+    $('mc-focus-timer').textContent = 'Timer paused';
     clearInterval(timer);
     timer = null;
     running = false;
@@ -178,6 +200,7 @@
   }
 
   function showText() {
+    updateFocusText();
     var v = text.value.trim();
     shim.textContent = v || 'Write or choose a mantra above.';
     shim.classList.toggle('mc-empty', !v);
@@ -198,6 +221,7 @@
   bead.addEventListener('click', function () { ensureCtx(); tap(); });
   autoBtn.addEventListener('click', function () { if (running) stopAuto(); else startAuto(); });
   focusBtn.addEventListener('click', toggleFocus);
+  $('mc-focus-end').addEventListener('click', endSession);
   resetBtn.addEventListener('click', function () {
     stopAuto();
     count = 0;

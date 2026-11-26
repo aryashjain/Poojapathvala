@@ -144,3 +144,51 @@ html[data-theme="dark"] .mc-app {
 }
 @media (prefers-reduced-motion: reduce) { .mc-rec.is-recording { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .mc-shimmer, .mc-pulse, .mc-bead { animation: none; transition: none; } }
+
+/* ---- Layout v2: aligned cards, a clear structure, and a "Now chanting" band while a session is live ---- */
+.mc-app { --mc-soft: #faf3e4; max-width: 1120px; margin: 0 auto; gap: 1.1rem; }
+html[data-theme="dark"] .mc-app { --mc-soft: #2a2118; }
+@media (prefers-color-scheme: dark) { html:not([data-theme="light"]) .mc-app { --mc-soft: #2a2118; } }
+.mc-layout { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.1rem; align-items: stretch; }
+.mc-layout > .mc-card { display: flex; flex-direction: column; min-width: 0; margin: 0; padding: 1.25rem 1.3rem; }
+.mc-input { grid-column: span 7; }
+.mc-counter { grid-column: span 5; align-items: stretch; }
+.mc-stats { grid-column: span 6; }
+.mc-keys { grid-column: span 6; }
+@media (max-width: 900px) { .mc-input, .mc-counter, .mc-stats, .mc-keys { grid-column: 1 / -1; } }
+.mc-card-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; min-height: 2.1rem; margin-bottom: .9rem; }
+.mc-card-head h2 { margin: 0; }
+.mc-counter .mc-card-head { width: 100%; }
+.mc-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem; padding: .28rem; border-radius: 999px; background: var(--mc-soft); border: 1px solid var(--mc-line); margin-bottom: 1rem; }
+.mc-tab { font: inherit; font-size: .92rem; padding: .5rem .6rem; border-radius: 999px; border: 0; background: transparent; color: var(--mc-muted); cursor: pointer; }
+.mc-tab[aria-selected="true"] { background: var(--mc-card); color: var(--mc-accent); font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+.mc-tab:focus-visible { outline: 3px solid var(--mc-accent); outline-offset: 2px; }
+.mc-panel { display: flex; flex-direction: column; gap: .9rem; flex: 1; }
+.mc-panel[hidden] { display: none; }
+.mc-field { display: grid; gap: .35rem; }
+.mc-field > label { font-size: .85rem; font-weight: 600; color: var(--mc-ink); }
+.mc-settings { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem 1rem; align-items: end; }
+.mc-settings .mc-switch { min-height: 2.6rem; }
+.mc-note { font-size: .88rem; line-height: 1.55; color: var(--mc-muted); margin: 0; }
+.mc-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.mc-counter .mc-actions { justify-content: center; }
+.mc-counter .mc-ring { margin: .4rem auto .8rem; }
+.mc-counter .mc-msg, .mc-counter .mc-timer-state { text-align: center; }
+.mc-counter .mc-beads { margin: .6rem auto .3rem; }
+.mc-counter .mc-malas { text-align: center; }
+.mc-stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1rem; }
+.mc-week { min-height: 150px; }
+.mc-keylist { display: grid; grid-template-columns: 6.5rem 1fr; align-items: center; gap: .55rem .9rem; margin: 0 0 .9rem; }
+.mc-keylist dt { margin: 0; }
+.mc-keylist dd { margin: 0; color: var(--mc-ink); }
+.mc-extras { display: grid; justify-items: center; gap: .4rem; }
+.mc-app .shop { margin: 0; }
+.mc-focus-band { background: linear-gradient(135deg, var(--mc-card), var(--mc-soft)); border: 1px solid var(--mc-line); border-radius: 20px; padding: 1.5rem 1.6rem; text-align: center; box-shadow: 0 14px 40px rgba(0,0,0,.08); }
+.mc-focus-band[hidden] { display: none; }
+.mc-focus-kicker { margin: 0 0 .45rem; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--mc-accent); }
+.mc-focus-text { margin: 0 0 .9rem; font-family: Georgia, serif; font-size: clamp(1.35rem, 3.2vw, 2.1rem); line-height: 1.55; color: var(--mc-ink); white-space: pre-wrap; }
+.mc-focus-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem 1.2rem; color: var(--mc-muted); font-size: .95rem; }
+.mc-focus-count strong { font-size: 1.5rem; color: var(--mc-ink); margin-right: .25rem; }
+.mc-app.mc-live .mc-hero, .mc-app.mc-live .mc-input, .mc-app.mc-live .mc-stats, .mc-app.mc-live .mc-keys, .mc-app.mc-live .mc-extras, .mc-app.mc-live .shop { display: none; }
+.mc-app.mc-live .mc-layout { grid-template-columns: 1fr; }
+.mc-app.mc-live .mc-counter { grid-column: 1 / -1; width: 100%; max-width: 560px; margin: 0 auto; }
