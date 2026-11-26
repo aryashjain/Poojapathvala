@@ -1231,3 +1231,50 @@ export function tarotTopicPage({ origin, card, topic }) {
 }
 
 export const DEEP_TOPIC_PATHS = Object.keys(DEEP).flatMap((id) => Object.keys(DEEP[id]).map((topic) => '/tarot/card/' + id + '/' + topic));
+
+// Mantra counter: a 108-bead mala and timed chant mode. Logic lives in /mantra-counter.js.
+export function mantraCounterPage({ origin, topics }) {
+  const list = [];
+  for (const topic of topics) {
+    for (const doc of topic.docs) {
+      if (isPending(doc) || !doc.tags) continue;
+      if (doc.tags.includes('mantra') || doc.tags.includes('navkar')) list.push({ title: doc.title, body: doc.body || '' });
+    }
+  }
+  const options = list.map((item, i) => '<option value="' + i + '">' + e(item.title) + '</option>').join('');
+  const data = JSON.stringify(list).replace(/</g, '\\u003c');
+  const body =
+    '<header class="page-head"><p class="eyebrow">Japa</p><h1>Mantra counter and mala</h1>' +
+    '<p class="lede">Count japa on a 108-bead mala, or chant with a timer. Your count is saved on this device only.</p></header>' +
+    '<section class="panel mc-panel">' +
+    '<label>Choose a mantra from the library<select id="mc-select"><option value="">Write your own</option>' + options + '</select></label>' +
+    '<label>Your mantra<textarea id="mc-text" rows="4" placeholder="Type or paste a mantra"></textarea></label>' +
+    '<div class="mc-row">' +
+    '<label>Seconds per chant<input type="number" id="mc-secs" min="1" max="120" value="6"></label>' +
+    '<label>Total chants<input type="number" id="mc-total" min="1" max="10000" value="108"></label>' +
+    '<label class="mc-check"><input type="checkbox" id="mc-sound" checked> Bell sound</label>' +
+    '</div></section>' +
+    '<section class="panel mc-panel">' +
+    '<div id="mc-shimmer" class="mc-shimmer mc-empty" aria-live="polite"></div>' +
+    '<div class="mc-clock" id="mc-clock" aria-label="Current time">--:--:--</div>' +
+    '<div class="mc-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="54" class="mc-track"/><circle id="mc-ring" cx="60" cy="60" r="54" class="mc-bar"/></svg>' +
+    '<button id="mc-bead" type="button" class="mc-bead" aria-label="Count one chant"><span id="mc-count">0</span><small id="mc-of">chants</small></button></div>' +
+    '<p id="mc-msg" class="status" aria-live="polite"></p>' +
+    '<div class="mc-actions"><button id="mc-auto" class="btn" type="button">Start timer</button><button id="mc-reset" class="btn btn-ghost" type="button">Reset</button></div>' +
+    '<div id="mc-beads" class="mc-beads" aria-hidden="true"></div>' +
+    '<p class="mc-stats">Today: <strong id="mc-today">0</strong> · Streak: <strong id="mc-streak">0</strong> days</p>' +
+    '<p class="hint">Tap the bead, or press Space. On phones the bead gives a short vibration.</p>' +
+    '</section>' +
+    '<script type="application/json" id="mc-data">' + data + '</script>';
+  return layout({
+    lang: 'en',
+    origin,
+    path: '/mantra-counter',
+    title: 'Online Mantra Counter and 108 Bead Japa Mala · Poojapathvala',
+    description: 'Free online japa counter with a 108-bead mala and a chanting timer. Choose a mantra from the library or type your own.',
+    body,
+    showLangToggle: false,
+    extraCss: ['/mantra-counter.css'],
+    extraJs: ['/mantra-counter.js'],
+  });
+}

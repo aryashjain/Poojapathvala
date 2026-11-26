@@ -1,0 +1,39 @@
+/* Mantra counter page. Kept small so it loads fast on phones. */
+.mc-panel { display: grid; gap: .9rem; }
+.mc-row { display: flex; flex-wrap: wrap; gap: .75rem 1.2rem; align-items: end; }
+.mc-row label { display: grid; gap: .25rem; font-size: .9rem; }
+.mc-row input[type=number] { width: 8rem; padding: .45rem .5rem; font: inherit; }
+.mc-check { display: flex !important; align-items: center; gap: .4rem; }
+.mc-shimmer {
+  font-size: 1.35rem; line-height: 1.7; text-align: center; white-space: pre-wrap;
+  padding: 1rem; border-radius: 12px; min-height: 5rem;
+  background: linear-gradient(90deg, #b8860b, #fff3c4, #b8860b);
+  background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: mc-shine 5s linear infinite;
+}
+.mc-shimmer.mc-empty { color: inherit; background: none; -webkit-background-clip: border-box; background-clip: border-box; animation: none; opacity: .65; }
+@keyframes mc-shine { from { background-position: 0 center; } to { background-position: 200% center; } }
+.mc-clock { text-align: center; font-variant-numeric: tabular-nums; font-size: 1.6rem; letter-spacing: .05em; }
+.mc-ring { position: relative; width: 240px; height: 240px; margin: .5rem auto; }
+.mc-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.mc-track, .mc-bar { fill: none; stroke-width: 8; }
+.mc-track { stroke: var(--line, #e5dccb); }
+.mc-bar { stroke: #b8860b; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 339.3; }
+@keyframes mc-run { from { stroke-dashoffset: 339.3; } to { stroke-dashoffset: 0; } }
+.mc-bead {
+  position: absolute; inset: 22px; border-radius: 50%; border: 0; cursor: pointer;
+  background: radial-gradient(circle at 35% 30%, #fff8e1, #e9c46a 60%, #b8860b);
+  color: #3b2a05; font: inherit; display: grid; place-content: center; text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+.mc-bead:focus-visible { outline: 3px solid #b8860b; outline-offset: 4px; }
+#mc-count { font-size: 2.6rem; font-weight: 700; line-height: 1; }
+#mc-of { font-size: .8rem; opacity: .8; }
+.mc-pulse { animation: mc-tap .18s ease-out; }
+@keyframes mc-tap { 50% { transform: scale(.96); } }
+.mc-actions { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+.mc-beads { display: grid; grid-template-columns: repeat(18, 1fr); gap: 3px; max-width: 360px; margin: .5rem auto; }
+.mc-dot { height: 8px; border-radius: 4px; background: var(--line, #e5dccb); }
+.mc-dot.on { background: #b8860b; }
+.mc-stats { text-align: center; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .mc-shimmer, .mc-pulse { animation: none; } }
