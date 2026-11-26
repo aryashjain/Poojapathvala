@@ -211,7 +211,8 @@ export function homePage({ lang, origin, topics }) {
     '<section class="topics" aria-label="' + e(t(lang, 'collectionsAria')) + '">' +
     (cards || '<p>' + e(t(lang, 'noCollections')) + '</p>') +
     '</section>' +
-    featuredList;
+    featuredList +
+    adBox();
 
   return layout({
     lang,
@@ -733,6 +734,7 @@ export function tarotReaderPage({ origin }) {
     '</div>' +
     '</section>' +
     '<p class="reader-more"><a class="btn btn-ghost" href="/tarot/cards">Browse all 78 cards and their meanings</a></p>' +
+    adBox() +
     '<script type="application/json" id="tarot-data">' + JSON.stringify(data).replace(/</g, '\\u003c') + '</script>';
 
   return layout({
