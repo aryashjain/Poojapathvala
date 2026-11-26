@@ -8,7 +8,7 @@
   var stars = [], dust = [], marks = [], puffs = [];
   var brush = 'sand', drawing = false, last = null;
   var sweepStart = null, SWEEP_MS = 2600;
-  var candle = { lit: true, x: 0, baseY: 0, flick: 0 };
+  var candle = { state: 'hidden', x: 0, baseY: 0, flick: 0, smokeUntil: 0 };
   var mic = { stream: null, analyser: null, data: null, loud: 0, on: false };
   var MAX_DUST = 2400, MAX_MARKS = 2200;
 
@@ -87,52 +87,62 @@
   canvas.addEventListener('pointermove', function (e) { if (drawing) strokeTo(e.clientX, e.clientY); });
   window.addEventListener('pointerup', function () { drawing = false; last = null; });
 
-  // ---- candle ----
+  // ---- candle: hidden until someone asks for it. States: hidden, lit, smoking (blown out, then hidden). ----
   function candleHit(x, y) {
-    return Math.abs(x - candle.x) < 34 && y > candle.baseY - 110 && y < candle.baseY + 20;
+    return candle.state !== 'hidden' && Math.abs(x - candle.x) < 34 && y > candle.baseY - 110 && y < candle.baseY + 20;
+  }
+  function lightCandle() {
+    candle.state = 'lit';
+    candle.smokeUntil = 0;
+    setCandleUI();
   }
   function blowOut() {
-    if (!candle.lit) return;
-    candle.lit = false;
+    if (candle.state !== 'lit') return;
+    candle.state = 'smoking';
+    candle.smokeUntil = performance.now() + 3200;
     for (var i = 0; i < 26; i++) {
       puffs.push({ x: candle.x + (Math.random() - 0.5) * 4, y: candle.baseY - 74, vx: (Math.random() - 0.5) * 0.5, vy: -(0.5 + Math.random() * 0.8), r: 3 + Math.random() * 4, a: 0.35 });
     }
     puff();
     setCandleUI();
   }
-  function relight() {
-    candle.lit = true;
-    setCandleUI();
+  function toggleCandle() {
+    if (candle.state === 'lit') blowOut();
+    else lightCandle();
   }
-  function toggleCandle() { if (candle.lit) blowOut(); else relight(); }
   function setCandleUI() {
     var btn = $('zen-candle');
-    btn.textContent = candle.lit ? 'Blow it out' : 'Light the candle';
-    btn.setAttribute('aria-pressed', candle.lit ? 'false' : 'true');
+    var label = candle.state === 'lit' ? 'Blow it out' : candle.state === 'smoking' ? 'Blowing out…' : 'Light a candle';
+    btn.textContent = label;
+    btn.setAttribute('aria-pressed', candle.state === 'lit' ? 'true' : 'false');
+    btn.disabled = candle.state === 'smoking';
+    $('zen-mic').disabled = candle.state !== 'lit';
   }
-  function drawCandle(t) {
+  function drawCandle(t, now) {
+    if (candle.state === 'hidden') return;
+    if (candle.state === 'smoking' && now > candle.smokeUntil) {
+      candle.state = 'hidden';
+      setCandleUI();
+      return;
+    }
     var x = candle.x, by = candle.baseY, top = by - 70;
-    // wax body
     var wax = ctx.createLinearGradient(x - 11, 0, x + 11, 0);
     wax.addColorStop(0, '#d9c49a'); wax.addColorStop(0.5, '#f7ecd0'); wax.addColorStop(1, '#c9b07f');
     ctx.fillStyle = wax;
     ctx.fillRect(x - 11, top, 22, 70);
     ctx.fillStyle = 'rgba(60,40,15,0.5)';
     ctx.fillRect(x - 11, by - 2, 22, 4);
-    // wick
     ctx.strokeStyle = '#2a1a0a'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, top - 6); ctx.stroke();
-    if (candle.lit) {
-      candle.flick = 0.5 + 0.5 * Math.sin(t * 9) * 0.5 + 0.25 * Math.sin(t * 17 + 1);
+    if (candle.state === 'lit') {
+      candle.flick = 0.5 + 0.25 * Math.sin(t * 9) + 0.25 * Math.sin(t * 17 + 1);
       var fh = 34 + 5 * candle.flick, fw = 10 + 2 * candle.flick;
-      // soft light on the dark sky
       var halo = ctx.createRadialGradient(x, top - 12, 4, x, top - 12, 150);
       halo.addColorStop(0, 'rgba(255,190,90,0.42)');
       halo.addColorStop(0.5, 'rgba(255,140,50,0.12)');
       halo.addColorStop(1, 'rgba(255,140,50,0)');
       ctx.fillStyle = halo;
       ctx.fillRect(x - 160, top - 170, 320, 330);
-      // flame: outer orange, inner yellow, blue base
       ctx.globalCompositeOperation = 'lighter';
       var outer = ctx.createLinearGradient(0, top - 6, 0, top - 6 - fh);
       outer.addColorStop(0, 'rgba(255,120,30,0.9)'); outer.addColorStop(1, 'rgba(255,60,0,0)');
@@ -151,7 +161,7 @@
       ctx.closePath(); ctx.fill();
       ctx.globalCompositeOperation = 'source-over';
     } else {
-      // a thin wisp of smoke already drifting
+      // smoking: a thin wisp rises from the wick until the candle is hidden
       puffs.push({ x: x + (Math.random() - 0.5) * 2, y: top - 8, vx: 0.05, vy: -0.25, r: 1.5, a: 0.12, wisp: true });
     }
   }
@@ -184,7 +194,7 @@
     ctx.fillStyle = '#fbe7b5'; ctx.beginPath(); ctx.arc(ox, oy, 9, 0, 6.283); ctx.fill();
     breathLabels(now);
 
-    drawCandle(t);
+    drawCandle(t, now);
 
     // sweep: a golden band moves across and dissolves everything it passes
     var sweepX = null;
@@ -243,12 +253,13 @@
   // ---- microphone: a loud breath or blow puts the candle out ----
   function readMic() {
     if (!mic.on || !mic.analyser) return;
+    if (candle.state !== 'lit') return;
     mic.analyser.getByteTimeDomainData(mic.data);
     var sum = 0;
     for (var i = 0; i < mic.data.length; i++) { var v = (mic.data[i] - 128) / 128; sum += v * v; }
     var rms = Math.sqrt(sum / mic.data.length);
     mic.loud = rms > 0.12 ? mic.loud + 1 : 0;
-    if (mic.loud >= 3 && candle.lit) { blowOut(); mic.loud = 0; setMicStatus('Candle out. Light it again when you like.'); }
+    if (mic.loud >= 3 && candle.state === 'lit') { blowOut(); mic.loud = 0; setMicStatus('Candle out. Light it again when you like.'); }
   }
   function setMicStatus(s) { $('zen-mic-status').textContent = s; }
   function startMic() {
