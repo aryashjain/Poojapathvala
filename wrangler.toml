@@ -21,3 +21,8 @@ directory = "./public"
 [[kv_namespaces]]
 binding = "LIBRARY"
 id = "d89648deeebf4ffaa8affd5c3fb9da14"
+
+# PostHog analytics. The project token is public: it is meant to be sent to the browser.
+[vars]
+POSTHOG_HOST = "https://us.i.posthog.com"
+POSTHOG_PROJECT_TOKEN = "phc_AQFLAgnpNbX5oEK6c5XyzMbeMBqqK9Wct5e2895geo7o"
