@@ -1,3 +1,4 @@
+import { EMOTIONS } from './geeta.js';
 import { loadLibrary } from './library.js';
 import { buildSearchDocs, searchDocs } from './search.js';
 import { CSS, JS, THEME_JS } from './assets.js';
@@ -55,6 +56,9 @@ function sitemap(origin, topics) {
     { loc: origin + '/zen' },
     { loc: origin + '/moon' },
     { loc: origin + '/sleep' },
+    { loc: origin + '/index' },
+    { loc: origin + '/geeta-says' },
+    ...Object.keys(EMOTIONS).map((slug) => ({ loc: origin + '/geeta-says/' + slug })),
   ];
   for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {
@@ -162,6 +166,12 @@ export default {
       return html(view.homePage({ lang, origin, topics }));
     }
 
+    if (parts.length === 1 && parts[0] === 'index') {
+      return html(view.indexPage({ origin }));
+    }
+    if (parts[0] === 'geeta-says' && (parts.length === 1 || (parts.length === 2 && EMOTIONS[parts[1]]))) {
+      return html(view.geetaSaysPage({ origin, emotion: parts[1] }));
+    }
     if (parts.length === 1 && parts[0] === 'moon') {
       return html(view.moonPage({ origin, now: Date.now(), birth: url.searchParams.get('birth') }), 200, 'public, max-age=600');
     }

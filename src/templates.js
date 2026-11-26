@@ -7,6 +7,7 @@ import { DEEP } from './tarot-deep.js';
 import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 import { moonInfo } from './moon.js';
+import { GITA_VERSES, EMOTIONS, verseById } from './geeta.js';
 
 // A small, fixed 300x250 ad box. The slot is filled by app.js.
 function adBox() {
@@ -86,6 +87,34 @@ function langToggle(lang, path) {
 }
 
 // One column of footer links.
+// Every tool on the site. The navbar and the index page both read this list.
+export const TOOLS = [
+  { path: '/', en: 'Texts', hi: 'ग्रंथ', desc: 'The library of chalisas, aartis, stotras, mantras and pooja vidhi.' },
+  { path: '/tarot', en: 'Tarot', hi: 'टैरो', desc: 'Draw cards, a yes or no answer, and a positive card for the day.' },
+  { path: '/mantra-counter', en: 'Mala', hi: 'माला', desc: 'A 108-bead japa counter with a chanting timer.' },
+  { path: '/zen', en: 'Zen', hi: 'ज़ेन', desc: 'Release a worry into stardust, draw in sand, and breathe with the light.' },
+  { path: '/geeta-says', en: 'Geeta Says', hi: 'गीता कहती है', desc: 'A Bhagavad Gita verse for what is weighing on you, and a one-minute reset.' },
+  { path: '/ritual/release', en: 'Burn your worry', hi: 'चिंता जलाएँ', desc: 'Write a worry, hold the flame, and watch it burn.' },
+  { path: '/moon', en: 'Moon', hi: 'चंद्र', desc: 'Today\'s moon phase, the next full moon, and the moon on your birth date.' },
+  { path: '/sleep', en: 'Sleep', hi: 'नींद', desc: 'A bedtime wind-down with breathing, a timer and night sounds.' },
+];
+
+// The navbar: Index first, then the tools. The current page is marked.
+function siteNav(lang, path) {
+  const items = [['/index', loc(lang, 'Index', 'सूची')], ['/', loc(lang, 'Texts', 'ग्रंथ')]].concat(
+    TOOLS.filter((tool) => tool.path !== '/').map((tool) => [tool.path, loc(lang, tool.en, tool.hi)]));
+  return '<nav class="site-nav" aria-label="' + e(loc(lang, 'Tools', 'उपकरण')) + '"><div class="site-nav-inner">' +
+    items.map(([href, label]) => {
+      const current = href === path || (href === '/' && path === '/');
+      return '<a href="' + e(href) + '"' + (current ? ' aria-current="page"' : '') + '>' + e(label) + '</a>';
+    }).join('') + '</div></nav>';
+}
+
+// A quiet link to Geeta Says for pages where someone may be stuck.
+export function geetaPill() {
+  return '<p class="zen-pill-wrap"><a class="zen-pill" href="/geeta-says">Feeling stuck? Ask Geeta Says →</a></p>';
+}
+
 function footerGroup(title, links) {
   return (
     '<nav class="sf-col" aria-label="' + e(title) + '"><h2>' + e(title) + '</h2><ul>' +
@@ -148,6 +177,7 @@ function layout({
     (showLangToggle ? langToggle(lang, path) : '') +
     searchForm(lang, 'header') +
     '</div></header>\n' +
+    siteNav(lang, path) +
     '<main class="' + wrap + '">\n' + body + '\n' + (path.startsWith('/tarot') ? tarotShopBox() + TAROT_NOTE : '') + '</main>\n' +
     '<footer class="site-footer"><div class="' + wrap + ' sf-grid">' +
     '<div class="sf-brand"><span class="sf-name">' + e(brand) + '</span><p>' + e(t(lang, 'tagline')) + '</p></div>' +
@@ -479,6 +509,7 @@ export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) 
     '<div class="prose">' + renderMarkdown(lang === 'en' && doc.bodyEn ? doc.bodyEn : doc.body) + '</div>' +
     '</article>' +
     affiliateBox(lang, doc) +
+    (doc.tags && doc.tags.includes('aarti') ? geetaPill() : '') +
     pager +
     relatedSection(lang, related) +
     adBox();
@@ -1334,7 +1365,7 @@ export function mantraCounterPage({ origin, topics }) {
     '<dt><kbd>Esc</kbd></dt><dd>Leave focus mode</dd></dl>' +
     '<p class="hint">On phones, the bead gives a short vibration.</p></section>' +
     '</div>' +
-    zenPill() +
+    zenPill() + geetaPill() +
     (items.length ? shopBox('Japa and puja essentials', items) : '') +
     '<script type="application/json" id="mc-data">' + data + '</script>' +
     '</div>';
@@ -1414,7 +1445,7 @@ export function zenPage({ origin }) {
     '<meta property="og:url" content="' + e(origin + '/zen') + '">\n<meta property="og:image" content="' + e(origin + '/og.png') + '">\n' +
     '<link rel="stylesheet" href="/zen.css?v=' + ASSET_VERSION + '">\n</head>\n<body>\n' +
     '<canvas id="zen-canvas" aria-hidden="true"></canvas>\n' +
-    '<header class="zen-head"><a class="zen-brand" href="/">Poojapathvala</a><p>The Zen Space — Breathe, Pour, Let Go</p></header>\n' +
+    '<header class="zen-head"><a class="zen-brand" href="/">Poojapathvala</a><p>The Zen Space — Breathe, Pour, Let Go</p><a class="zen-ask" href="/geeta-says">Feeling stuck? Ask Geeta Says →</a></header>\n' +
     '<section class="zen-release"><h1>Write a thought or burden to release…</h1>' +
     '<label class="sr-only" for="zen-thought">A thought or burden to release</label>' +
     '<input id="zen-thought" type="text" autocomplete="off" maxlength="120" placeholder="For example: overthinking about the future">' +
@@ -1571,5 +1602,81 @@ export function sleepPage({ origin }) {
     showLangToggle: false,
     extraCss: ['/sleep.css'],
     extraJs: ['/sleep.js'],
+  });
+}
+
+// ---- Geeta Says ||: the tool, and one page per emotion ----
+function verseData() {
+  return JSON.stringify(GITA_VERSES.map((v) => ({
+    id: v.id, keywords: v.keywords, ref: v.ref, sanskrit: v.sanskrit, translit: v.translit,
+    translation: v.translation, reflection: v.reflection, mantraLine: v.mantraLine, microAction: v.microAction,
+  }))).replace(/</g, '\\u003c');
+}
+
+export function geetaSaysPage({ origin, emotion }) {
+  const emo = emotion ? EMOTIONS[emotion] : null;
+  const shown = emo ? verseById(emo.verse) : null;
+  const title = emo ? emo.title + ': a Bhagavad Gita verse and a one-minute reset · Geeta Says ||' : 'Geeta Says || · Bhagavad Gita verse and a one-minute reset';
+  const description = emo ? emo.lede : 'Share what is weighing on you and receive a Bhagavad Gita verse, then follow a one-minute reset. Nothing you write is stored.';
+  const path = emo ? '/geeta-says/' + emotion : '/geeta-says';
+  const presets = ['I cannot stop overthinking the future and results', 'I am afraid of failing and starting over', 'I feel lost, weak, and full of self-doubt', 'I am hurt and angry about how someone treated me', 'I am grieving a loss and struggling with change', 'I keep comparing my path and timeline to others'];
+  const chips = presets.map((p) => '<button type="button" class="gs-chip" data-preset="' + e(p) + '">' + e(p.length > 34 ? p.slice(0, 34) + '…' : p) + '</button>').join('');
+  const resultStatic = shown ? '<span class="gs-badge" id="gs-ref">' + e(shown.ref) + '</span>' : '<span class="gs-badge" id="gs-ref">Bhagavad Gita</span>';
+  const body =
+    '<div class="gs-wrap">' +
+    '<header class="page-head"><p class="eyebrow">Geeta Says ||</p><h1>' + e(emo ? emo.title : 'What is weighing on you?') + '</h1>' +
+    '<p class="lede">' + e(description) + '</p></header>' +
+    '<section class="gs-card" id="gs-input-stage"' + (emo ? ' hidden' : '') + '>' +
+    '<label for="gs-input" class="gs-label">Write what is on your mind</label>' +
+    '<textarea id="gs-input" class="gs-textarea" maxlength="500" placeholder="For example: I cannot stop worrying about my results"></textarea>' +
+    '<p class="gs-note-privacy">Your words stay in this browser. They are wiped as soon as you continue.</p>' +
+    '<div class="gs-chips">' + chips + '</div>' +
+    '<button type="button" class="gs-primary" id="gs-seek">Seek clarity and begin the 1-minute reset</button></section>' +
+    '<section class="gs-card" id="gs-result" data-verse="' + (shown ? e(shown.id) : '') + '"' + (emo ? '' : ' hidden') + '>' +
+    resultStatic +
+    '<p class="gs-sanskrit" id="gs-sanskrit">' + e(shown ? shown.sanskrit : '') + '</p>' +
+    '<p class="gs-translit" id="gs-translit">' + e(shown ? shown.translit : '') + '</p>' +
+    '<p class="gs-translation" id="gs-translation">“' + e(shown ? shown.translation : '') + '”</p>' +
+    '<div class="gs-reflection" id="gs-reflection">' + e(shown ? shown.reflection : '') + '</div>' +
+    '<div class="gs-path-head"><span class="gs-step">1-minute pathway to stillness</span><span class="gs-timer" id="gs-timer">01:00</span></div>' +
+    '<div class="gs-stage" id="gs-path"><p class="gs-step">Step 1 of 3 · Slow the breath</p><p class="gs-cue">Press start to begin the one-minute reset.</p></div>' +
+    '<div class="gs-actions"><button type="button" class="gs-primary" id="gs-start"' + (emo ? '' : ' hidden') + '>Start the 1-minute reset</button></div>' +
+    '<div class="gs-actions"><button type="button" class="gs-secondary" id="gs-export">Save verse card (PNG)</button>' +
+    '<button type="button" class="gs-secondary" id="gs-release">Release another worry</button></div></section>' +
+    '<p class="gs-cross">Overwhelmed more broadly? Try <a href="/zen">the Zen Space</a> or <a href="/sleep">the bedtime wind-down</a>.</p>' +
+    '<script type="application/json" id="gs-data">' + verseData() + '</script>' +
+    '</div>';
+  return layout({
+    lang: 'en',
+    origin,
+    path,
+    title,
+    description,
+    body,
+    showLangToggle: false,
+    extraCss: ['/geeta-says.css'],
+    extraJs: ['/geeta-says.js'],
+  });
+}
+
+// The index: every tool on the site, in one place.
+export function indexPage({ origin }) {
+  const cards = TOOLS.map((tool) =>
+    '<a class="tool-card" href="' + e(tool.path) + '"><strong>' + e(tool.en) + ' · ' + e(tool.hi) + '</strong><span>' + e(tool.desc) + '</span></a>'
+  ).join('');
+  const body =
+    '<header class="page-head"><p class="eyebrow">Index</p><h1>Everything on Poojapathvala</h1>' +
+    '<p class="lede">The library and the calm tools in one place.</p></header>' +
+    '<section aria-labelledby="index-tools"><h2 id="index-tools" class="sr-only">Tools</h2><div class="gs-index-grid">' + cards + '</div></section>' +
+    '<p class="gs-cross">Looking for a text? Start with <a href="/">the library</a>, or browse <a href="/chalisa">chalisas</a>, <a href="/aarti">aartis</a>, <a href="/stotra">stotras</a>, <a href="/mantra">mantras</a> and <a href="/puja">puja vidhi</a>.</p>';
+  return layout({
+    lang: 'en',
+    origin,
+    path: '/index',
+    title: 'Index · Poojapathvala',
+    description: 'Every page on Poojapathvala: the devotional library, tarot, mala counter, Zen Space, Geeta Says, moon phase and bedtime wind-down.',
+    body,
+    showLangToggle: false,
+    extraCss: ['/geeta-says.css'],
   });
 }

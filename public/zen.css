@@ -49,3 +49,4 @@ body { color: var(--ink); font-family: Georgia, 'Iowan Old Style', serif; overfl
 .zen-preset p { margin: 0 0 .6rem; font-size: .9rem; }
 .zen-preset button { font: inherit; padding: .5rem 1.2rem; border-radius: 999px; border: 1px solid var(--gold-strong); background: rgba(246,195,90,.2); color: #fff3d6; cursor: pointer; }
 .zen-preset[hidden] { display: none; }
+.zen-ask { display: inline-block; margin-top: .5rem; color: #f1d9a6; font-size: .8rem; pointer-events: auto; }

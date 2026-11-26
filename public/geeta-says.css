@@ -1,0 +1,43 @@
+/* Geeta Says ||. Dark gold card, high contrast text. */
+.gs-wrap { max-width: 680px; margin: 0 auto; }
+.gs-card { background: #14141c; color: #f3efe6; border: 1px solid rgba(212,175,55,.35); border-radius: 16px; padding: 1.3rem 1.4rem; margin: 1rem 0; box-shadow: 0 18px 40px rgba(0,0,0,.25); }
+.gs-card h2 { margin: 0 0 .6rem; font-size: 1rem; letter-spacing: .08em; color: #e5c158; font-weight: 600; text-transform: uppercase; }
+.gs-badge { display: inline-block; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: #e5c158; background: rgba(229,193,88,.14); padding: .3rem .8rem; border-radius: 999px; margin-bottom: .8rem; }
+.gs-sanskrit { font-size: 1.2rem; line-height: 1.8; color: #fff8e7; margin: 0 0 .5rem; }
+.gs-translit { font-style: italic; color: #c9c4b8; font-size: .9rem; line-height: 1.6; margin: 0 0 .9rem; padding-bottom: .8rem; border-bottom: 1px solid rgba(255,255,255,.1); }
+.gs-translation { font-size: 1.06rem; line-height: 1.7; margin: 0 0 .9rem; }
+.gs-reflection { background: rgba(229,193,88,.08); border-left: 3px solid #e5c158; padding: .75rem .9rem; border-radius: 0 8px 8px 0; font-size: .95rem; line-height: 1.6; color: #e6e0d2; }
+.gs-textarea { width: 100%; min-height: 105px; box-sizing: border-box; background: #0b0b0f; color: #f3efe6; border: 1px solid rgba(212,175,55,.4); border-radius: 12px; padding: .85rem 1rem; font: inherit; font-size: 1rem; line-height: 1.5; resize: vertical; }
+.gs-textarea::placeholder { color: #a9a39a; }
+.gs-note-privacy { font-size: .8rem; color: #b9b3a6; margin: .5rem 0 0; }
+.gs-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin: .9rem 0; }
+.gs-chip { font: inherit; font-size: .85rem; cursor: pointer; padding: .4rem .8rem; border-radius: 999px; background: rgba(255,255,255,.05); color: #f3efe6; border: 1px solid rgba(229,193,88,.35); }
+.gs-chip:hover { background: rgba(229,193,88,.16); }
+.gs-primary, .gs-secondary { font: inherit; font-weight: 600; cursor: pointer; border-radius: 10px; padding: .75rem 1rem; }
+.gs-primary { width: 100%; border: 0; background: linear-gradient(135deg, #d4af37, #f0d27a); color: #111; font-size: 1rem; }
+.gs-secondary { border: 1px solid rgba(229,193,88,.5); background: transparent; color: #f3efe6; }
+.gs-actions { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
+.gs-actions .gs-secondary { flex: 1; }
+.gs-path-head { display: flex; justify-content: space-between; align-items: center; margin: 1rem 0 .6rem; }
+.gs-timer { font-variant-numeric: tabular-nums; color: #d6d0c2; font-size: .9rem; }
+.gs-stage { background: #0b0b0f; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 1.1rem; text-align: center; min-height: 190px; }
+.gs-step { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: #d6c27a; margin: 0 0 .6rem; }
+.gs-orb { width: 70px; height: 70px; margin: .4rem auto .7rem; border-radius: 50%; background: radial-gradient(circle, #f6d77a, rgba(229,193,88,.15)); box-shadow: 0 0 26px rgba(229,193,88,.4); transform: scale(.85); transition: transform 4s ease-in-out; }
+.gs-orb.in { transform: scale(1.35); }
+.gs-cue { color: #f6d77a; margin: 0; }
+.gs-mantra { font-family: Georgia, serif; font-size: 1.05rem; color: #fff8e7; margin: .3rem 0 .7rem; }
+.gs-beads { display: flex; justify-content: center; flex-wrap: wrap; gap: .55rem; margin: .7rem 0; }
+.gs-bead { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #e5c158; background: transparent; cursor: pointer; }
+.gs-bead.done { background: #e5c158; box-shadow: 0 0 12px rgba(229,193,88,.6); }
+.gs-bead:focus-visible, .gs-primary:focus-visible, .gs-secondary:focus-visible, .gs-chip:focus-visible, .gs-textarea:focus-visible { outline: 3px solid #f6d77a; outline-offset: 3px; }
+.gs-note { font-size: .8rem; color: #b9b3a6; margin: .4rem 0 0; }
+.gs-action { font-size: 1rem; line-height: 1.6; color: #f3efe6; margin: 0; }
+.gs-cross { text-align: center; margin: 1.4rem 0 0; }
+.gs-cross a { color: #e5c158; }
+.gs-index-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .9rem; }
+.tool-card { display: block; border: 1px solid rgba(128,128,128,.3); border-radius: 14px; padding: 1rem 1.1rem; text-decoration: none; color: inherit; background: var(--surface, #fff); }
+.tool-card:hover { border-color: var(--accent, #b4532a); }
+.tool-card strong { display: block; font-size: 1.05rem; margin-bottom: .3rem; color: var(--ink, #1d1b18); }
+.tool-card span { font-size: .9rem; color: var(--muted, #5c4d36); }
+.tool-card:focus-visible { outline: 3px solid var(--accent, #b4532a); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .gs-orb { transition: none; } }

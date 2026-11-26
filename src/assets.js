@@ -151,6 +151,14 @@ main { padding: 2.5rem 0 4rem; }
 ins.adsbygoogle, .adsbygoogle { display: block; max-width: 300px; max-height: 280px; margin: 1.2rem auto; overflow: hidden; }
 ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-height: 280px !important; }
 /* Tarot reader button on the homepage. */
+.site-nav { border-bottom: 1px solid var(--line); background: var(--surface); }
+.site-nav-inner { display: flex; gap: .25rem; overflow-x: auto; padding: .45rem 0; scrollbar-width: none; max-width: 1100px; margin: 0 auto; padding-left: 1rem; padding-right: 1rem; }
+.site-nav-inner::-webkit-scrollbar { display: none; }
+.site-nav a { flex: none; white-space: nowrap; padding: .4rem .8rem; border-radius: 999px; color: var(--ink); text-decoration: none; font-size: .88rem; border: 1px solid transparent; }
+.site-nav a:hover { border-color: var(--line); text-decoration: none; }
+.site-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.site-nav a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.zen-ask { display: inline-block; margin-top: .5rem; color: #f1d9a6; font-size: .8rem; pointer-events: auto; }
 .zen-pill-wrap { text-align: center; margin: 2rem 0 0; }
 .zen-pill { display: inline-block; padding: .55rem 1.1rem; border-radius: 999px; border: 1px solid var(--accent, #b4532a); color: var(--accent, #b4532a); text-decoration: none; font-size: .9rem; }
 .zen-pill:hover { background: var(--accent-soft, #f7e6dc); }
