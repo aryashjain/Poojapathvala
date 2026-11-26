@@ -158,9 +158,6 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
 .site-nav a:hover { border-color: var(--line); text-decoration: none; }
 .site-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 .site-nav a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-.site-nav a.nav-cta { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
-.site-nav a.nav-cta:hover { background: var(--accent); filter: brightness(1.08); border-color: var(--accent); }
-.site-nav a.nav-cta[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 .zen-ask { display: inline-block; margin-top: .5rem; color: #f1d9a6; font-size: .8rem; pointer-events: auto; }
 /* One sticky header: brand, links, language and a compact search. */
 .site-header { position: sticky; top: 0; z-index: 60; padding: 0; background: var(--surface); border-bottom: 1px solid var(--line); -webkit-backdrop-filter: saturate(1.4) blur(10px); backdrop-filter: saturate(1.4) blur(10px); }
