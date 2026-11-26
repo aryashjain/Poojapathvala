@@ -10,7 +10,7 @@ export const AFFILIATES = {
     { label: 'Pooja thali for aarti', url: 'https://link.amazon/B0eZddBVs' },
     { label: 'Bhagavad Gita (hardbound)', url: 'https://link.amazon/B06eDAvTH' },
     { label: 'Lakshmi crystal figure', url: 'https://link.amazon/B03ZipQ78' },
-    { label: 'Brass diya', url: 'PLACEHOLDER' },
+    { label: 'Brass diya', url: 'https://link.amazon/B05fOeNaA' },
     { label: 'Agarbatti and dhoop', url: 'PLACEHOLDER' },
   ],
   // Shown on the tarot pages, under "Tarot shop".
