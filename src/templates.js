@@ -762,7 +762,8 @@ export function tarotCardsPage({ origin }) {
     '<header class="page-head tarot-head"><p class="eyebrow">Tarot</p><h1>The 78 cards</h1>' +
     '<p class="lede">Upright and reversed meanings for every card in the Major and Minor Arcana, with love and career readings.</p>' +
     '<p class="reader-more"><a class="btn btn-ghost" href="/tarot">Back to the reader</a></p></header>' +
-    '<section class="library" aria-label="All cards"><div class="deck-row">' + libraryDeck() + '</div></section>';
+    '<section class="library" aria-label="All cards"><div class="deck-row">' + libraryDeck() + '</div></section>' +
+    adBox();
 
   return layout({
     lang: TAROT_LANG,
