@@ -1575,7 +1575,16 @@ function moonDate(ms) {
 
 export function moonPage({ origin, now, birth }) {
   const today = moonInfo(now);
+  const nextFullMs = nextPhaseDates('Full Moon', now, 1)[0];
+  const nextNewMs = nextPhaseDates('New Moon', now, 1)[0];
+  const faq = [
+    ['What is the moon phase today?', today.name + ', ' + today.illumination + '% lit, ' + today.age + ' days into the cycle.'],
+    ['When is the next full moon?', 'The next full moon is expected on ' + moonDate(nextFullMs) + '.'],
+    ['When is the next new moon?', 'The next new moon is expected on ' + moonDate(nextNewMs) + '.'],
+    ['How is the birth moon phase calculated?', 'The page takes your birth date, counts the days since a known new moon, and places that age in one of the eight phases. It is approximate to about a day.'],
+  ];
   let birthBlock = '';
+  let birthFaq = null;
   if (birth) {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(birth);
     const ms = m ? Date.UTC(+m[1], +m[2] - 1, +m[3], 12, 0) : NaN;
@@ -1583,6 +1592,7 @@ export function moonPage({ origin, now, birth }) {
       birthBlock = '<p class="moon-error" role="alert">Please enter a valid past date.</p>';
     } else {
       const b = moonInfo(ms);
+      birthFaq = ['What was the moon phase on ' + moonDate(ms) + '?', b.name + ', ' + b.illumination + '% lit, ' + b.age + ' days into the cycle.'];
       birthBlock =
         '<section class="moon-card" aria-labelledby="moon-birth-title"><h2 id="moon-birth-title">The moon on ' + e(moonDate(ms)) + '</h2>' +
         '<div class="moon-row">' + moonSvg(b.illumination, b.waxing) +
@@ -1604,6 +1614,8 @@ export function moonPage({ origin, now, birth }) {
     '<input id="moon-birth" name="birth" type="date" required value="' + e(birth || '') + '" max="' + e(new Date(now).toISOString().slice(0, 10)) + '">' +
     '<button type="submit" class="moon-btn">Show my birth moon</button></form></section>' +
     birthBlock +
+    '<section class="moon-card moon-faq" aria-labelledby="moon-faq-title"><h2 id="moon-faq-title">Moon questions</h2>' +
+    [...faq, ...(birthFaq ? [birthFaq] : [])].map(([q, a]) => '<details><summary>' + e(q) + '</summary><p>' + e(a) + '</p></details>').join('') + '</section>' +
     '<section class="moon-card" aria-labelledby="moon-phases-title"><h2 id="moon-phases-title">The eight phases</h2><ul class="moon-list">' + help + '</ul></section>' +
     '<p class="moon-links"><a href="/sleep">Wind down for sleep</a> · <a href="/zen">The Zen Space</a> · <a href="/">Poojapathvala</a></p>';
   return layout({
@@ -1615,6 +1627,10 @@ export function moonPage({ origin, now, birth }) {
     body,
     showLangToggle: false,
     extraCss: ['/moon.css'],
+    jsonLd: [
+      { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Poojapathvala Moon Phase and Birth Moon Calculator', url: origin + '/moon', applicationCategory: 'LifestyleApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, description: 'Today\u2019s moon phase and illumination, the next full and new moon, and the moon phase on any birth date.' },
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: [...faq, ...(birthFaq ? [birthFaq] : [])].map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+    ],
   });
 }
 
