@@ -207,6 +207,9 @@ export function homePage({ lang, origin, topics }) {
     '<p class="lede">' + e(t(lang, 'homeLede')) + '</p>' +
     searchForm(lang, 'home') +
     '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a></p>' +
+    '<p class="kind-links">' +
+    KIND_PAGE_KEYS.map((kind) => '<a href="/' + kind + '">' + e(loc(lang, KIND_PAGES[kind].title[0], KIND_PAGES[kind].title[1])) + '</a>').join(' · ') +
+    '</p>' +
     '</section>' +
     '<section class="topics" aria-label="' + e(t(lang, 'collectionsAria')) + '">' +
     (cards || '<p>' + e(t(lang, 'noCollections')) + '</p>') +
@@ -984,6 +987,92 @@ export function privacyPage({ lang, origin }) {
           ],
         ],
       },
+    ],
+  });
+}
+
+// ---- Keyword landing pages: one per kind of text, listing every text of that kind. ----
+const KIND_PAGES = {
+  chalisa: {
+    tag: 'chalisa',
+    title: ['Chalisa Lyrics in Hindi', 'हिंदी में चालीसा'],
+    lede: [
+      'Read chalisa lyrics in Hindi: Hanuman, Shiv, Durga, Ganesh, Lakshmi, Shani and more.',
+      'हिंदी में चालीसा पाठ पढ़ें: हनुमान, शिव, दुर्गा, गणेश, लक्ष्मी, शनि और अन्य।',
+    ],
+  },
+  aarti: {
+    tag: 'aarti',
+    title: ['Aarti Lyrics in Hindi', 'हिंदी में आरती'],
+    lede: [
+      'Read aarti lyrics in Hindi for daily pooja: Ganesh, Shiv, Durga, Hanuman, Lakshmi, Krishna, Ram and more.',
+      'दैनिक पूजा के लिए हिंदी में आरती पढ़ें: गणेश, शिव, दुर्गा, हनुमान, लक्ष्मी, कृष्ण, राम और अन्य।',
+    ],
+  },
+  stotra: {
+    tag: 'stotra',
+    title: ['Stotra in Hindi', 'हिंदी में स्तोत्र'],
+    lede: [
+      'Read stotras in Hindi with the Sanskrit text: Bajrang Baan, Shiv Tandav, Aditya Hridaya, Bhaktamar and more.',
+      'संस्कृत पाठ सहित हिंदी में स्तोत्र पढ़ें: बजरंग बाण, शिव तांडव, आदित्य हृदय, भक्तामर और अन्य।',
+    ],
+  },
+  mantra: {
+    tag: 'mantra',
+    title: ['Mantra Lyrics in Hindi', 'हिंदी में मंत्र'],
+    lede: [
+      'Read mantras with their Hindi text: Gayatri, Mahamrityunjaya and more.',
+      'हिंदी पाठ सहित मंत्र पढ़ें: गायत्री, महामृत्युंजय और अन्य।',
+    ],
+  },
+};
+
+export const KIND_PAGE_KEYS = Object.keys(KIND_PAGES);
+
+export function kindPage({ lang, origin, kind, topics }) {
+  const def = KIND_PAGES[kind];
+  if (!def) return null;
+  const items = [];
+  for (const topic of topics) {
+    for (const doc of topic.docs) {
+      if (doc.tags && doc.tags.includes(def.tag) && !isPending(doc)) items.push({ topic, doc });
+    }
+  }
+  const name = loc(lang, def.title[0], def.title[1]);
+  const lede = loc(lang, def.lede[0], def.lede[1]);
+  const list = items.map(({ topic, doc }) => docItem(lang, topic, doc, docNote(lang, topic, doc))).join('');
+
+  const body =
+    '<nav class="crumbs" aria-label="' + e(t(lang, 'breadcrumb')) + '"><a href="/">' + e(t(lang, 'home')) + '</a><span>/</span>' +
+    e(name) + '</nav>' +
+    '<header class="page-head"><h1>' + e(name) + '</h1><p class="lede">' + e(lede) + '</p></header>' +
+    '<ol class="doc-list">' + (list || '<li class="empty">' + e(t(lang, 'noTexts')) + '</li>') + '</ol>';
+
+  return layout({
+    lang,
+    origin,
+    path: '/' + kind,
+    title: name + ' · ' + t(lang, 'brandName'),
+    description: lede,
+    body,
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: def.title[0],
+        description: def.lede[0],
+        url: origin + '/' + kind,
+        itemListElement: items.map(({ topic, doc }, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          url: origin + '/t/' + topic.slug + '/' + doc.slug,
+          name: doc.title,
+        })),
+      },
+      breadcrumbs(origin, [
+        { name: 'Home', path: '/' },
+        { name: def.title[0], path: '/' + kind },
+      ]),
     ],
   });
 }
