@@ -213,3 +213,27 @@ html[data-theme="dark"] .mc-app { --mc-soft: #2a2118; }
 .mc-faq details p { margin: .5rem 0 0; color: var(--mc-muted); line-height: 1.55; }
 .mc-links-line { margin: .6rem 0 0; }
 .mc-links-line a { color: var(--mc-accent); font-weight: 600; }
+
+/* ---- Fixed light palette with dark brown text for this page, whatever the device or site theme ---- */
+html .mc-app, html[data-theme] .mc-app {
+  --mc-ink: #3b2412; --mc-muted: #5c4530; --mc-maroon: #5a2a10;
+  --mc-card: #fffaf0; --mc-soft: #f6ecd9; --mc-line: #e6d3b0;
+  --mc-accent: #9a4a12; --mc-accent-hi: #f0c060; --mc-bead-ink: #3b2412;
+  --mc-btn: #8a3b12; --mc-btn-ink: #ffffff;
+}
+.mc-app :is(p, h1, h2, h3, span, label, summary, dt, dd, li, strong, small, kbd, .mc-focus-text, .mc-focus-count strong, .mc-stat strong, .mc-clock, .mc-timer-state, .mc-msg, .mc-malas, .mc-note) { color: #3b2412; }
+.mc-app .mc-btn, .mc-app .mc-btn *, .mc-app .mc-seg[aria-pressed="true"], .mc-app .mc-tab[aria-selected="true"] { color: #ffffff; }
+.mc-app .mc-seg[aria-pressed="true"], .mc-app .mc-tab[aria-selected="true"] { color: var(--mc-accent); }
+.mc-app .mc-btn.ghost, .mc-app .mc-card-btn { color: #3b2412; }
+.mc-app .mc-bead { color: #2d1600; }
+.mc-app .mc-tab { color: #5c4530; }
+.mc-app .mc-shimmer { color: transparent; }
+.mc-app .mc-shimmer.mc-empty { color: #3b2412; }
+.mc-app .mc-faq details { background: #fffaf0; border-color: #e6d3b0; }
+
+/* ---- Focus mode: only the counter and the Now chanting band remain ---- */
+.mc-app.mc-focus .mc-hero, .mc-app.mc-focus .mc-input, .mc-app.mc-focus .mc-stats, .mc-app.mc-focus .mc-keys,
+.mc-app.mc-focus .mc-faq, .mc-app.mc-focus .mc-extras, .mc-app.mc-focus .shop { display: none; }
+.mc-app.mc-focus .mc-layout { grid-template-columns: 1fr; }
+.mc-app.mc-focus .mc-counter { grid-column: 1 / -1; width: 100%; max-width: 520px; margin: 0 auto; background: var(--mc-card); }
+.mc-app.mc-focus #mc-focus-band { display: block; }
