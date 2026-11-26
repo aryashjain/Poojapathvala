@@ -8,6 +8,7 @@ import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 import { moonInfo } from './moon.js';
 import { GITA_VERSES, EMOTIONS, verseById } from './geeta.js';
+import { angelBySlug, moonLeafBySlug, MOON_LEAVES, ANGEL_NUMBERS } from './leaves.js';
 import { CAPSULES, CAPSULE_GROUPS, capsuleSlug, capsuleIndexBySlug } from './emotions.js';
 
 // A small, fixed 300x250 ad box. The slot is filled by app.js.
@@ -1767,5 +1768,67 @@ export function indexPage({ origin }) {
     body,
     showLangToggle: false,
     extraCss: ['/index.css'],
+  });
+}
+
+// "Keep exploring": a short block on leaf pages that links to the other parts of the site.
+function keepExploring(exclude) {
+  const links = [
+    ['/moon', 'Moon phase today', 'Today\u2019s phase and the next full moon.'],
+    ['/mantra-counter', 'Mantra counter', 'Chant with a 108-bead mala and a timer.'],
+    ['/zen', 'The Zen Space', 'Release a worry and breathe with the light.'],
+    ['/geeta-says', 'Geeta Says', 'A Bhagavad Gita verse for how you feel.'],
+    ['/tarot', 'Tarot reader', 'Draw cards for reflection.'],
+    ['/sleep', 'Bedtime wind-down', 'Breathing, a timer and night sounds.'],
+  ].filter(([href]) => href !== exclude);
+  return '<section class="keep-exploring" aria-labelledby="keep-title"><h2 id="keep-title">Keep exploring</h2><ul class="ke-grid">' +
+    links.map(([href, title, desc]) => '<li><a class="ke-card" href="' + e(href) + '"><strong>' + e(title) + '</strong><span>' + e(desc) + '</span></a></li>').join('') +
+    '</ul></section>';
+}
+
+// Next dates on which the moon is in a given phase, found by scanning forward every six hours.
+function nextPhaseDates(name, from, count) {
+  const found = [];
+  const step = 6 * 3600 * 1000;
+  let prev = moonInfo(from).name === name;
+  for (let t = from + step; found.length < count && t < from + 150 * 86400000; t += step) {
+    const now = moonInfo(t).name === name;
+    if (now && !prev) { found.push(t); t += 20 * 86400000; }
+    prev = now;
+  }
+  return found;
+}
+
+export function moonLeafPage({ origin, leaf, now }) {
+  const dates = nextPhaseDates(leaf.name, now, 3);
+  const list = dates.map((ms) => '<li>' + e(moonDate(ms)) + '</li>').join('');
+  const title = leaf.name + ': dates, meaning and the moon today · Poojapathvala';
+  const description = leaf.name + ' dates, what the phase is said to mean, and when it falls next. ' + leaf.text.slice(0, 90);
+  const body =
+    '<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/moon">Moon</a><span>/</span>' + e(leaf.name) + '</nav>' +
+    '<header class="page-head"><p class="eyebrow">Moon phase</p><h1>' + e(leaf.name) + '</h1><p class="lede">' + e(leaf.text) + '</p></header>' +
+    '<section class="moon-card"><h2>Next ' + e(leaf.name) + ' dates</h2><ul class="leaf-list">' + list + '</ul>' +
+    '<p class="moon-note">Dates come from the average lunar cycle and can differ from the exact moment by about a day. <a href="/moon">See today\u2019s phase and your birth moon</a>.</p></section>' +
+    keepExploring('/moon');
+  return layout({
+    lang: 'en', origin, path: '/moon/' + leaf.slug, title, description, body,
+    showLangToggle: false, extraCss: ['/moon.css'],
+  });
+}
+
+export function angelPage({ origin, angel }) {
+  const title = 'Angel number ' + angel.n + ': meaning and what it may signal · Poojapathvala';
+  const description = 'What angel number ' + angel.n + ' is often read to mean, and how to use the sign in everyday life.';
+  const others = ANGEL_NUMBERS.filter((a) => a.n !== angel.n).slice(0, 6);
+  const more = '<section class="moon-card"><h2>Other angel numbers</h2><ul class="leaf-list">' +
+    others.map((a) => '<li><a href="/angel-number/' + e(a.n) + '">' + e(a.n) + '</a></li>').join('') + '</ul></section>';
+  const body =
+    '<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/moon">Moon</a><span>/</span>Angel number ' + e(angel.n) + '</nav>' +
+    '<header class="page-head"><p class="eyebrow">Angel numbers</p><h1>Angel number ' + e(angel.n) + '</h1><p class="lede">' + e(angel.text) + '</p></header>' +
+    '<section class="moon-card"><h2>How to use this sign</h2><p>Angel numbers are a personal practice rather than a fact. Notice what you were thinking when you saw the number, and write down one small step it prompts you to take.</p></section>' +
+    more + keepExploring('/moon');
+  return layout({
+    lang: 'en', origin, path: '/angel-number/' + angel.n, title, description, body,
+    showLangToggle: false, extraCss: ['/moon.css'],
   });
 }

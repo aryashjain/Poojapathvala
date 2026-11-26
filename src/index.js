@@ -1,5 +1,6 @@
 import { EMOTIONS } from './geeta.js';
 import { CAPSULES, capsuleSlug, capsuleIndexBySlug } from './emotions.js';
+import { angelBySlug, moonLeafBySlug, MOON_LEAVES, ANGEL_NUMBERS } from './leaves.js';
 import { loadLibrary } from './library.js';
 import { buildSearchDocs, searchDocs } from './search.js';
 import { CSS, JS, THEME_JS } from './assets.js';
@@ -56,6 +57,8 @@ function sitemap(origin, topics) {
     { loc: origin + '/ritual/release' },
     { loc: origin + '/zen' },
     { loc: origin + '/moon' },
+    ...MOON_LEAVES.map((m) => ({ loc: origin + '/moon/' + m.slug })),
+    ...ANGEL_NUMBERS.map((a) => ({ loc: origin + '/angel-number/' + a.n })),
     { loc: origin + '/sleep' },
     { loc: origin + '/index' },
     { loc: origin + '/geeta-says' },
@@ -178,6 +181,12 @@ export default {
     }
     if (parts[0] === 'geeta-says' && (parts.length === 1 || (parts.length === 2 && EMOTIONS[parts[1]]))) {
       return html(view.geetaSaysPage({ origin, emotion: parts[1] }));
+    }
+    if (parts.length === 2 && parts[0] === 'moon' && moonLeafBySlug(parts[1])) {
+      return html(view.moonLeafPage({ origin, leaf: moonLeafBySlug(parts[1]), now: Date.now() }), 200, 'public, max-age=3600');
+    }
+    if (parts.length === 2 && parts[0] === 'angel-number' && angelBySlug(parts[1])) {
+      return html(view.angelPage({ origin, angel: angelBySlug(parts[1]) }), 200, 'public, max-age=86400');
     }
     if (parts.length === 1 && parts[0] === 'moon') {
       return html(view.moonPage({ origin, now: Date.now(), birth: url.searchParams.get('birth') }), 200, 'public, max-age=600');
