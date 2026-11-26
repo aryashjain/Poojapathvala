@@ -213,6 +213,190 @@
     if (e.key === 'Escape' && app.classList.contains('mc-focus')) { toggleFocus(); }
   });
 
+  // Speak your mantra: record on a chosen microphone, count the repeats by silence gaps,
+  // then play the first repeat back that many times. Audio is decoded and played in the browser only.
+  var micSel = $('mc-mic'), recBtn = $('mc-rec'), recState = $('mc-rec-state');
+  var heardEl = $('mc-heard'), playBtn = $('mc-play'), speakMsg = $('mc-speak-msg');
+  var CHANT_GAP = 1.0, MAX_REPEATS = 1000, MAX_REC_MS = 60000;
+  var FRAME = 0.02, PAUSE_FRAMES = 18, MIN_FRAMES = 13; // 20 ms frames; 0.36 s pause ends a repeat; repeats under 0.26 s are ignored
+  var clip = null, recorder = null, recStream = null, recChunks = [], recStarted = 0, recTimer = null, recTicker = null;
+  var playSources = [], playEndTimer = null;
+
+  function fmtSecs(s) { return (Math.round(s * 10) / 10).toFixed(1) + ' s'; }
+
+  function loadMics() {
+    if (!micSel || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+    navigator.mediaDevices.enumerateDevices().then(function (list) {
+      var keep = micSel.value;
+      micSel.innerHTML = '';
+      var def = document.createElement('option');
+      def.value = ''; def.textContent = 'Default microphone';
+      micSel.appendChild(def);
+      list.filter(function (d) { return d.kind === 'audioinput'; }).forEach(function (d, i) {
+        var o = document.createElement('option');
+        o.value = d.deviceId;
+        o.textContent = d.label || ('Microphone ' + (i + 1));
+        micSel.appendChild(o);
+      });
+      micSel.value = keep;
+      if (micSel.value !== keep) micSel.value = '';
+    }).catch(function () {});
+  }
+
+  // Finds the repeats in a decoded recording. Works on the RMS of 20 ms frames against a threshold set from the room noise.
+  function findRepeats(buf) {
+    var data = buf.getChannelData(0), win = Math.max(1, Math.round(buf.sampleRate * FRAME));
+    var frames = Math.floor(data.length / win), rms = new Float32Array(frames), i, j, s;
+    for (i = 0; i < frames; i++) {
+      s = 0;
+      for (j = i * win; j < (i + 1) * win; j++) s += data[j] * data[j];
+      rms[i] = Math.sqrt(s / win);
+    }
+    var sorted = Array.prototype.slice.call(rms).sort(function (a, b) { return a - b; });
+    var floor = sorted[Math.floor(frames * 0.2)] || 0, peak = sorted[Math.floor(frames * 0.98)] || 0;
+    var thr = Math.max(0.01, floor * 4, peak * 0.15);
+    var segs = [], start = -1, quiet = 0;
+    for (i = 0; i < frames; i++) {
+      if (rms[i] > thr) {
+        if (start < 0) start = i;
+        quiet = 0;
+      } else if (start >= 0) {
+        quiet++;
+        if (quiet >= PAUSE_FRAMES) {
+          var end = i - quiet + 1;
+          if (end - start >= MIN_FRAMES) segs.push({ from: start, to: end });
+          start = -1; quiet = 0;
+        }
+      }
+    }
+    if (start >= 0 && frames - start >= MIN_FRAMES) segs.push({ from: start, to: frames });
+    return { segs: segs, win: win };
+  }
+
+  function sliceBuffer(buf, from, to) {
+    var len = Math.max(1, to - from), out = ctx.createBuffer(buf.numberOfChannels, len, buf.sampleRate), c;
+    for (c = 0; c < buf.numberOfChannels; c++) out.getChannelData(c).set(buf.getChannelData(c).subarray(from, to));
+    return out;
+  }
+
+  function finishRecording(blob) {
+    ensureCtx();
+    if (!ctx) { speakMsg.textContent = 'This browser cannot decode the recording.'; return; }
+    blob.arrayBuffer().then(function (ab) { return ctx.decodeAudioData(ab); }).then(function (buf) {
+      var found = findRepeats(buf), n = found.segs.length, win = found.win;
+      if (n === 0) {
+        // Nothing separated from the room: keep the whole take as one chant.
+        clip = sliceBuffer(buf, 0, buf.length);
+        n = 1;
+      } else {
+        var first = found.segs[0];
+        clip = sliceBuffer(buf, Math.max(0, first.from * win - Math.round(buf.sampleRate * 0.05)),
+          Math.min(buf.length, first.to * win + Math.round(buf.sampleRate * 0.05)));
+      }
+      heardEl.value = String(Math.min(MAX_REPEATS, n));
+      playBtn.disabled = false;
+      speakMsg.textContent = 'Heard ' + n + (n === 1 ? ' chant' : ' chants') + ', about ' + fmtSecs(clip.duration) +
+        ' each. Change the number if it is off, then play.';
+    }).catch(function () {
+      speakMsg.textContent = 'That recording could not be read. Try again.';
+    }).then(function () {
+      recState.textContent = 'Not recording';
+      recBtn.textContent = 'Start recording';
+      recBtn.setAttribute('aria-pressed', 'false');
+      loadMics();
+    });
+  }
+
+  function stopRecording() {
+    clearTimeout(recTimer);
+    clearInterval(recTicker);
+    if (recorder && recorder.state !== 'inactive') recorder.stop();
+    if (recStream) recStream.getTracks().forEach(function (t) { t.stop(); });
+    recStream = null;
+  }
+
+  function startRecording() {
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      speakMsg.textContent = 'Recording is not supported in this browser.';
+      return;
+    }
+    stopPlaying();
+    speakMsg.textContent = '';
+    var constraints = { audio: micSel.value ? { deviceId: { exact: micSel.value } } : true };
+    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+      recStream = stream;
+      recChunks = [];
+      recorder = new MediaRecorder(stream);
+      recorder.ondataavailable = function (e) { if (e.data && e.data.size) recChunks.push(e.data); };
+      recorder.onstop = function () {
+        var type = recorder.mimeType || 'audio/webm';
+        finishRecording(new Blob(recChunks, { type: type }));
+      };
+      recorder.start(200);
+      recStarted = Date.now();
+      recBtn.textContent = 'Stop and count';
+      recBtn.setAttribute('aria-pressed', 'true');
+      recState.textContent = 'Recording: say your mantra once, or several times with a pause';
+      recTicker = setInterval(function () {
+        recState.textContent = 'Recording ' + Math.floor((Date.now() - recStarted) / 1000) + ' s. Stop when you are done.';
+      }, 500);
+      recTimer = setTimeout(stopRecording, MAX_REC_MS);
+      loadMics();
+    }).catch(function (err) {
+      speakMsg.textContent = 'The microphone is not available (' + (err && err.name ? err.name : 'error') + '). Allow microphone access and try again.';
+    });
+  }
+
+  function stopPlaying() {
+    clearTimeout(playEndTimer);
+    playSources.forEach(function (s) { try { s.stop(); } catch (e) {} });
+    playSources = [];
+    playBtn.textContent = 'Play chants';
+    playBtn.setAttribute('aria-pressed', 'false');
+  }
+
+  function playChants() {
+    if (!clip) return;
+    ensureCtx();
+    if (!ctx) { speakMsg.textContent = 'Audio playback is not supported in this browser.'; return; }
+    stopPlaying();
+    var n = Math.min(MAX_REPEATS, Math.max(1, parseInt(heardEl.value, 10) || 1));
+    var t0 = ctx.currentTime + 0.1, step = clip.duration + CHANT_GAP, i;
+    for (i = 0; i < n; i++) {
+      var src = ctx.createBufferSource();
+      src.buffer = clip;
+      src.connect(ctx.destination);
+      src.start(t0 + i * step);
+      playSources.push(src);
+    }
+    playBtn.textContent = 'Stop playing';
+    playBtn.setAttribute('aria-pressed', 'true');
+    speakMsg.textContent = 'Playing ' + n + (n === 1 ? ' chant' : ' chants') + ', about ' + Math.round((n * step) / 60 * 10) / 10 + ' min.';
+    playEndTimer = setTimeout(function () {
+      playSources = [];
+      playBtn.textContent = 'Play chants';
+      playBtn.setAttribute('aria-pressed', 'false');
+      speakMsg.textContent = 'Finished ' + n + (n === 1 ? ' chant.' : ' chants.');
+    }, (n * step + 0.2) * 1000);
+  }
+
+  if (recBtn && playBtn) {
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      recBtn.disabled = true;
+      speakMsg.textContent = 'Recording is not supported in this browser. You can still type a mantra and use the counter.';
+    }
+    recBtn.addEventListener('click', function () {
+      if (recorder && recorder.state === 'recording') stopRecording();
+      else startRecording();
+    });
+    playBtn.addEventListener('click', function () {
+      if (playSources.length) stopPlaying(); else playChants();
+    });
+    heardEl.addEventListener('input', function () { if (playSources.length) stopPlaying(); });
+    if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) navigator.mediaDevices.addEventListener('devicechange', loadMics);
+    loadMics();
+  }
+
   tick();
   setInterval(tick, 1000);
   showText();

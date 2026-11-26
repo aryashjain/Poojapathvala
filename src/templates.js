@@ -1353,6 +1353,21 @@ export function mantraCounterPage({ origin, topics }) {
     '<p id="mc-malas" class="mc-malas">Your first mala starts here</p>' +
     '</section></div>' +
     '<div class="mc-grid">' +
+    '<section class="mc-card mc-speak" aria-labelledby="mc-h-speak"><h2 id="mc-h-speak">Speak your mantra</h2>' +
+    '<p class="hint">Say the mantra once, or several times with a short pause between. The page counts the repeats and plays your first chant back that many times. Your audio stays on this device.</p>' +
+    '<div class="mc-settings">' +
+    '<div class="mc-field"><label for="mc-mic">Microphone</label><select id="mc-mic"><option value="">Default microphone</option></select></div>' +
+    '<div class="mc-field"><label for="mc-heard">Chants to play</label><input type="number" id="mc-heard" min="1" max="1000" value="1"></div>' +
+    '</div>' +
+    '<p id="mc-rec-state" class="mc-timer-state" aria-live="polite">Not recording</p>' +
+    '<div class="mc-actions">' +
+    '<button id="mc-rec" class="mc-btn" type="button" aria-pressed="false">Start recording</button>' +
+    '<button id="mc-play" class="mc-btn ghost" type="button" aria-pressed="false" disabled>Play chants</button>' +
+    '</div>' +
+    '<p id="mc-speak-msg" class="mc-msg" aria-live="polite"></p>' +
+    '</section>' +
+    '</div>' +
+    '<div class="mc-grid">' +
     '<section class="mc-card" aria-labelledby="mc-h-stats"><h2 id="mc-h-stats">Your japa</h2>' +
     '<div class="mc-stat-row"><div class="mc-stat"><strong id="mc-today">0</strong><span>Today</span></div>' +
     '<div class="mc-stat"><strong id="mc-streak">0</strong><span>Day streak</span></div></div>' +
