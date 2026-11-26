@@ -1,0 +1,20 @@
+/* Homepage positive card draw. Small and light. */
+.hc { text-align: center; margin: 1.6rem auto 0; max-width: 560px; }
+.hc-title { font-size: 1.1rem; margin: 0 0 .6rem; }
+.hc-btn { cursor: pointer; border: 0; font: inherit; }
+.hc-result {
+  margin: 1rem auto 0; padding: 1.2rem 1.3rem; border-radius: 16px; text-align: center;
+  background: var(--surface, #fff); border: 1px solid var(--line, #e8e4dc);
+  box-shadow: 0 10px 28px rgba(60, 35, 10, .08);
+}
+.hc-result[hidden] { display: none; }
+.hc-in { animation: hc-rise .45s ease-out; }
+@keyframes hc-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.hc-kicker { margin: 0; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent, #b4532a); }
+.hc-name { margin: .35rem 0 .5rem; font-size: 1.3rem; color: var(--ink, #1d1b18); }
+.hc-text { margin: 0 0 .8rem; line-height: 1.6; color: var(--ink, #1d1b18); }
+.hc-links { margin: 0; display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+.hc-more { color: var(--accent, #b4532a); font-weight: 600; }
+.hc-again { font: inherit; font-size: .9rem; cursor: pointer; padding: .4rem .9rem; border-radius: 999px; border: 1px solid var(--line, #e8e4dc); background: transparent; color: var(--ink, #1d1b18); }
+.hc-again:focus-visible, .hc-btn:focus-visible, .hc-more:focus-visible { outline: 3px solid var(--accent, #b4532a); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .hc-in { animation: none; } }

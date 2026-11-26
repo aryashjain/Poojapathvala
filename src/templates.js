@@ -197,6 +197,20 @@ function docNote(lang, topic, doc) {
   return loc(lang, doc.description, doc.descriptionHi) || minutes(lang, doc.readingTime);
 }
 
+// Homepage: draw one positive tarot card. Only cards with a positive tone are offered.
+function homeDrawSection(lang) {
+  const positive = CARDS.filter((c) => c.tone === 'p').map((c) => ({ id: c.id, name: c.name, upright: c.upright }));
+  const data = JSON.stringify(positive).replace(/</g, '\\u003c');
+  return (
+    '<section class="hc" aria-labelledby="hc-title"><h2 id="hc-title" class="hc-title">' +
+    e(loc(lang, 'Draw one positive card today', 'आज एक सकारात्मक कार्ड खींचें')) + '</h2>' +
+    '<button id="hc-draw" class="tarot-cta hc-btn" type="button">✨ ' + e(loc(lang, 'Draw a positive tarot card', 'सकारात्मक टैरो कार्ड खींचें')) + '</button>' +
+    '<div id="hc-result" class="hc-result" aria-live="polite" hidden></div>' +
+    '<script type="application/json" id="hc-data">' + data + '</script>' +
+    '</section>'
+  );
+}
+
 export function homePage({ lang, origin, topics }) {
   const cards = topics
     .map(
@@ -234,6 +248,7 @@ export function homePage({ lang, origin, topics }) {
     searchForm(lang, 'home') +
     '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a> <a class="tarot-cta" href="/mantra-counter">📿 Mantra counter · मंत्र काउंटर</a></p>' +
     '<p class="kind-links">' + kindLinks(lang, topics) + '</p>' +
+    homeDrawSection(lang) +
     '</section>' +
     '<section class="topics" aria-label="' + e(t(lang, 'collectionsAria')) + '">' +
     (cards || '<p>' + e(t(lang, 'noCollections')) + '</p>') +
@@ -250,6 +265,8 @@ export function homePage({ lang, origin, topics }) {
       ' · ' +
       (lang === 'hi' ? 'आरती, पूजा, स्तोत्र, मंत्र (Aarti, Pooja, Stotra, Mantra)' : 'Aarti, Pooja, Stotra, Mantra'),
     description: t(lang, 'homeDescription'),
+    extraCss: ['/home-card.css'],
+    extraJs: ['/home-card.js'],
     body,
     jsonLd: [
       {
