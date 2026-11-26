@@ -13,6 +13,7 @@ export const AFFILIATES = {
     { label: 'Brass diya', url: 'https://link.amazon/B05fOeNaA' },
     { label: 'Agarbatti and dhoop', url: 'PLACEHOLDER' },
     { label: 'Pooja essentials', url: 'https://link.amazon/B02WM6VES' },
+    { label: 'Japa mala (108 beads)', url: 'https://link.amazon/B0iSPiUQa' },
   ],
   // Shown on the tarot pages, under "Tarot shop".
   tarot: [
