@@ -84,6 +84,15 @@ function langToggle(lang, path) {
   );
 }
 
+// One column of footer links.
+function footerGroup(title, links) {
+  return (
+    '<nav class="sf-col" aria-label="' + e(title) + '"><h2>' + e(title) + '</h2><ul>' +
+    links.map(([href, label]) => '<li><a href="' + e(href) + '">' + e(label) + '</a></li>').join('') +
+    '</ul></nav>'
+  );
+}
+
 function layout({
   lang = 'hi',
   origin,
@@ -139,10 +148,25 @@ function layout({
     searchForm(lang, 'header') +
     '</div></header>\n' +
     '<main class="' + wrap + '">\n' + body + '\n' + (path.startsWith('/tarot') ? tarotShopBox() + TAROT_NOTE : '') + '</main>\n' +
-    '<footer class="site-footer"><div class="' + wrap + '">' +
-    '<span>' + e(brand) + ' · ' + e(t(lang, 'tagline')) + '</span>' +
-    '<span><a href="/about">' + e(loc(lang, 'About', 'हमारे बारे में')) + '</a> · <a href="/contact">' + e(loc(lang, 'Contact', 'संपर्क')) + '</a> · <a href="/privacy">' + e(loc(lang, 'Privacy', 'गोपनीयता')) + '</a> · <a href="/sitemap.xml">' + e(t(lang, 'sitemap')) + '</a> · <a href="/feedback">' + e(t(lang, 'feedbackLink')) + '</a> · <a href="/admin">' + e(t(lang, 'addTexts')) + '</a></span>' +
-    '</div></footer>\n' +
+    '<footer class="site-footer"><div class="' + wrap + ' sf-grid">' +
+    '<div class="sf-brand"><span class="sf-name">' + e(brand) + '</span><p>' + e(t(lang, 'tagline')) + '</p></div>' +
+    footerGroup(loc(lang, 'Explore', 'खोजें'), [
+      ['/tarot', loc(lang, 'Tarot reader', 'टैरो रीडर')],
+      ['/mantra-counter', loc(lang, 'Mantra counter', 'मंत्र काउंटर')],
+      ['/ritual/release', loc(lang, 'Burn your worry', 'चिंता जलाएँ')],
+    ]) +
+    footerGroup(loc(lang, 'About', 'परिचय'), [
+      ['/about', loc(lang, 'About us', 'हमारे बारे में')],
+      ['/contact', loc(lang, 'Contact', 'संपर्क')],
+      ['/privacy', loc(lang, 'Privacy', 'गोपनीयता')],
+      ['/sitemap.xml', t(lang, 'sitemap')],
+    ]) +
+    footerGroup(loc(lang, 'Help us', 'सहायता करें'), [
+      ['/feedback', t(lang, 'feedbackLink')],
+      ['/admin', t(lang, 'addTexts')],
+    ]) +
+    '</div><div class="' + wrap + ' sf-bottom"><span>© ' + new Date().getFullYear() + ' ' + e(brand) + '</span>' +
+    '<span>' + e(loc(lang, 'Hindi and English', 'हिंदी और अंग्रेज़ी')) + '</span></div></footer>\n' +
     '<script src="/assets/posthog.js" defer></script>\n' +
     '<script src="/assets/app.js?v=' + ASSET_VERSION + '" defer></script>\n' +
     extraJs.map((src) => '<script src="' + e(src) + '?v=' + ASSET_VERSION + '" defer></script>\n').join('') +
