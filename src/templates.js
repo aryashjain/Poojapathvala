@@ -1389,7 +1389,7 @@ export function ritualPage({ origin, lang = 'en' }) {
     description: 'Write a worry, then hold the flame to burn it away. Nothing you write is stored or sent. A short reflection follows.',
     body,
     showLangToggle: false,
-    extraCss: ['/ritual.css'],
+    extraCss: ['/ritual.css', '/home-card.css'],
     extraJs: ['/ritual.js', '/home-card.js'],
   });
 }
