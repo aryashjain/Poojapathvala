@@ -209,7 +209,7 @@ export function homePage({ lang, origin, topics }) {
     '<p class="lede">' + e(t(lang, 'homeLede')) + '</p>' +
     searchForm(lang, 'home') +
     '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a></p>' +
-    '<p class="kind-links">' + kindLinks(lang, topics) + '</p>' +
+    '<p class="kind-links">' + [kindLinks(lang, topics), '<a href="/mantra-counter">' + e(loc(lang, 'Mantra counter', 'मंत्र काउंटर')) + '</a>'].filter(Boolean).join(' · ') + '</p>' +
     '</section>' +
     '<section class="topics" aria-label="' + e(t(lang, 'collectionsAria')) + '">' +
     (cards || '<p>' + e(t(lang, 'noCollections')) + '</p>') +
