@@ -248,7 +248,6 @@ export function homePage({ lang, origin, topics }) {
     searchForm(lang, 'home') +
     '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a> <a class="tarot-cta" href="/mantra-counter">📿 Mantra counter · मंत्र काउंटर</a> <a class="tarot-cta" href="/ritual/release">🔥 Burn your worry · चिंता जलाएँ</a></p>' +
     '<p class="kind-links">' + kindLinks(lang, topics) + '</p>' +
-    homeDrawSection(lang) +
     '</section>' +
     '<section class="topics" aria-label="' + e(t(lang, 'collectionsAria')) + '">' +
     (cards || '<p>' + e(t(lang, 'noCollections')) + '</p>') +
@@ -265,8 +264,6 @@ export function homePage({ lang, origin, topics }) {
       ' · ' +
       (lang === 'hi' ? 'आरती, पूजा, स्तोत्र, मंत्र (Aarti, Pooja, Stotra, Mantra)' : 'Aarti, Pooja, Stotra, Mantra'),
     description: t(lang, 'homeDescription'),
-    extraCss: ['/home-card.css'],
-    extraJs: ['/home-card.js'],
     body,
     jsonLd: [
       {
@@ -799,6 +796,7 @@ export function tarotReaderPage({ origin }) {
     '</div>' +
     '</section>' +
     '<p class="reader-more"><a class="btn btn-ghost" href="/tarot/cards">Browse all 78 cards and their meanings</a></p>' +
+    homeDrawSection(TAROT_LANG) +
     adBox() +
     '<script type="application/json" id="tarot-data">' + JSON.stringify(data).replace(/</g, '\\u003c') + '</script>';
 
@@ -810,8 +808,8 @@ export function tarotReaderPage({ origin }) {
     description: 'Free online tarot reader. Draw a daily card, a three-card spread, a yes or no answer, or a love or career spread, with upright and reversed meanings.',
     body,
     showLangToggle: false,
-    extraCss: ['/assets/tarot.css'],
-    extraJs: ['/assets/tarot.js'],
+    extraCss: ['/assets/tarot.css', '/home-card.css'],
+    extraJs: ['/assets/tarot.js', '/home-card.js'],
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
