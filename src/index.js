@@ -1,4 +1,5 @@
 import { EMOTIONS } from './geeta.js';
+import { CAPSULES, capsuleSlug, capsuleIndexBySlug } from './emotions.js';
 import { loadLibrary } from './library.js';
 import { buildSearchDocs, searchDocs } from './search.js';
 import { CSS, JS, THEME_JS } from './assets.js';
@@ -59,6 +60,7 @@ function sitemap(origin, topics) {
     { loc: origin + '/index' },
     { loc: origin + '/geeta-says' },
     ...Object.keys(EMOTIONS).map((slug) => ({ loc: origin + '/geeta-says/' + slug })),
+    ...CAPSULES.map(([label]) => ({ loc: origin + '/geeta-says/f/' + capsuleSlug(label) })),
   ];
   for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {
@@ -168,6 +170,11 @@ export default {
 
     if (parts.length === 1 && parts[0] === 'index') {
       return html(view.indexPage({ origin }));
+    }
+    if (parts[0] === 'geeta-says' && parts.length === 3 && parts[1] === 'f') {
+      const page = view.geetaSaysPage({ origin, capsule: parts[2] });
+      if (capsuleIndexBySlug(parts[2]) === null) return html(view.notFoundPage({ lang, origin }), 404, 'no-store');
+      return html(page, 200, 'public, max-age=3600');
     }
     if (parts[0] === 'geeta-says' && (parts.length === 1 || (parts.length === 2 && EMOTIONS[parts[1]]))) {
       return html(view.geetaSaysPage({ origin, emotion: parts[1] }));

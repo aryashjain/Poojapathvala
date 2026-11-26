@@ -115,3 +115,12 @@ export const CAPSULES = [
   ['Patience', 'peace', 'equanimity', 'Patience is effort that trusts time. Let the seed grow at its own pace.'],
   ['Inner strength', 'peace', 'discipline', 'Strength is quiet persistence. You have carried harder days than this one.'],
 ];
+
+// A URL-safe name for a capsule, used in its share link: "Can't sleep" -> "cant-sleep".
+export function capsuleSlug(label) {
+  return label.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+export function capsuleIndexBySlug(slug) {
+  const i = CAPSULES.findIndex(([label]) => capsuleSlug(label) === slug);
+  return i === -1 ? null : i;
+}

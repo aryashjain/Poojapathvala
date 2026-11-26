@@ -85,6 +85,32 @@
     if (beads === 9) { chime(); secs = Math.min(secs, 15); renderStep(3); }
   }
 
+  // ---- share: the card has its own link, and the share text is the quote ----
+  function setShare(c) {
+    var bar = $('gs-share');
+    if (!bar) return;
+    var url = window.location.origin + '/geeta-says/f/' + c.slug;
+    var text = '“' + c.quote + '” — Geeta Says || ' + current.ref;
+    bar.setAttribute('data-url', url);
+    bar.setAttribute('data-text', text);
+    $('gs-share-wa').href = 'https://wa.me/?text=' + encodeURIComponent(text + ' ' + url);
+    $('gs-share-x').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+    shareNote('');
+  }
+  function shareNote(msg) { var n = $('gs-share-note'); if (n) n.textContent = msg; }
+  function copyLink() {
+    var bar = $('gs-share'), url = bar ? bar.getAttribute('data-url') : window.location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { shareNote('Link copied. Paste it anywhere.'); }, function () { shareNote(url); });
+    } else { shareNote(url); }
+  }
+  function nativeShare() {
+    var bar = $('gs-share');
+    if (!navigator.share || !bar) return;
+    navigator.share({ title: 'Geeta Says ||', text: bar.getAttribute('data-text'), url: bar.getAttribute('data-url') }).catch(function () {});
+  }
+  if (navigator.share && $('gs-share-native')) $('gs-share-native').hidden = false;
+
   // ---- a feeling capsule opens its quote and verse ----
   function openCapsule(index) {
     var c = capsules[index];
@@ -101,6 +127,7 @@
     $('gs-start').hidden = false;
     renderStep(1);
     $('gs-path').querySelector('.gs-cue').textContent = 'Press start to begin the one-minute reset.';
+    setShare(c);
     resultStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   function back() {
@@ -147,6 +174,8 @@
   $('gs-start').addEventListener('click', function () { chime(); startPath(); $('gs-start').hidden = true; });
   $('gs-release').addEventListener('click', back);
   $('gs-export').addEventListener('click', exportCard);
+  $('gs-share-copy').addEventListener('click', copyLink);
+  $('gs-share-native').addEventListener('click', nativeShare);
   document.addEventListener('click', function (e) {
     var t = e.target;
     if (t.classList && t.classList.contains('gs-bead')) tapBead(t);

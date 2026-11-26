@@ -54,3 +54,10 @@
 .gs-capsule:hover { background: rgba(229,193,88,.18); border-color: #e5c158; }
 .gs-capsule:focus-visible { outline: 3px solid #f6d77a; outline-offset: 3px; }
 .gs-quote { margin: .2rem 0 .9rem; padding: 0; font-family: Georgia, serif; font-size: 1.12rem; line-height: 1.6; color: #fff8e7; font-style: italic; }
+/* Share bar */
+.gs-share { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .3rem 0 1rem; padding: .7rem .8rem; border: 1px dashed rgba(229,193,88,.4); border-radius: 12px; }
+.gs-share-label { width: 100%; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: #e5c158; }
+.gs-share-btn { font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; text-decoration: none; padding: .5rem .9rem; border-radius: 999px; border: 1px solid rgba(229,193,88,.55); background: rgba(255,255,255,.04); color: #f3efe6; min-height: 2.4rem; display: inline-flex; align-items: center; }
+.gs-share-btn:hover { background: rgba(229,193,88,.18); border-color: #e5c158; text-decoration: none; }
+.gs-share-btn:focus-visible { outline: 3px solid #f6d77a; outline-offset: 3px; }
+.gs-share-note { width: 100%; margin: 0; font-size: .85rem; color: #d6d0c2; word-break: break-all; }

@@ -8,7 +8,7 @@ import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 import { moonInfo } from './moon.js';
 import { GITA_VERSES, EMOTIONS, verseById } from './geeta.js';
-import { CAPSULES, CAPSULE_GROUPS } from './emotions.js';
+import { CAPSULES, CAPSULE_GROUPS, capsuleSlug, capsuleIndexBySlug } from './emotions.js';
 
 // A small, fixed 300x250 ad box. The slot is filled by app.js.
 function adBox() {
@@ -1630,12 +1630,28 @@ function verseData() {
   }))).replace(/</g, '\\u003c');
 }
 
-export function geetaSaysPage({ origin, emotion }) {
+// Share bar: WhatsApp, X, copy link and the phone's own share sheet. The text is the quote and the link.
+function shareBar(url, text) {
+  const msg = encodeURIComponent(text + ' ' + url);
+  return '<div class="gs-share" id="gs-share" data-url="' + e(url) + '" data-text="' + e(text) + '">' +
+    '<span class="gs-share-label">Share this card</span>' +
+    '<a class="gs-share-btn" id="gs-share-wa" href="https://wa.me/?text=' + msg + '" target="_blank" rel="noopener">WhatsApp</a>' +
+    '<a class="gs-share-btn" id="gs-share-x" href="https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url) + '" target="_blank" rel="noopener">X</a>' +
+    '<button type="button" class="gs-share-btn" id="gs-share-copy">Copy link</button>' +
+    '<button type="button" class="gs-share-btn" id="gs-share-native" hidden>Share…</button>' +
+    '<p class="gs-share-note" id="gs-share-note" role="status" aria-live="polite"></p></div>';
+}
+
+export function geetaSaysPage({ origin, emotion, capsule }) {
+  const capIndex = capsule != null ? capsuleIndexBySlug(capsule) : null;
+  const cap = capIndex != null ? CAPSULES[capIndex] : null;
   const emo = emotion ? EMOTIONS[emotion] : null;
-  const shown = emo ? verseById(emo.verse) : null;
-  const title = emo ? emo.title + ': a Bhagavad Gita verse and a one-minute reset · Geeta Says ||' : 'Geeta Says || · Feelings, quotes and a Bhagavad Gita verse';
-  const description = emo ? emo.lede : 'Tap the feeling closest to you. Read a short quote and the Bhagavad Gita verse attached to it, then follow a one-minute reset.';
-  const path = emo ? '/geeta-says/' + emotion : '/geeta-says';
+  const shown = cap ? verseById(cap[2]) : (emo ? verseById(emo.verse) : null);
+  const title = cap ? cap[0] + ' · ' + cap[3].slice(0, 60) + ' · Geeta Says ||' : emo ? emo.title + ': a Bhagavad Gita verse and a one-minute reset · Geeta Says ||' : 'Geeta Says || · Feelings, quotes and a Bhagavad Gita verse';
+  const description = cap ? cap[3] : emo ? emo.lede : 'Tap the feeling closest to you. Read a short quote and the Bhagavad Gita verse attached to it, then follow a one-minute reset.';
+  const path = cap ? '/geeta-says/f/' + capsuleSlug(cap[0]) : emo ? '/geeta-says/' + emotion : '/geeta-says';
+  const shareUrl = origin + path;
+  const shareText = cap ? '“' + cap[3] + '” — Geeta Says || ' + (shown ? shown.ref : '') : '';
   const groups = CAPSULE_GROUPS.map(([key, heading]) => {
     const items = CAPSULES.map((c, i) => [c, i]).filter(([c]) => c[1] === key);
     return '<section class="gs-group" aria-labelledby="gs-g-' + key + '"><h2 id="gs-g-' + key + '">' + e(heading) + '</h2><div class="gs-capsule-row">' +
@@ -1646,12 +1662,12 @@ export function geetaSaysPage({ origin, emotion }) {
     '<div class="gs-wrap">' +
     '<header class="page-head"><p class="eyebrow">Geeta Says ||</p><h1>' + e(emo ? emo.title : 'How are you feeling?') + '</h1>' +
     '<p class="lede">' + e(description) + '</p></header>' +
-    '<section class="gs-card" id="gs-capsules"' + (emo ? ' hidden' : '') + '>' +
+    '<section class="gs-card" id="gs-capsules"' + (emo || cap ? ' hidden' : '') + '>' +
     '<p class="gs-note-privacy">Tap a feeling. A short quote and the verse attached to it will open, with a one-minute reset.</p>' +
     groups + '</section>' +
-    '<section class="gs-card" id="gs-result" data-verse="' + (shown ? e(shown.id) : '') + '"' + (emo ? '' : ' hidden') + '>' +
-    '<span class="gs-badge" id="gs-label">' + e(emo ? emo.title : '') + '</span>' +
-    '<blockquote class="gs-quote" id="gs-quote"></blockquote>' +
+    '<section class="gs-card" id="gs-result" data-verse="' + (shown ? e(shown.id) : '') + '"' + (emo || cap ? '' : ' hidden') + '>' +
+    '<span class="gs-badge" id="gs-label">' + e(cap ? cap[0] : emo ? emo.title : '') + '</span>' +
+    '<blockquote class="gs-quote" id="gs-quote">' + e(cap ? cap[3] : '') + '</blockquote>' +
     '<span class="gs-badge" id="gs-ref">' + e(shown ? shown.ref : 'Bhagavad Gita') + '</span>' +
     '<p class="gs-sanskrit" id="gs-sanskrit">' + e(shown ? shown.sanskrit : '') + '</p>' +
     '<p class="gs-translit" id="gs-translit"></p>' +
@@ -1660,7 +1676,8 @@ export function geetaSaysPage({ origin, emotion }) {
     '<p class="gs-why" id="gs-why"></p>' +
     '<div class="gs-path-head"><span class="gs-step">1-minute pathway to stillness</span><span class="gs-timer" id="gs-timer">01:00</span></div>' +
     '<div class="gs-stage" id="gs-path"><p class="gs-step">Step 1 of 3 · Slow the breath</p><p class="gs-cue">Press start to begin the one-minute reset.</p></div>' +
-    '<div class="gs-actions"><button type="button" class="gs-primary" id="gs-start"' + (emo ? '' : ' hidden') + '>Start the 1-minute reset</button></div>' +
+    (cap ? shareBar(shareUrl, shareText) : '') +
+    '<div class="gs-actions"><button type="button" class="gs-primary" id="gs-start"' + (emo || cap ? '' : ' hidden') + '>Start the 1-minute reset</button></div>' +
     '<div class="gs-actions"><button type="button" class="gs-secondary" id="gs-export">Save verse card (PNG)</button>' +
     '<button type="button" class="gs-secondary" id="gs-release">Choose another feeling</button></div></section>' +
     '<p class="gs-cross">Overwhelmed more broadly? Try <a href="/zen">the Zen Space</a> or <a href="/sleep">the bedtime wind-down</a>.</p>' +
@@ -1684,7 +1701,7 @@ function capsuleData() {
     id: v.id, ref: v.ref, sanskrit: v.sanskrit, translit: v.translit || '', meaning: v.meaning,
     reflection: v.reflection, mantraLine: v.mantraLine, microAction: v.microAction,
   }));
-  const capsules = CAPSULES.map(([label, , verse, quote]) => ({ label, verse, quote }));
+  const capsules = CAPSULES.map(([label, , verse, quote]) => ({ label, verse, quote, slug: capsuleSlug(label) }));
   return JSON.stringify({ verses, capsules }).replace(/</g, '\\u003c');
 }
 
