@@ -8,6 +8,7 @@ import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 import { moonInfo } from './moon.js';
 import { GITA_VERSES, EMOTIONS, verseById } from './geeta.js';
+import { CAPSULES, CAPSULE_GROUPS } from './emotions.js';
 
 // A small, fixed 300x250 ad box. The slot is filled by app.js.
 function adBox() {
@@ -1631,37 +1632,38 @@ function verseData() {
 export function geetaSaysPage({ origin, emotion }) {
   const emo = emotion ? EMOTIONS[emotion] : null;
   const shown = emo ? verseById(emo.verse) : null;
-  const title = emo ? emo.title + ': a Bhagavad Gita verse and a one-minute reset · Geeta Says ||' : 'Geeta Says || · Bhagavad Gita verse and a one-minute reset';
-  const description = emo ? emo.lede : 'Share what is weighing on you and receive a Bhagavad Gita verse, then follow a one-minute reset. Nothing you write is stored.';
+  const title = emo ? emo.title + ': a Bhagavad Gita verse and a one-minute reset · Geeta Says ||' : 'Geeta Says || · Feelings, quotes and a Bhagavad Gita verse';
+  const description = emo ? emo.lede : 'Tap the feeling closest to you. Read a short quote and the Bhagavad Gita verse attached to it, then follow a one-minute reset.';
   const path = emo ? '/geeta-says/' + emotion : '/geeta-says';
-  const presets = ['I cannot stop overthinking the future and results', 'I am afraid of failing and starting over', 'I feel lost, weak, and full of self-doubt', 'I am hurt and angry about how someone treated me', 'I am grieving a loss and struggling with change', 'I keep comparing my path and timeline to others'];
-  const chips = presets.map((p) => '<button type="button" class="gs-chip" data-preset="' + e(p) + '">' + e(p.length > 34 ? p.slice(0, 34) + '…' : p) + '</button>').join('');
-  const resultStatic = shown ? '<span class="gs-badge" id="gs-ref">' + e(shown.ref) + '</span>' : '<span class="gs-badge" id="gs-ref">Bhagavad Gita</span>';
+  const groups = CAPSULE_GROUPS.map(([key, heading]) => {
+    const items = CAPSULES.map((c, i) => [c, i]).filter(([c]) => c[1] === key);
+    return '<section class="gs-group" aria-labelledby="gs-g-' + key + '"><h2 id="gs-g-' + key + '">' + e(heading) + '</h2><div class="gs-capsule-row">' +
+      items.map(([c, i]) => '<button type="button" class="gs-capsule" data-capsule="' + i + '">' + e(c[0]) + '</button>').join('') +
+      '</div></section>';
+  }).join('');
   const body =
     '<div class="gs-wrap">' +
-    '<header class="page-head"><p class="eyebrow">Geeta Says ||</p><h1>' + e(emo ? emo.title : 'What is weighing on you?') + '</h1>' +
+    '<header class="page-head"><p class="eyebrow">Geeta Says ||</p><h1>' + e(emo ? emo.title : 'How are you feeling?') + '</h1>' +
     '<p class="lede">' + e(description) + '</p></header>' +
-    '<section class="gs-card" id="gs-input-stage"' + (emo ? ' hidden' : '') + '>' +
-    '<label for="gs-input" class="gs-label">Write what is on your mind</label>' +
-    '<textarea id="gs-input" class="gs-textarea" maxlength="500" placeholder="For example: I cannot stop worrying about my results"></textarea>' +
-    '<p class="gs-note-privacy">Your words stay in this browser. They are wiped as soon as you continue.</p>' +
-    '<div class="gs-chips">' + chips + '</div>' +
-    '<button type="button" class="gs-primary" id="gs-seek">Seek clarity and begin the 1-minute reset</button></section>' +
+    '<section class="gs-card" id="gs-capsules"' + (emo ? ' hidden' : '') + '>' +
+    '<p class="gs-note-privacy">Tap a feeling. A short quote and the verse attached to it will open, with a one-minute reset.</p>' +
+    groups + '</section>' +
     '<section class="gs-card" id="gs-result" data-verse="' + (shown ? e(shown.id) : '') + '"' + (emo ? '' : ' hidden') + '>' +
-    resultStatic +
-    '<div class="gs-suggest" id="gs-suggest"' + (emo ? '' : ' hidden') + '></div>' +
-    '<p class="gs-why" id="gs-why"></p>' +
+    '<span class="gs-badge" id="gs-label">' + e(emo ? emo.title : '') + '</span>' +
+    '<blockquote class="gs-quote" id="gs-quote"></blockquote>' +
+    '<span class="gs-badge" id="gs-ref">' + e(shown ? shown.ref : 'Bhagavad Gita') + '</span>' +
     '<p class="gs-sanskrit" id="gs-sanskrit">' + e(shown ? shown.sanskrit : '') + '</p>' +
-    '<p class="gs-translit" id="gs-translit">' + e(shown ? shown.translit : '') + '</p>' +
-    '<p class="gs-translation" id="gs-translation">“' + e(shown ? shown.meaning : '') + '”</p>' +
+    '<p class="gs-translit" id="gs-translit"></p>' +
+    '<p class="gs-translation" id="gs-translation">' + e(shown ? shown.meaning : '') + '</p>' +
     '<div class="gs-reflection" id="gs-reflection">' + e(shown ? shown.reflection : '') + '</div>' +
+    '<p class="gs-why" id="gs-why"></p>' +
     '<div class="gs-path-head"><span class="gs-step">1-minute pathway to stillness</span><span class="gs-timer" id="gs-timer">01:00</span></div>' +
     '<div class="gs-stage" id="gs-path"><p class="gs-step">Step 1 of 3 · Slow the breath</p><p class="gs-cue">Press start to begin the one-minute reset.</p></div>' +
     '<div class="gs-actions"><button type="button" class="gs-primary" id="gs-start"' + (emo ? '' : ' hidden') + '>Start the 1-minute reset</button></div>' +
     '<div class="gs-actions"><button type="button" class="gs-secondary" id="gs-export">Save verse card (PNG)</button>' +
-    '<button type="button" class="gs-secondary" id="gs-release">Release another worry</button></div></section>' +
+    '<button type="button" class="gs-secondary" id="gs-release">Choose another feeling</button></div></section>' +
     '<p class="gs-cross">Overwhelmed more broadly? Try <a href="/zen">the Zen Space</a> or <a href="/sleep">the bedtime wind-down</a>.</p>' +
-    '<script type="application/json" id="gs-data">' + verseData() + '</script>' +
+    '<script type="application/json" id="gs-data">' + capsuleData() + '</script>' +
     '</div>';
   return layout({
     lang: 'en',
@@ -1674,6 +1676,15 @@ export function geetaSaysPage({ origin, emotion }) {
     extraCss: ['/geeta-says.css'],
     extraJs: ['/geeta-says.js'],
   });
+}
+
+function capsuleData() {
+  const verses = GITA_VERSES.map((v) => ({
+    id: v.id, ref: v.ref, sanskrit: v.sanskrit, translit: v.translit || '', meaning: v.meaning,
+    reflection: v.reflection, mantraLine: v.mantraLine, microAction: v.microAction,
+  }));
+  const capsules = CAPSULES.map(([label, , verse, quote]) => ({ label, verse, quote }));
+  return JSON.stringify({ verses, capsules }).replace(/</g, '\\u003c');
 }
 
 // The index: every tool on the site, in one place.

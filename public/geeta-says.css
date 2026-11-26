@@ -46,3 +46,11 @@
 .tool-card span { font-size: .9rem; color: var(--muted, #5c4d36); }
 .tool-card:focus-visible { outline: 3px solid var(--accent, #b4532a); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .gs-orb { transition: none; } }
+/* Feeling capsules */
+.gs-group { margin: 0 0 1.1rem; }
+.gs-group h2 { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: #e5c158; margin: 0 0 .55rem; font-weight: 700; }
+.gs-capsule-row { display: flex; flex-wrap: wrap; gap: .45rem; }
+.gs-capsule { font: inherit; font-size: .92rem; cursor: pointer; padding: .5rem .95rem; border-radius: 999px; background: rgba(255,255,255,.04); color: #f3efe6; border: 1px solid rgba(229,193,88,.4); min-height: 2.5rem; }
+.gs-capsule:hover { background: rgba(229,193,88,.18); border-color: #e5c158; }
+.gs-capsule:focus-visible { outline: 3px solid #f6d77a; outline-offset: 3px; }
+.gs-quote { margin: .2rem 0 .9rem; padding: 0; font-family: Georgia, serif; font-size: 1.12rem; line-height: 1.6; color: #fff8e7; font-style: italic; }
