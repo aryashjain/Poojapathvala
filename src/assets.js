@@ -148,6 +148,10 @@ main { padding: 2.5rem 0 4rem; }
 ins.adsbygoogle, .adsbygoogle { display: block; max-width: 300px; max-height: 280px; margin: 1.2rem auto; overflow: hidden; }
 ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-height: 280px !important; }
 /* Tarot reader button on the homepage. */
+.zen-pill-wrap { text-align: center; margin: 2rem 0 0; }
+.zen-pill { display: inline-block; padding: .55rem 1.1rem; border-radius: 999px; border: 1px solid var(--accent, #b4532a); color: var(--accent, #b4532a); text-decoration: none; font-size: .9rem; }
+.zen-pill:hover { background: var(--accent-soft, #f7e6dc); }
+.zen-pill:focus-visible { outline: 3px solid var(--accent, #b4532a); outline-offset: 3px; }
 .tarot-cta { display: inline-block; margin-top: 1rem; padding: .7rem 1.25rem; border-radius: 999px; background: var(--accent-soft); color: var(--ink); font-family: var(--sans); font-weight: 600; }
 .tarot-cta:hover { border: 0; text-decoration: none; filter: brightness(.97); }
 

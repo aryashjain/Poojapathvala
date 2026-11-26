@@ -44,3 +44,8 @@ body { color: var(--ink); font-family: Georgia, 'Iowan Old Style', serif; overfl
   .zen-breath { top: 52%; }
   #zen-in { left: 30%; } #zen-out { left: 62%; }
 }
+.zen-panel.zen-hi { border-color: var(--gold-strong); box-shadow: 0 0 0 2px rgba(246,195,90,.35); }
+.zen-preset { position: fixed; top: 46%; left: 50%; transform: translateX(-50%); z-index: 7; text-align: center; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: .8rem 1.1rem; width: min(480px, 92vw); }
+.zen-preset p { margin: 0 0 .6rem; font-size: .9rem; }
+.zen-preset button { font: inherit; padding: .5rem 1.2rem; border-radius: 999px; border: 1px solid var(--gold-strong); background: rgba(246,195,90,.2); color: #fff3d6; cursor: pointer; }
+.zen-preset[hidden] { display: none; }

@@ -439,6 +439,67 @@
   $('zen-river').addEventListener('input', function (e) { if (ensureAudio()) setGain(riverGain, (e.target.value / 100) * 0.22); });
   $('zen-drone').addEventListener('input', function (e) { if (ensureAudio()) setGain(droneGain, (e.target.value / 100) * 0.12); });
 
+  // ---- save this moment: a 1080 x 1920 image for stories ----
+  function saveImage() {
+    var out = document.createElement('canvas');
+    out.width = 1080; out.height = 1920;
+    var o = out.getContext('2d');
+    var g = o.createLinearGradient(0, 0, 0, 1920);
+    g.addColorStop(0, '#07081a'); g.addColorStop(0.6, '#10132c'); g.addColorStop(1, '#0a0912');
+    o.fillStyle = g; o.fillRect(0, 0, 1080, 1920);
+    var s = Math.max(1080 / canvas.width, 1920 / canvas.height);
+    var dw = canvas.width * s, dh = canvas.height * s;
+    o.drawImage(canvas, (1080 - dw) / 2, (1920 - dh) / 2, dw, dh);
+    // quiet header
+    o.fillStyle = 'rgba(7,8,26,0.55)'; o.fillRect(0, 0, 1080, 300);
+    o.fillStyle = '#f1d9a6'; o.textAlign = 'center'; o.textBaseline = 'middle';
+    o.font = '64px Georgia, serif'; o.fillText('60 Seconds of Stillness', 540, 150);
+    o.fillStyle = 'rgba(241,217,166,0.6)'; o.font = '30px Georgia, serif';
+    o.fillText('Breathe, pour, let go', 540, 220);
+    // watermark
+    o.textAlign = 'right'; o.fillStyle = 'rgba(241,217,166,0.75)'; o.font = '34px Georgia, serif';
+    o.fillText('poojapathvala.in/zen', 1040, 1862);
+    out.toBlob(function (blob) {
+      if (!blob) return;
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'stillness-poojapathvala.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    }, 'image/png');
+  }
+  $('zen-capture').addEventListener('click', saveImage);
+
+  // ---- deep-link presets: /zen?mode=overthinking, bilateral or sleep ----
+  var PRESETS = {
+    overthinking: { label: 'For overthinking: tanpura, soft rain and the breathing sound.', panel: 'zen-panel-breathe', bilateral: true, rain: 30, river: 0, drone: 40 },
+    bilateral: { label: 'For the breathing sound: a binaural pair that moves with the light.', panel: 'zen-panel-breathe', bilateral: true, rain: 0, river: 0, drone: 0 },
+    sleep: { label: 'For sleep: river, rain and tanpura, with slow breathing.', panel: 'zen-panel-sound', bilateral: false, rain: 40, river: 50, drone: 30 },
+  };
+  var mode = new URLSearchParams(window.location.search).get('mode');
+  var preset = PRESETS[mode] ? PRESETS[mode] : null;
+  function highlight(panelId) {
+    document.querySelectorAll('.zen-panel').forEach(function (p) { p.classList.toggle('zen-hi', p.id === panelId); });
+  }
+  function applyPreset(p) {
+    if (!ensureAudio()) return;
+    var sliders = [['zen-rain', p.rain, rainGain, 0.18], ['zen-river', p.river, riverGain, 0.22], ['zen-drone', p.drone, droneGain, 0.12]];
+    sliders.forEach(function (s) {
+      $(s[0]).value = s[1];
+      setGain(s[2], (s[1] / 100) * s[3]);
+    });
+    if (p.bilateral !== bilateralOn) $('zen-bilateral').click();
+    highlight(p.panel);
+    $('zen-preset').hidden = true;
+  }
+  if (preset) {
+    $('zen-preset-msg').textContent = preset.label + ' Tap begin to start the sound.';
+    $('zen-preset').hidden = false;
+    highlight(preset.panel);
+    $('zen-begin').addEventListener('click', function () { applyPreset(preset); });
+  }
   resize();
   setCandleUI();
   requestAnimationFrame(drawFrame);

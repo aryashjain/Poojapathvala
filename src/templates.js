@@ -803,6 +803,7 @@ export function tarotReaderPage({ origin }) {
     '</section>' +
     '<p class="reader-more"><a class="btn btn-ghost" href="/tarot/cards">Browse all 78 cards and their meanings</a></p>' +
     homeDrawSection(TAROT_LANG) +
+    zenPill() +
     adBox() +
     '<script type="application/json" id="tarot-data">' + JSON.stringify(data).replace(/</g, '\\u003c') + '</script>';
 
@@ -1330,6 +1331,7 @@ export function mantraCounterPage({ origin, topics }) {
     '<dt><kbd>Esc</kbd></dt><dd>Leave focus mode</dd></dl>' +
     '<p class="hint">On phones, the bead gives a short vibration.</p></section>' +
     '</div>' +
+    zenPill() +
     (items.length ? shopBox('Japa and puja essentials', items) : '') +
     '<script type="application/json" id="mc-data">' + data + '</script>' +
     '</div>';
@@ -1414,26 +1416,32 @@ export function zenPage({ origin }) {
     '<label class="sr-only" for="zen-thought">A thought or burden to release</label>' +
     '<input id="zen-thought" type="text" autocomplete="off" maxlength="120" placeholder="For example: overthinking about the future">' +
     '<p class="zen-steps"><b>1</b> Write &nbsp;·&nbsp; <b>2</b> Press Enter &nbsp;·&nbsp; <b>3</b> Breathe with the light</p></section>\n' +
+    '<div class="zen-preset" id="zen-preset" hidden><p id="zen-preset-msg"></p><button type="button" id="zen-begin">Begin with sound</button></div>\n' +
     '<p id="zen-in" class="zen-breath on">Breathe in · 4 seconds</p>\n' +
     '<p id="zen-out" class="zen-breath">Breathe out · 6 seconds</p>\n' +
     '<footer class="zen-dock">' +
-    '<section class="zen-panel" aria-labelledby="zen-h-draw"><h2 id="zen-h-draw">Draw</h2><div class="zen-row">' +
+    '<section class="zen-panel" id="zen-panel-draw" aria-labelledby="zen-h-draw"><h2 id="zen-h-draw">Draw</h2><div class="zen-row">' +
     '<button type="button" data-brush="sand" aria-pressed="true">Gold sand</button>' +
     '<button type="button" data-brush="silk" aria-pressed="false">Silk flow</button></div>' +
-    '<div class="zen-row"><button type="button" id="zen-sweep">Sweep to night sky</button></div>' +
+    '<div class="zen-row"><button type="button" id="zen-sweep">Sweep to night sky</button><button type="button" id="zen-capture" aria-label="Save this moment as an image">Save image</button></div>' +
     '<p class="zen-note">Everything you draw fades. That is the point.</p></section>' +
-    '<section class="zen-panel" aria-labelledby="zen-h-candle"><h2 id="zen-h-candle">Candle</h2><div class="zen-row">' +
+    '<section class="zen-panel" id="zen-panel-candle" aria-labelledby="zen-h-candle"><h2 id="zen-h-candle">Candle</h2><div class="zen-row">' +
     '<button type="button" id="zen-candle" aria-pressed="false">Blow it out</button>' +
     '<button type="button" id="zen-mic" aria-pressed="false">Blow with microphone</button></div>' +
     '<p class="zen-note" id="zen-mic-status" aria-live="polite">Click the flame, or blow with the microphone on.</p></section>' +
-    '<section class="zen-panel" aria-labelledby="zen-h-breathe"><h2 id="zen-h-breathe">Breathing sound</h2><div class="zen-row">' +
+    '<section class="zen-panel" id="zen-panel-breathe" aria-labelledby="zen-h-breathe"><h2 id="zen-h-breathe">Breathing sound</h2><div class="zen-row">' +
     '<button type="button" id="zen-bilateral" aria-pressed="false">Off</button></div>' +
     '<p class="zen-note">Headphones give the full effect. The sound moves left and right with the light.</p></section>' +
-    '<section class="zen-panel" aria-labelledby="zen-h-sound"><h2 id="zen-h-sound">Soundscape</h2><div class="zen-row">' +
+    '<section class="zen-panel" id="zen-panel-sound" aria-labelledby="zen-h-sound"><h2 id="zen-h-sound">Soundscape</h2><div class="zen-row">' +
     '<button type="button" id="zen-bowl">Strike singing bowl</button></div>' +
     '<label class="zen-slider"><span>Rain</span><input type="range" id="zen-rain" min="0" max="100" value="0" aria-label="Rain volume"></label>' +
     '<label class="zen-slider"><span>River</span><input type="range" id="zen-river" min="0" max="100" value="0" aria-label="River volume"></label>' +
     '<label class="zen-slider"><span>Tanpura</span><input type="range" id="zen-drone" min="0" max="100" value="0" aria-label="Tanpura drone volume"></label></section>' +
     '</footer>\n' +
     '<script src="/zen.js?v=' + ASSET_VERSION + '" defer></script>\n</body>\n</html>\n';
+}
+
+// A quiet link to the Zen Space, placed inside the page body.
+export function zenPill() {
+  return '<p class="zen-pill-wrap"><a class="zen-pill" href="/zen">Overwhelmed? Take 60 seconds in the Zen Space →</a></p>';
 }
