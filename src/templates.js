@@ -120,6 +120,7 @@ function layout({
     '<meta property="og:url" content="' + e(url) + '">\n' +
     '<meta property="og:image" content="' + e(origin + '/og.png') + '">\n' +
     '<meta name="twitter:image" content="' + e(origin + '/og.png') + '">\n' +
+    '<meta name="p:domain_verify" content="a0fef6de6c6aef3d453139c11fd8b807">\n' +
     '<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">\n' +
     '<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">\n' +
     '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n' +
