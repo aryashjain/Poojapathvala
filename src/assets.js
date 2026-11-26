@@ -191,6 +191,7 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
 @media (max-width: 860px) {
   .site-nav { display: none; }
   .nav-menu { display: block; margin-left: auto; }
+  .nav-menu-list { position: fixed; left: .75rem; right: .75rem; top: 3.6rem; width: auto; max-height: 76vh; }
   .header-inner { gap: .6rem; }
 }
 @media (max-width: 560px) {
