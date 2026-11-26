@@ -223,6 +223,12 @@
   var playSources = [], playEndTimer = null;
 
   function fmtSecs(s) { return (Math.round(s * 10) / 10).toFixed(1) + ' s'; }
+  function fmtDur(s) { return s < 60 ? Math.max(1, Math.round(s)) + ' s' : (Math.round(s / 6) / 10).toFixed(1) + ' min'; }
+  function setRecording(on) {
+    recBtn.classList.toggle('is-recording', on);
+    recBtn.textContent = on ? 'Stop and count' : 'Start recording';
+    recBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
 
   function loadMics() {
     if (!micSel || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
@@ -301,8 +307,7 @@
       speakMsg.textContent = 'That recording could not be read. Try again.';
     }).then(function () {
       recState.textContent = 'Not recording';
-      recBtn.textContent = 'Start recording';
-      recBtn.setAttribute('aria-pressed', 'false');
+      setRecording(false);
       loadMics();
     });
   }
@@ -334,8 +339,7 @@
       };
       recorder.start(200);
       recStarted = Date.now();
-      recBtn.textContent = 'Stop and count';
-      recBtn.setAttribute('aria-pressed', 'true');
+      setRecording(true);
       recState.textContent = 'Recording: say your mantra once, or several times with a pause';
       recTicker = setInterval(function () {
         recState.textContent = 'Recording ' + Math.floor((Date.now() - recStarted) / 1000) + ' s. Stop when you are done.';
@@ -371,13 +375,38 @@
     }
     playBtn.textContent = 'Stop playing';
     playBtn.setAttribute('aria-pressed', 'true');
-    speakMsg.textContent = 'Playing ' + n + (n === 1 ? ' chant' : ' chants') + ', about ' + Math.round((n * step) / 60 * 10) / 10 + ' min.';
+    speakMsg.textContent = 'Playing ' + n + (n === 1 ? ' chant' : ' chants') + ', about ' + fmtDur(n * step) + ' in total.';
     playEndTimer = setTimeout(function () {
       playSources = [];
       playBtn.textContent = 'Play chants';
       playBtn.setAttribute('aria-pressed', 'false');
       speakMsg.textContent = 'Finished ' + n + (n === 1 ? ' chant.' : ' chants.');
     }, (n * step + 0.2) * 1000);
+  }
+
+  // Two ways in: write a mantra, or speak it. Each has its own panel; the other stays hidden.
+  var tabWrite = $('mc-tab-write'), tabSpeak = $('mc-tab-speak');
+  var panelWrite = $('mc-panel-write'), panelSpeak = $('mc-panel-speak');
+  function showMode(mode, focus) {
+    var speak = mode === 'speak';
+    if (!speak) { stopRecording(); stopPlaying(); }
+    tabWrite.setAttribute('aria-selected', speak ? 'false' : 'true');
+    tabWrite.tabIndex = speak ? -1 : 0;
+    tabSpeak.setAttribute('aria-selected', speak ? 'true' : 'false');
+    tabSpeak.tabIndex = speak ? 0 : -1;
+    panelWrite.hidden = speak;
+    panelSpeak.hidden = !speak;
+    if (speak) { loadMics(); if (focus) tabSpeak.focus(); }
+    else if (focus) tabWrite.focus();
+  }
+  if (tabWrite && tabSpeak) {
+    tabWrite.addEventListener('click', function () { showMode('write'); });
+    tabSpeak.addEventListener('click', function () { showMode('speak'); });
+    tabWrite.parentNode.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End') return;
+      e.preventDefault();
+      showMode(e.key === 'ArrowRight' || e.key === 'End' ? 'speak' : 'write', true);
+    });
   }
 
   if (recBtn && playBtn) {
