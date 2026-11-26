@@ -1691,7 +1691,7 @@ export function geetaSaysPage({ origin, emotion, capsule }) {
     '<p class="gs-why" id="gs-why"></p>' +
     '<div class="gs-path-head"><span class="gs-step">1-minute pathway to stillness</span><span class="gs-timer" id="gs-timer">01:00</span></div>' +
     '<div class="gs-stage" id="gs-path"><p class="gs-step">Step 1 of 3 · Slow the breath</p><p class="gs-cue">Press start to begin the one-minute reset.</p></div>' +
-    (cap ? shareBar(shareUrl, shareText) : '') +
+    shareBar(cap ? shareUrl : origin + '/geeta-says', shareText) +
     '<div class="gs-actions"><button type="button" class="gs-primary" id="gs-start"' + (emo || cap ? '' : ' hidden') + '>Start the 1-minute reset</button></div>' +
     '<div class="gs-actions"><button type="button" class="gs-secondary" id="gs-export">Save verse card (PNG)</button>' +
     '<button type="button" class="gs-secondary" id="gs-release">Choose another feeling</button></div></section>' +
