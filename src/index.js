@@ -41,7 +41,14 @@ function safeNextPath(next) {
 }
 
 function sitemap(origin, topics) {
-  const entries = [{ loc: origin + '/' }, { loc: origin + '/tarot' }, { loc: origin + '/tarot/cards' }];
+  const entries = [
+    { loc: origin + '/' },
+    { loc: origin + '/tarot' },
+    { loc: origin + '/tarot/cards' },
+    { loc: origin + '/about' },
+    { loc: origin + '/contact' },
+    { loc: origin + '/privacy' },
+  ];
   for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {
     entries.push({ loc: origin + '/t/' + topic.slug });
@@ -78,6 +85,11 @@ export default {
 
     if (parts.length === 1 && parts[0] === 'feedback') {
       return handleFeedback(request, env, url, origin, langFromRequest(request));
+    }
+
+    const infoPages = { about: view.aboutPage, contact: view.contactPage, privacy: view.privacyPage };
+    if (parts.length === 1 && infoPages[parts[0]] && (request.method === 'GET' || request.method === 'HEAD')) {
+      return html(infoPages[parts[0]]({ lang: langFromRequest(request), origin }), 200, 'public, max-age=3600');
     }
 
     if (request.method !== 'GET' && request.method !== 'HEAD') {

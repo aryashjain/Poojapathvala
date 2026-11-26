@@ -139,7 +139,7 @@ function layout({
     '<main class="' + wrap + '">\n' + body + '\n' + (path.startsWith('/tarot') ? tarotShopBox() + TAROT_NOTE : '') + '</main>\n' +
     '<footer class="site-footer"><div class="' + wrap + '">' +
     '<span>' + e(brand) + ' · ' + e(t(lang, 'tagline')) + '</span>' +
-    '<span><a href="/sitemap.xml">' + e(t(lang, 'sitemap')) + '</a> · <a href="/feedback">' + e(t(lang, 'feedbackLink')) + '</a> · <a href="/admin">' + e(t(lang, 'addTexts')) + '</a></span>' +
+    '<span><a href="/about">' + e(loc(lang, 'About', 'हमारे बारे में')) + '</a> · <a href="/contact">' + e(loc(lang, 'Contact', 'संपर्क')) + '</a> · <a href="/privacy">' + e(loc(lang, 'Privacy', 'गोपनीयता')) + '</a> · <a href="/sitemap.xml">' + e(t(lang, 'sitemap')) + '</a> · <a href="/feedback">' + e(t(lang, 'feedbackLink')) + '</a> · <a href="/admin">' + e(t(lang, 'addTexts')) + '</a></span>' +
     '</div></footer>\n' +
     '<script src="/assets/posthog.js" defer></script>\n' +
     '<script src="/assets/app.js?v=' + ASSET_VERSION + '" defer></script>\n' +
@@ -816,5 +816,171 @@ export function tarotCardPage({ origin, card }) {
       description: card.upright,
       mainEntityOfPage: origin + path,
     },
+  });
+}
+
+// ---- Static pages: About, Contact, Privacy. Hindi and English from one source. ----
+function infoPage({ lang, origin, path, title, lede, sections }) {
+  const body =
+    '<header class="page-head"><h1>' + e(loc(lang, title[0], title[1])) + '</h1>' +
+    '<p class="lede">' + e(loc(lang, lede[0], lede[1])) + '</p></header>' +
+    sections
+      .map((s) => {
+        const paras = (s.paras || []).map((p) => '<p>' + e(loc(lang, p[0], p[1])) + '</p>').join('');
+        const items = s.items
+          ? '<ul>' + s.items.map((i) => '<li>' + e(loc(lang, i[0], i[1])) + '</li>').join('') + '</ul>'
+          : '';
+        return '<section class="panel info-section"><h2>' + e(loc(lang, s.h[0], s.h[1])) + '</h2>' + paras + items + '</section>';
+      })
+      .join('');
+  return layout({
+    lang,
+    origin,
+    path,
+    title: loc(lang, title[0], title[1]) + ' · ' + t(lang, 'brandName'),
+    description: loc(lang, lede[0], lede[1]),
+    body,
+  });
+}
+
+export function aboutPage({ lang, origin }) {
+  return infoPage({
+    lang,
+    origin,
+    path: '/about',
+    title: ['About us', 'हमारे बारे में'],
+    lede: ['Poojapathvala is a free digital library of pooja texts, chalisas, aartis, stotras and mantras, written out in Hindi with an English toggle.', 'पूजापाठवाला पूजा-पाठ के ग्रंथों की एक मुफ़्त डिजिटल लाइब्रेरी है: चालीसा, आरती, स्तोत्र, मंत्र और पूजा-विधि, हिंदी में, अंग्रेज़ी अनुवाद के विकल्प के साथ।'],
+    sections: [
+      {
+        h: [['What you will find', 'यहाँ क्या मिलेगा']],
+        paras: [
+          [
+            'The texts are grouped by tradition (Hindu and Jain) and by kind: chalisa, aarti, stotra, mantra and pooja vidhi. Each text can be read, enlarged, printed or shared.',
+            'पाठ परंपरा (हिंदू और जैन) और प्रकार (चालीसा, आरती, स्तोत्र, मंत्र और पूजा-विधि) के अनुसार सजाए गए हैं। हर पाठ पढ़ा, बड़ा करके देखा, छापा या साझा किया जा सकता है।',
+          ],
+          [
+            'Texts are published as they come from their sources. Where a text has known variants or is still being completed, the page says so.',
+            'पाठ उनके स्रोत के अनुसार प्रकाशित किए जाते हैं। जिस पाठ के कई रूप प्रचलित हैं या जो अभी पूरा हो रहा है, उस पर इसका उल्लेख होता है।',
+          ],
+        ],
+      },
+      {
+        h: [['The tarot section', 'टैरो भाग']],
+        paras: [
+          [
+            'The tarot reader is for reflection only. It is not a guide, just a sign from a deck of cards, and we take no responsibility for decisions made with it.',
+            'टैरो भाग केवल चिंतन के लिए है। यह कोई मार्गदर्शन नहीं, बस ताश के पत्तों का एक संकेत है, और इससे लिए गए निर्णयों की ज़िम्मेदारी हम नहीं लेते।',
+          ],
+        ],
+      },
+      {
+        h: [['How the site is supported', 'साइट कैसे चलती है']],
+        paras: [
+          [
+            'The site shows small advertisements, provided by Google AdSense, and links to products on Amazon. When you buy through an Amazon link we may earn a small commission at no extra cost to you. Amazon is a participant in the Amazon Associates Programme.',
+            'साइट पर Google AdSense के छोटे विज्ञापन दिखते हैं और Amazon के उत्पादों के लिंक हैं। Amazon के लिंक से खरीदारी होने पर हमें थोड़ा कमीशन मिल सकता है, आपको इसके लिए कोई अतिरिक्त शुल्क नहीं देना होता। हम Amazon Associates Programme में भागीदार हैं।',
+          ],
+        ],
+      },
+    ],
+  });
+}
+
+export function contactPage({ lang, origin }) {
+  return infoPage({
+    lang,
+    origin,
+    path: '/contact',
+    title: ['Contact us', 'संपर्क करें'],
+    lede: ['Found a mistake, want a text added, or have a question? Use the feedback form.', 'कोई गलती मिली, कोई पाठ जोड़ने का अनुरोध है, या कोई प्रश्न है? फ़ीडबैक फ़ॉर्म का उपयोग करें।'],
+    sections: [
+      {
+        h: [['How to reach us', 'हम तक कैसे पहुँचें']],
+        paras: [
+          [
+            'Use the feedback form to send corrections, suggestions or requests for new texts. We read every message. If you want a reply, leave your email in the form.',
+            'सुधार, सुझाव या नए पाठ के अनुरोध के लिए फ़ीडबैक फ़ॉर्म भरें। हर संदेश पढ़ा जाता है। उत्तर चाहिए तो फ़ॉर्म में अपना ईमेल लिखें।',
+          ],
+        ],
+      },
+      {
+        h: [['Removing your details', 'अपनी जानकारी हटवाना']],
+        paras: [
+          [
+            'To ask us to delete a feedback message that contains your details, send a note through the same form. See the privacy policy for what is stored.',
+            'यदि आप अपना कोई फ़ीडबैक संदेश हटवाना चाहते हैं जिसमें आपकी जानकारी है, तो उसी फ़ॉर्म से अनुरोध भेजें। क्या संग्रहीत होता है, यह गोपनीयता नीति में है।',
+          ],
+        ],
+      },
+    ],
+  });
+}
+
+export function privacyPage({ lang, origin }) {
+  return infoPage({
+    lang,
+    origin,
+    path: '/privacy',
+    title: ['Privacy policy', 'गोपनीयता नीति'],
+    lede: ['This page explains what Poojapathvala stores, what third parties receive, and how to ask us to remove your details.', 'यह पृष्ठ बताता है कि पूजापाठवाला क्या संग्रहीत करता है, कौन-सी तीसरी पार्टी क्या पाती है, और अपनी जानकारी हटवाने के लिए क्या करें।'],
+    sections: [
+      {
+        h: [['What we store on our side', 'हमारी ओर से क्या संग्रहीत होता है']],
+        items: [
+          [
+            'Feedback form: the name, email (optional), type and message you submit, so we can read and act on them. They are kept until we remove them.',
+            'फ़ीडबैक फ़ॉर्म: आपके द्वारा भेजे गए नाम, ईमेल (वैकल्पिक), प्रकार और संदेश, ताकि हम उन्हें पढ़ और उन पर कार्रवाई कर सकें। हटाए जाने तक ये रखे जाते हैं।',
+          ],
+          [
+            'Language choice: a cookie named pp-lang remembers whether you chose Hindi or English. It holds no personal details.',
+            'भाषा का चुनाव: pp-lang नाम की एक कुकी याद रखती है कि आपने हिंदी या अंग्रेज़ी चुनी है। इसमें कोई व्यक्तिगत जानकारी नहीं है।',
+          ],
+          [
+            'Tarot streak: your daily tarot count is stored only in your browser (local storage). We cannot see it, and clearing your browser data removes it.',
+            'टैरो लगातार दिन: आपके रोज़ाना टैरो की गिनती केवल आपके ब्राउज़र (लोकल स्टोरेज) में रहती है। हम इसे नहीं देखते, और ब्राउज़र का डेटा साफ़ करने पर यह हट जाती है।',
+          ],
+        ],
+      },
+      {
+        h: [['Analytics and errors', 'विश्लेषण और त्रुटियाँ']],
+        paras: [
+          [
+            'We use PostHog to see which pages are visited and how the site is used. PostHog may record your browser details, approximate location and page visits. Server errors are reported to PostHog so we can fix them.',
+            'हम PostHog का उपयोग करते हैं ताकि देखा जा सके कि कौन-से पृष्ठ देखे जाते हैं और साइट कैसे इस्तेमाल होती है। PostHog आपके ब्राउज़र की जानकारी, अनुमानित स्थान और पृष्ठ-भ्रमण दर्ज कर सकता है। सर्वर की त्रुटियाँ PostHog को भेजी जाती हैं ताकि हम उन्हें ठीक कर सकें।',
+          ],
+        ],
+      },
+      {
+        h: [['Ads and affiliate links', 'विज्ञापन और एफ़िलिएट लिंक']],
+        paras: [
+          [
+            'Google AdSense shows ads on text pages. Google and its partners may use cookies to show ads based on your past visits. You can control ad personalisation in your Google account settings, and learn more in Google’s ads privacy pages.',
+            'Google AdSense पाठ-पृष्ठों पर विज्ञापन दिखाता है। Google और उसके साझेदार आपकी पिछली यात्राओं के आधार पर विज्ञापन दिखाने के लिए कुकीज़ का उपयोग कर सकते हैं। विज्ञापन-वैयक्तिकरण आपके Google खाते की सेटिंग में बदला जा सकता है।',
+          ],
+          [
+            'Amazon links are sponsored. When you click one, Amazon may set its own cookies. We do not receive your personal details from Amazon.',
+            'Amazon के लिंक प्रायोजित हैं। लिंक पर क्लिक करने पर Amazon अपनी कुकीज़ सेट कर सकता है। हमें Amazon से आपकी व्यक्तिगत जानकारी नहीं मिलती।',
+          ],
+        ],
+      },
+      {
+        h: [['Hosting', 'होस्टिंग']],
+        paras: [
+          [
+            'The site is hosted on Cloudflare, which handles the requests you make to load pages.',
+            'साइट Cloudflare पर होस्ट है, जो पृष्ठ लोड करने के अनुरोधों को संभालता है।',
+          ],
+        ],
+      },
+      {
+        h: [['Your choices', 'आपके विकल्प']],
+        paras: [
+          [
+            'You can clear cookies and local storage in your browser at any time. To ask us to delete a feedback message, send a note through the feedback form. If the way we use data changes, we will update this page.',
+            'आप अपने ब्राउज़र में कुकीज़ और लोकल स्टोरेज कभी भी साफ़ कर सकते हैं। फ़ीडबैक संदेश हटवाने के लिए फ़ीडबैक फ़ॉर्म से अनुरोध भेजें। डेटा के उपयोग का तरीका बदलने पर हम इस पृष्ठ को अपडेट करेंगे।',
+          ],
+        ],
+      },
+    ],
   });
 }
