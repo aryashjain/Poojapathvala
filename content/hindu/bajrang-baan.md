@@ -1,10 +1,10 @@
 ---
 title: "Bajrang Baan"
 hindiTitle: "श्री बजरंग बाण"
-description: "Stotra text, full version coming soon."
-descriptionHi: "स्तोत्र — पूरा पाठ जल्द जुड़ेगा।"
 order: 7
 tags: [stotra]
+description: "Bajrang Baan, a prayer to Lord Hanuman for protection and the removal of obstacles, with the doha at the end."
+descriptionHi: "हनुमान जी से रक्षा और संकट निवारण की प्रार्थना, बजरंग बाण, अंत में दोहा सहित।"
 ---
 
 निश्चय प्रेम प्रतीति ते, बिनय करैं सनमान
@@ -41,6 +41,5 @@ tags: [stotra]
 पाठ करै बजरंग-बाण की, हनुमत रक्षा करै प्रान की
 यह बजरंग बाण जो जापैं, तासों भूत-प्रेत सब कापैं
 धूप देय जो जपै हमेसा, ताके तन नहिं रहै कलेसा
-ताके तन नहिं रहै कलेसा
-उर प्रतीति दृढ़, सरन ह्वै, पाठ करै धरि ध्यान
+उर प्रतीति दृढ़, सरन ह्वै, पाठ करै धरि ध्यान
 बाधा सब हर, करैं सब काम सफल हनुमान
