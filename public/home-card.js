@@ -38,4 +38,6 @@
     box.classList.add('hc-in');
   }
   btn.addEventListener('click', draw);
+  // The ritual page draws a card when the burn ends.
+  document.addEventListener('pp:burned', draw);
 })();

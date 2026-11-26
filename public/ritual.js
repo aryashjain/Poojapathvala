@@ -160,6 +160,10 @@
       reveal.hidden = false;
     }
     status.textContent = 'Burned. Your words are gone from this page.';
+    // Show the positive card draw, then draw one straight away.
+    var draw = document.querySelector('.hc');
+    if (draw) draw.hidden = false;
+    document.dispatchEvent(new Event('pp:burned'));
   }
 
   function frame(now) {
@@ -236,6 +240,8 @@
     burnBtn.hidden = false;
     resetBtn.hidden = true;
     reveal.hidden = true;
+    var drawSec = document.querySelector('.hc');
+    if (drawSec) drawSec.hidden = true;
     quote.textContent = ''; source.textContent = '';
     status.textContent = 'Write what is on your mind.';
     text.focus();

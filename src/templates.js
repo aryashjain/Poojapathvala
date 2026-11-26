@@ -198,11 +198,11 @@ function docNote(lang, topic, doc) {
 }
 
 // Homepage: draw one positive tarot card. Only cards with a positive tone are offered.
-function homeDrawSection(lang) {
+function homeDrawSection(lang, hidden = false) {
   const positive = CARDS.filter((c) => c.tone === 'p').map((c) => ({ id: c.id, name: c.name, upright: c.upright }));
   const data = JSON.stringify(positive).replace(/</g, '\\u003c');
   return (
-    '<section class="hc" aria-labelledby="hc-title"><h2 id="hc-title" class="hc-title">' +
+    '<section class="hc" aria-labelledby="hc-title"' + (hidden ? ' hidden' : '') + '><h2 id="hc-title" class="hc-title">' +
     e(loc(lang, 'Draw one positive card today', 'आज एक सकारात्मक कार्ड खींचें')) + '</h2>' +
     '<button id="hc-draw" class="tarot-cta hc-btn" type="button">✨ ' + e(loc(lang, 'Draw a positive tarot card', 'सकारात्मक टैरो कार्ड खींचें')) + '</button>' +
     '<div id="hc-result" class="hc-result" aria-live="polite" hidden></div>' +
@@ -246,7 +246,7 @@ export function homePage({ lang, origin, topics }) {
     '<h1>' + e(t(lang, 'tagline')) + '</h1>' +
     '<p class="lede">' + e(t(lang, 'homeLede')) + '</p>' +
     searchForm(lang, 'home') +
-    '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a> <a class="tarot-cta" href="/mantra-counter">📿 Mantra counter · मंत्र काउंटर</a></p>' +
+    '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a> <a class="tarot-cta" href="/mantra-counter">📿 Mantra counter · मंत्र काउंटर</a> <a class="tarot-cta" href="/ritual/release">🔥 Burn your worry · चिंता जलाएँ</a></p>' +
     '<p class="kind-links">' + kindLinks(lang, topics) + '</p>' +
     homeDrawSection(lang) +
     '</section>' +
@@ -1358,7 +1358,7 @@ const RITUAL_REFLECTIONS = [
   { text: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन॥', source: 'Bhagavad Gita 2.47: You have a right to your action, never to its fruits.' },
 ];
 
-export function ritualPage({ origin }) {
+export function ritualPage({ origin, lang = 'en' }) {
   const data = JSON.stringify(RITUAL_REFLECTIONS).replace(/</g, '\\u003c');
   const body =
     '<div class="rt-app">' +
@@ -1373,6 +1373,7 @@ export function ritualPage({ origin }) {
     '<p id="rt-status" class="rt-status" aria-live="polite">Write what is on your mind.</p>' +
     '<section id="rt-reveal" class="rt-reveal" hidden><p id="rt-quote" class="rt-quote"></p><p id="rt-source" class="rt-source"></p>' +
     '<p><a class="tarot-cta" href="/tarot">Draw a tarot card</a></p></section>' +
+    homeDrawSection(lang, true) +
     '<p class="rt-note">Privacy: the text stays in this browser tab. It is not stored, not sent, and is cleared when the card burns. Hold space or enter on the keyboard to burn.</p>' +
     '<script type="application/json" id="rt-data">' + data + '</script>' +
     '</div>';
@@ -1385,6 +1386,6 @@ export function ritualPage({ origin }) {
     body,
     showLangToggle: false,
     extraCss: ['/ritual.css'],
-    extraJs: ['/ritual.js'],
+    extraJs: ['/ritual.js', '/home-card.js'],
   });
 }
