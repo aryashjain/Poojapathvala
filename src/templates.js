@@ -1660,15 +1660,24 @@ export function geetaSaysPage({ origin, emotion }) {
 }
 
 // The index: every tool on the site, in one place.
+const TOOL_GLYPHS = { '/': '📜', '/tarot': '🔮', '/mantra-counter': '📿', '/zen': '🪷', '/geeta-says': '🕉', '/ritual/release': '🔥', '/moon': '🌙', '/sleep': '🌿' };
 export function indexPage({ origin }) {
   const cards = TOOLS.map((tool) =>
-    '<a class="tool-card" href="' + e(tool.path) + '"><strong>' + e(tool.en) + ' · ' + e(tool.hi) + '</strong><span>' + e(tool.desc) + '</span></a>'
+    '<li><a class="ix-card" href="' + e(tool.path) + '">' +
+    '<span class="ix-glyph" aria-hidden="true">' + (TOOL_GLYPHS[tool.path] || '✦') + '</span>' +
+    '<h2 class="ix-name">' + e(tool.en) + '</h2>' +
+    '<p class="ix-hi" lang="hi">' + e(tool.hi) + '</p>' +
+    '<p class="ix-desc">' + e(tool.desc) + '</p>' +
+    '<span class="ix-go">Open →</span></a></li>'
   ).join('');
+  const chips = [['/', 'Library'], ['/chalisa', 'Chalisas'], ['/aarti', 'Aartis'], ['/stotra', 'Stotras'], ['/mantra', 'Mantras'], ['/puja', 'Puja vidhi']]
+    .map(([href, label]) => '<a class="ix-chip" href="' + e(href) + '">' + e(label) + '</a>').join('');
   const body =
-    '<header class="page-head"><p class="eyebrow">Index</p><h1>Everything on Poojapathvala</h1>' +
-    '<p class="lede">The library and the calm tools in one place.</p></header>' +
-    '<section aria-labelledby="index-tools"><h2 id="index-tools" class="sr-only">Tools</h2><div class="gs-index-grid">' + cards + '</div></section>' +
-    '<p class="gs-cross">Looking for a text? Start with <a href="/">the library</a>, or browse <a href="/chalisa">chalisas</a>, <a href="/aarti">aartis</a>, <a href="/stotra">stotras</a>, <a href="/mantra">mantras</a> and <a href="/puja">puja vidhi</a>.</p>';
+    '<header class="ix-hero"><p class="ix-eyebrow">Index</p><h1 class="ix-title">Everything on Poojapathvala</h1>' +
+    '<p class="ix-lede">The devotional library and the calm tools, in one place.</p></header>' +
+    '<section aria-labelledby="ix-tools"><h2 id="ix-tools" class="sr-only">Tools</h2><ul class="ix-grid">' + cards + '</ul></section>' +
+    '<section class="ix-banner" aria-labelledby="ix-lib"><div><p id="ix-lib"><strong>Looking for a text?</strong> Start with the library, or browse by kind.</p></div>' +
+    '<div class="ix-chips">' + chips + '</div></section>';
   return layout({
     lang: 'en',
     origin,
@@ -1677,6 +1686,6 @@ export function indexPage({ origin }) {
     description: 'Every page on Poojapathvala: the devotional library, tarot, mala counter, Zen Space, Geeta Says, moon phase and bedtime wind-down.',
     body,
     showLangToggle: false,
-    extraCss: ['/geeta-says.css'],
+    extraCss: ['/index.css'],
   });
 }

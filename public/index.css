@@ -1,0 +1,39 @@
+/* Index page: a calm hub of every tool. Uses the site's theme colours so light, sepia and dark all read well. */
+.ix-hero { text-align: center; padding: 1.2rem 0 1.6rem; position: relative; }
+.ix-hero::before { content: ""; position: absolute; inset: -20px -10px auto; height: 160px; z-index: -1; background: radial-gradient(ellipse at 50% 0%, var(--accent-soft, #f7e6dc), transparent 70%); }
+.ix-eyebrow { font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent, #b4532a); margin: 0 0 .5rem; font-weight: 700; }
+.ix-title { font-size: clamp(1.9rem, 4.5vw, 2.6rem); line-height: 1.15; margin: 0 0 .5rem; color: var(--ink, #1d1b18); }
+.ix-lede { color: var(--muted, #5c4d36); font-size: 1.02rem; margin: 0 auto; max-width: 36rem; line-height: 1.6; }
+.ix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 1rem; margin: 1.4rem 0 0; padding: 0; list-style: none; }
+.ix-card {
+  display: flex; flex-direction: column; gap: .55rem; height: 100%; box-sizing: border-box;
+  padding: 1.15rem 1.15rem 1.2rem; border-radius: 18px; text-decoration: none; color: var(--ink, #1d1b18);
+  background: var(--surface, #fff); border: 1px solid var(--line, #e8e4dc);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(60,35,10,.06);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.ix-card:hover { transform: translateY(-3px); border-color: var(--accent, #b4532a); box-shadow: 0 2px 4px rgba(0,0,0,.05), 0 14px 32px rgba(60,35,10,.12); text-decoration: none; }
+.ix-card:focus-visible { outline: 3px solid var(--accent, #b4532a); outline-offset: 3px; }
+.ix-glyph {
+  width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 1.35rem;
+  background: var(--accent-soft, #f7e6dc); color: var(--accent, #b4532a);
+}
+.ix-name { font-size: 1.1rem; font-weight: 700; margin: .1rem 0 0; color: var(--ink, #1d1b18); }
+.ix-hi { font-size: .95rem; color: var(--accent, #b4532a); margin: 0; font-weight: 600; }
+.ix-desc { font-size: .92rem; line-height: 1.55; color: var(--muted, #5c4d36); margin: 0; flex: 1; }
+.ix-go { font-size: .85rem; font-weight: 600; color: var(--accent, #b4532a); margin-top: .2rem; }
+.ix-banner {
+  display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; align-items: center; justify-content: space-between;
+  margin: 2rem 0 0; padding: 1.1rem 1.25rem; border-radius: 18px; background: var(--surface, #fff); border: 1px dashed var(--accent, #b4532a);
+}
+.ix-banner p { margin: 0; color: var(--ink, #1d1b18); line-height: 1.6; }
+.ix-banner .ix-chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+.ix-banner a.ix-chip { font-size: .9rem; padding: .4rem .85rem; border-radius: 999px; border: 1px solid var(--line, #e8e4dc); color: var(--ink, #1d1b18); text-decoration: none; background: var(--bg, #fbfaf6); }
+.ix-banner a.ix-chip:hover { border-color: var(--accent, #b4532a); color: var(--accent, #b4532a); }
+.ix-banner a.ix-chip:focus-visible { outline: 3px solid var(--accent, #b4532a); outline-offset: 2px; }
+@media (max-width: 520px) {
+  .ix-card { padding: 1rem; }
+  .ix-glyph { width: 40px; height: 40px; font-size: 1.2rem; }
+  .ix-banner { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .ix-card { transition: none; } .ix-card:hover { transform: none; } }
