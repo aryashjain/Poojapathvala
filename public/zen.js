@@ -125,44 +125,103 @@
       setCandleUI();
       return;
     }
-    var x = candle.x, by = candle.baseY, top = by - 70;
-    var wax = ctx.createLinearGradient(x - 11, 0, x + 11, 0);
-    wax.addColorStop(0, '#d9c49a'); wax.addColorStop(0.5, '#f7ecd0'); wax.addColorStop(1, '#c9b07f');
+    var x = candle.x, by = candle.baseY;
+    var bodyW = 26, bodyH = 80, top = by - bodyH;
+    var lit = candle.state === 'lit';
+
+    // warm light on the dark sky and a soft pool on the table
+    if (lit) {
+      var glow = ctx.createRadialGradient(x, top - 10, 6, x, top - 10, 210);
+      glow.addColorStop(0, 'rgba(255,184,96,0.36)');
+      glow.addColorStop(0.45, 'rgba(255,128,48,0.10)');
+      glow.addColorStop(1, 'rgba(255,128,48,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(x - 220, top - 220, 440, 440);
+      var pool = ctx.createRadialGradient(x, by + 6, 4, x, by + 6, 90);
+      pool.addColorStop(0, 'rgba(255,170,80,0.22)');
+      pool.addColorStop(1, 'rgba(255,170,80,0)');
+      ctx.fillStyle = pool;
+      ctx.beginPath(); ctx.ellipse(x, by + 6, 90, 22, 0, 0, 6.283); ctx.fill();
+    }
+
+    // bronze saucer
+    var saucer = ctx.createLinearGradient(0, by - 2, 0, by + 8);
+    saucer.addColorStop(0, '#9a7a3c'); saucer.addColorStop(0.5, '#6b5226'); saucer.addColorStop(1, '#3a2a12');
+    ctx.fillStyle = saucer;
+    ctx.beginPath(); ctx.ellipse(x, by + 2, 44, 8, 0, 0, 6.283); ctx.fill();
+    ctx.fillStyle = 'rgba(255,230,170,0.25)';
+    ctx.beginPath(); ctx.ellipse(x - 6, by, 26, 3, 0, 0, 6.283); ctx.fill();
+
+    // wax body: ivory with a soft highlight and shadow edge
+    var wax = ctx.createLinearGradient(x - bodyW / 2, 0, x + bodyW / 2, 0);
+    wax.addColorStop(0, '#c9b58a'); wax.addColorStop(0.28, '#f5ead0'); wax.addColorStop(0.55, '#fff7e4'); wax.addColorStop(1, '#b9a275');
     ctx.fillStyle = wax;
-    ctx.fillRect(x - 11, top, 22, 70);
-    ctx.fillStyle = 'rgba(60,40,15,0.5)';
-    ctx.fillRect(x - 11, by - 2, 22, 4);
-    ctx.strokeStyle = '#2a1a0a'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, top - 6); ctx.stroke();
-    if (candle.state === 'lit') {
-      candle.flick = 0.5 + 0.25 * Math.sin(t * 9) + 0.25 * Math.sin(t * 17 + 1);
-      var fh = 34 + 5 * candle.flick, fw = 10 + 2 * candle.flick;
-      var halo = ctx.createRadialGradient(x, top - 12, 4, x, top - 12, 150);
-      halo.addColorStop(0, 'rgba(255,190,90,0.42)');
-      halo.addColorStop(0.5, 'rgba(255,140,50,0.12)');
-      halo.addColorStop(1, 'rgba(255,140,50,0)');
-      ctx.fillStyle = halo;
-      ctx.fillRect(x - 160, top - 170, 320, 330);
+    ctx.beginPath();
+    ctx.moveTo(x - bodyW / 2, by);
+    ctx.lineTo(x - bodyW / 2, top);
+    ctx.quadraticCurveTo(x, top - 5, x + bodyW / 2, top);
+    ctx.lineTo(x + bodyW / 2, by);
+    ctx.closePath(); ctx.fill();
+
+    // a few wax drips down the side
+    ctx.fillStyle = 'rgba(240,226,190,0.95)';
+    [[-8, 16, 5], [5, 26, 4], [10, 12, 3]].forEach(function (d) {
+      var dx = x + d[0], dy = top + d[1];
+      ctx.beginPath();
+      ctx.moveTo(dx - 2, dy);
+      ctx.quadraticCurveTo(dx - 2.2, dy + d[2] + 3, dx, dy + d[2] + 4);
+      ctx.quadraticCurveTo(dx + 2.2, dy + d[2] + 3, dx + 2, dy);
+      ctx.closePath(); ctx.fill();
+    });
+
+    // melted top: a pool that glows when lit
+    ctx.fillStyle = lit ? 'rgba(255,200,120,0.55)' : 'rgba(230,215,180,0.9)';
+    ctx.beginPath(); ctx.ellipse(x, top + 1, bodyW / 2 - 1, 4, 0, 0, 6.283); ctx.fill();
+    if (lit) {
+      ctx.strokeStyle = 'rgba(255,140,50,0.8)'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.ellipse(x, top + 1, bodyW / 2 - 2, 3, 0, 0, 6.283); ctx.stroke();
+    }
+
+    // wick
+    ctx.strokeStyle = '#1e1208'; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x, top); ctx.quadraticCurveTo(x + 1.5, top - 4, x + 0.5, top - 8); ctx.stroke();
+    ctx.lineCap = 'butt';
+
+    if (lit) {
+      var sway = Math.sin(t * 2.3) * 1.6 + Math.sin(t * 5.1) * 0.8;
+      var flick = 0.5 + 0.25 * Math.sin(t * 9) + 0.25 * Math.sin(t * 17 + 1);
+      var fh = 36 + 5 * flick, fw = 9 + 1.5 * flick;
+      var fy = top - 8, tipX = x + sway;
       ctx.globalCompositeOperation = 'lighter';
-      var outer = ctx.createLinearGradient(0, top - 6, 0, top - 6 - fh);
-      outer.addColorStop(0, 'rgba(255,120,30,0.9)'); outer.addColorStop(1, 'rgba(255,60,0,0)');
+      // outer: orange teardrop
+      var outer = ctx.createLinearGradient(0, fy, 0, fy - fh);
+      outer.addColorStop(0, 'rgba(255,110,30,0.95)'); outer.addColorStop(0.6, 'rgba(255,90,20,0.45)'); outer.addColorStop(1, 'rgba(255,60,0,0)');
       ctx.fillStyle = outer;
       ctx.beginPath();
-      ctx.moveTo(x - fw, top - 6);
-      ctx.quadraticCurveTo(x - fw * 1.1, top - 6 - fh * 0.5, x + (candle.flick - 0.5) * 4, top - 6 - fh);
-      ctx.quadraticCurveTo(x + fw * 1.1, top - 6 - fh * 0.5, x + fw, top - 6);
+      ctx.moveTo(x, fy + 2);
+      ctx.bezierCurveTo(x - fw * 1.3, fy - fh * 0.25, x - fw * 0.6 + sway * 0.4, fy - fh * 0.7, tipX, fy - fh);
+      ctx.bezierCurveTo(x + fw * 0.6 + sway * 0.4, fy - fh * 0.7, x + fw * 1.3, fy - fh * 0.25, x, fy + 2);
       ctx.closePath(); ctx.fill();
-      var inner = ctx.createLinearGradient(0, top - 6, 0, top - 6 - fh * 0.7);
-      inner.addColorStop(0, 'rgba(255,250,200,0.95)'); inner.addColorStop(1, 'rgba(255,220,120,0)');
-      ctx.fillStyle = inner;
+      // middle: yellow
+      var mid = ctx.createLinearGradient(0, fy, 0, fy - fh * 0.8);
+      mid.addColorStop(0, 'rgba(255,220,110,0.95)'); mid.addColorStop(1, 'rgba(255,170,50,0)');
+      ctx.fillStyle = mid;
       ctx.beginPath();
-      ctx.moveTo(x - fw * 0.45, top - 6);
-      ctx.quadraticCurveTo(x, top - 6 - fh * 0.9, x + fw * 0.45, top - 6);
+      ctx.moveTo(x, fy + 1);
+      ctx.bezierCurveTo(x - fw * 0.8, fy - fh * 0.2, x - fw * 0.35 + sway * 0.3, fy - fh * 0.55, tipX * 0.5 + x * 0.5, fy - fh * 0.8);
+      ctx.bezierCurveTo(x + fw * 0.35 + sway * 0.3, fy - fh * 0.55, x + fw * 0.8, fy - fh * 0.2, x, fy + 1);
       ctx.closePath(); ctx.fill();
+      // core: white-blue at the base
+      var core = ctx.createRadialGradient(x, fy, 0, x, fy, 9);
+      core.addColorStop(0, 'rgba(230,240,255,0.95)'); core.addColorStop(1, 'rgba(150,190,255,0)');
+      ctx.fillStyle = core;
+      ctx.beginPath(); ctx.ellipse(x, fy - 1, 5, 6, 0, 0, 6.283); ctx.fill();
       ctx.globalCompositeOperation = 'source-over';
     } else {
-      // smoking: a thin wisp rises from the wick until the candle is hidden
-      puffs.push({ x: x + (Math.random() - 0.5) * 2, y: top - 8, vx: 0.05, vy: -0.25, r: 1.5, a: 0.12, wisp: true });
+      // smoking: a thin curling wisp from the wick
+      if (Math.random() < 0.6) {
+        puffs.push({ x: x + (Math.random() - 0.5) * 2, y: top - 9, vx: 0.04, vy: -0.28, r: 1.2, a: 0.14, wisp: true });
+      }
     }
   }
 
