@@ -3,6 +3,7 @@ import { t, loc, minutes, textCount, formatDate } from './i18n.js';
 import { isPending } from './status.js';
 import { CARDS, SPREADS, SUIT_LABELS } from './tarot-data.js';
 import { TOPICS } from './tarot-topics.js';
+import { DEEP } from './tarot-deep.js';
 import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
 
@@ -719,7 +720,7 @@ export function tarotReaderPage({ origin }) {
     )
     .join('');
   const body =
-    '<header class="page-head tarot-head"><p class="eyebrow">Tarot reader</p><h1>Draw your cards</h1>' +
+    '<header class="page-head tarot-head"><p class="eyebrow">Tarot reader</p><h1>Free tarot reading online</h1>' +
     '<p class="lede">Four steps: ask your question, choose a spread, pick a card back, then choose your cards from the row.</p></header>' +
     '<section class="tips" aria-labelledby="tips-title"><h2 id="tips-title">Before you begin</h2><ol>' +
     '<li>Take a breath and settle your mind.</li>' +
@@ -820,6 +821,7 @@ export function tarotCardPage({ origin, card }) {
     '<section><h2>Reversed</h2><p>' + e(card.reversed) + '</p></section>' +
     '<section><h2>Love</h2><p><strong>Upright:</strong> ' + e(TOPICS[card.id].love[0]) + '</p><p><strong>Reversed:</strong> ' + e(TOPICS[card.id].love[1]) + '</p></section>' +
     '<section><h2>Career and money</h2><p><strong>Upright:</strong> ' + e(TOPICS[card.id].career[0]) + '</p><p><strong>Reversed:</strong> ' + e(TOPICS[card.id].career[1]) + '</p></section>' +
+    (DEEP[card.id] ? '<p class="deep-links">Read more: <a href="/tarot/card/' + e(card.id) + '/love">' + e(card.name) + ' love reading</a> · <a href="/tarot/card/' + e(card.id) + '/career">' + e(card.name) + ' career reading</a></p>' : '') +
     '<p><a class="btn" href="/tarot">Draw your own cards</a></p>' +
     '</article>' +
     '<section class="related"><h2>More ' + e(SUIT_LABELS[card.suit]) + '</h2><ul class="card-links">' + relatedList + '</ul></section>';
@@ -1189,3 +1191,42 @@ export function kindPage({ lang, origin, kind, topics }) {
     ],
   });
 }
+
+// Longer love and career pages for the cards in DEEP.
+export function tarotTopicPage({ origin, card, topic }) {
+  const deep = DEEP[card.id] && DEEP[card.id][topic];
+  if (!deep) return null;
+  const label = topic === 'love' ? 'in love' : 'for career and money';
+  const name = card.name + ' ' + (topic === 'love' ? 'love meaning' : 'career meaning');
+  const path = '/tarot/card/' + card.id + '/' + topic;
+  const body =
+    '<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/tarot">Tarot</a><span>/</span>' +
+    '<a href="/tarot/card/' + e(card.id) + '">' + e(card.name) + '</a><span>/</span>' + (topic === 'love' ? 'Love' : 'Career') + '</nav>' +
+    '<article class="article tarot-card-page">' +
+    '<header class="page-head"><p class="eyebrow">' + e(SUIT_LABELS[card.suit]) + '</p><h1>' + e(card.name) + ' ' + e(label) + '</h1>' +
+    '<p class="lede">' + e(card.name) + ' ' + e(label) + ': upright and reversed readings.</p></header>' +
+    '<section><h2>Upright</h2>' + deep.upright.map((p) => '<p>' + e(p) + '</p>').join('') + '</section>' +
+    '<section><h2>Reversed</h2>' + deep.reversed.map((p) => '<p>' + e(p) + '</p>').join('') + '</section>' +
+    '<p><a class="btn btn-ghost" href="/tarot/card/' + e(card.id) + '">Back to ' + e(card.name) + '</a> <a class="btn" href="/tarot">Draw your own cards</a></p>' +
+    '</article>';
+  return layout({
+    lang: TAROT_LANG,
+    origin,
+    path,
+    title: name + ': Upright and Reversed · Tarot · Poojapathvala',
+    description: card.name + ' ' + label + '. ' + deep.upright[0].slice(0, 140),
+    body,
+    type: 'article',
+    showLangToggle: false,
+    extraCss: ['/assets/tarot.css'],
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: name,
+      description: deep.upright[0],
+      mainEntityOfPage: origin + path,
+    },
+  });
+}
+
+export const DEEP_TOPIC_PATHS = Object.keys(DEEP).flatMap((id) => Object.keys(DEEP[id]).map((topic) => '/tarot/card/' + id + '/' + topic));

@@ -49,6 +49,7 @@ function sitemap(origin, topics) {
     { loc: origin + '/contact' },
     { loc: origin + '/privacy' },
     ...view.liveKindKeys(topics).map((kind) => ({ loc: origin + '/' + kind })),
+    ...view.DEEP_TOPIC_PATHS.map((path) => ({ loc: origin + path })),
   ];
   for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {
@@ -132,6 +133,11 @@ export default {
     }
     if (parts[0] === 'tarot' && parts.length === 1) {
       return html(view.tarotReaderPage({ origin }));
+    }
+    if (parts[0] === 'tarot' && parts[1] === 'card' && parts.length === 4) {
+      const card = CARDS.find((item) => item.id === parts[2]);
+      const page = card ? view.tarotTopicPage({ origin, card, topic: parts[3] }) : null;
+      if (page) return html(page);
     }
     if (parts[0] === 'tarot' && parts[1] === 'card' && parts.length === 3) {
       const card = CARDS.find((item) => item.id === parts[2]);
