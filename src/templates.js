@@ -1358,6 +1358,7 @@ export function mantraCounterPage({ origin, topics }) {
     '<div class="mc-field"><label for="mc-secs">Seconds per chant</label><input type="number" id="mc-secs" min="1" max="120" value="6"></div>' +
     '<div class="mc-field"><label for="mc-total">Total chants</label><input type="number" id="mc-total" min="1" max="10000" value="108"></div>' +
     '<label class="mc-switch"><input type="checkbox" id="mc-sound" checked> Bell sound</label>' +
+    '<button id="mc-test-chime" class="mc-btn ghost" type="button">Test chime</button>' +
     '</div></div>' +
     '<div id="mc-panel-speak" class="mc-panel" role="tabpanel" aria-labelledby="mc-tab-speak" hidden>' +
     '<p class="mc-note">Say the mantra once, or several times with a short pause between. The page counts the repeats and plays your first chant back that many times. Your audio stays on this device.</p>' +
@@ -1382,13 +1383,18 @@ export function mantraCounterPage({ origin, topics }) {
     '<button id="mc-reset" class="mc-btn ghost" type="button">Reset</button>' +
     '<button id="mc-focus-btn" class="mc-btn ghost" type="button" aria-pressed="false">Focus mode</button>' +
     '</div>' +
-    '<div id="mc-beads" class="mc-beads" aria-hidden="true"></div>' +
+    '<div class="mc-beadwrap"><div id="mc-beads" class="mc-beadring" aria-hidden="true"></div></div>' +
+    '<div class="mc-segment" role="group" aria-label="Beads per ring">' +
+    '<button type="button" class="mc-seg" data-ring="27" aria-pressed="false">27</button>' +
+    '<button type="button" class="mc-seg" data-ring="54" aria-pressed="false">54</button>' +
+    '<button type="button" class="mc-seg" data-ring="108" aria-pressed="true">108</button></div>' +
     '<p id="mc-malas" class="mc-malas">Your first mala starts here</p>' +
     '</section>' +
     '<section class="mc-card mc-stats" aria-labelledby="mc-h-stats"><div class="mc-card-head"><h2 id="mc-h-stats">Your japa</h2></div>' +
     '<div class="mc-stat-row"><div class="mc-stat"><strong id="mc-today">0</strong><span>Today</span></div>' +
     '<div class="mc-stat"><strong id="mc-streak">0</strong><span>Day streak</span></div></div>' +
-    '<div id="mc-week" class="mc-week" aria-label="Japa count for the last 7 days"></div></section>' +
+    '<div id="mc-week" class="mc-week" aria-label="Japa count for the last 7 days"></div>' +
+    '<button id="mc-card" class="mc-btn ghost mc-card-btn" type="button">Save practice card (PNG)</button></section>' +
     '<section class="mc-card mc-keys" aria-labelledby="mc-h-keys"><div class="mc-card-head"><h2 id="mc-h-keys">Keyboard</h2></div>' +
     '<dl class="mc-keylist"><dt><kbd>Space</kbd></dt><dd>Count one chant</dd>' +
     '<dt><kbd>T</kbd></dt><dd>Start or pause the timer</dd>' +
@@ -1397,6 +1403,11 @@ export function mantraCounterPage({ origin, topics }) {
     '<dt><kbd>Esc</kbd></dt><dd>Leave focus mode</dd></dl>' +
     '<p class="mc-note">On phones, the bead gives a short vibration.</p></section>' +
     '</div>' +
+    '<section class="mc-faq" aria-labelledby="mc-faq-title"><h2 id="mc-faq-title">About the mantra counter</h2>' +
+    '<details><summary>Why are there 108 beads?</summary><p>Many traditions use 108 beads. Explanations differ: some link the number to the 27 nakshatras multiplied by four, and others to counts of names or qualities. The extra bead, the Meru, marks the end of each round.</p></details>' +
+    '<details><summary>How do I count?</summary><p>Tap the ring or press Space to count one chant. Choose 27, 54 or 108 beads. Set total chants to stop at a target, or start the timer to count one chant every few seconds.</p></details>' +
+    '<details><summary>Is my count stored anywhere?</summary><p>No. Counts and streaks are kept in your browser only. Nothing is uploaded or shared.</p></details>' +
+    '<p class="mc-links-line"><a href="/mantra-counter?mantra=navkar&beads=108">Chant the Navkar Mantra, 108 times</a></p></section>' +
     '<div class="mc-extras">' + zenPill() + geetaPill() + '</div>' +
     (items.length ? shopBox('Japa and puja essentials', items) : '') +
     '<script type="application/json" id="mc-data">' + data + '</script>' +
@@ -1411,6 +1422,14 @@ export function mantraCounterPage({ origin, topics }) {
     showLangToggle: false,
     extraCss: ['/mantra-counter.css'],
     extraJs: ['/mantra-counter.js'],
+    jsonLd: [
+      { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Poojapathvala Mantra Counter', url: origin + '/mantra-counter', applicationCategory: 'LifestyleApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, description: 'A 108-bead japa mala counter with a chanting timer, a mantra library and a private daily streak.' },
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: [
+        { '@type': 'Question', name: 'Why are there 108 beads?', acceptedAnswer: { '@type': 'Answer', text: 'Many traditions use 108 beads. Explanations differ: some link the number to the 27 nakshatras multiplied by four, and others to counts of names or qualities. The extra bead, the Meru, marks the end of each round.' } },
+        { '@type': 'Question', name: 'How do I count?', acceptedAnswer: { '@type': 'Answer', text: 'Tap the ring or press Space to count one chant. Choose 27, 54 or 108 beads. Set total chants to stop at a target, or start the timer to count one chant every few seconds.' } },
+        { '@type': 'Question', name: 'Is my count stored anywhere?', acceptedAnswer: { '@type': 'Answer', text: 'No. Counts and streaks are kept in your browser only. Nothing is uploaded or shared.' } },
+      ] },
+    ],
   });
 }
 

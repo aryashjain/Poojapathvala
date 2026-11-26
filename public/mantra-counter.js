@@ -8,7 +8,7 @@
   var LIB = [];
   try { LIB = JSON.parse(dataEl.textContent || '[]'); } catch (e) { LIB = []; }
 
-  var BEADS = 108;
+  var BEADS_DEFAULT = 108;
   var KEY = 'pp-mala-days';
   var app = $('mc-app');
   var sel = $('mc-select'), text = $('mc-text'), secs = $('mc-secs'), total = $('mc-total'), sound = $('mc-sound');
@@ -72,11 +72,7 @@
     renderWeek(days);
   }
 
-  for (var i = 0; i < BEADS; i++) {
-    var dot = document.createElement('span');
-    dot.className = 'mc-dot';
-    beadsEl.appendChild(dot);
-  }
+  buildRing();
 
   function chants() { return Math.max(0, parseInt(total.value, 10) || 0); }
   function clampSecs() { return Math.min(120, Math.max(1, parseFloat(secs.value) || 6)); }
@@ -103,10 +99,10 @@
     if (count === 0 && !running) setLive(false);
     var t = chants();
     ofEl.textContent = t ? 'of ' + t : 'chants';
-    var full = count === 0 ? 0 : (count % BEADS === 0 ? BEADS : count % BEADS);
+    var full = count === 0 ? 0 : (count % ringSize() === 0 ? ringSize() : count % ringSize());
     var dots = beadsEl.children;
     for (var j = 0; j < dots.length; j++) dots[j].classList.toggle('on', j < full);
-    var malas = Math.floor(count / BEADS);
+    var malas = Math.floor(count / ringSize());
     $('mc-malas').textContent = malas ? malas + (malas === 1 ? ' mala' : ' malas') + ' completed' : 'Your first mala starts here';
   }
 
@@ -148,7 +144,7 @@
     addToday();
     if (navigator.vibrate) navigator.vibrate(12);
     var t = chants();
-    if (count % BEADS === 0) { msg.textContent = 'Mala complete: 108 beads.'; bell(); }
+    if (count % ringSize() === 0) { msg.textContent = 'Mala complete: 108 beads.'; bell(); }
     if (t && count >= t) {
       stopAuto();
       msg.textContent = 'Target reached: ' + t + ' chants.';
@@ -456,4 +452,89 @@
   renderCount();
   renderStats();
   timerState.textContent = 'Timer paused';
+
+  // ---- bead ring: 27, 54 or 108 beads around a crown (Meru) bead. The total-chants setting sets the ring size. ----
+  function ringSize() {
+    var n = parseInt(total.value, 10);
+    return [27, 54, 108].indexOf(n) !== -1 ? n : BEADS_DEFAULT;
+  }
+  function buildRing() {
+    var n = ringSize();
+    beadsEl.textContent = '';
+    for (var i = 0; i < n; i++) {
+      var a = -Math.PI / 2 + (2 * Math.PI * i) / n;
+      var dot = document.createElement('span');
+      dot.className = 'mc-dot';
+      dot.style.left = (50 + 44 * Math.cos(a)).toFixed(2) + '%';
+      dot.style.top = (50 + 44 * Math.sin(a)).toFixed(2) + '%';
+      beadsEl.appendChild(dot);
+    }
+    var meru = document.createElement('span');
+    meru.className = 'mc-meru';
+    meru.setAttribute('aria-hidden', 'true');
+    beadsEl.appendChild(meru);
+    document.querySelectorAll('[data-ring]').forEach(function (b) {
+      b.setAttribute('aria-pressed', parseInt(b.getAttribute('data-ring'), 10) === n ? 'true' : 'false');
+    });
+    renderCount();
+  }
+  document.querySelectorAll('[data-ring]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      total.value = b.getAttribute('data-ring');
+      buildRing();
+    });
+  });
+  total.addEventListener('change', buildRing);
+
+  // ---- deep links: ?mantra=navkar&beads=108 opens that mantra with that ring ----
+  function applyDeepLink() {
+    var p = new URLSearchParams(window.location.search);
+    var m = (p.get('mantra') || '').toLowerCase().trim();
+    if (m) {
+      var hit = Array.prototype.filter.call(sel.options, function (o) { return o.value !== '' && o.text.toLowerCase().indexOf(m) !== -1; })[0];
+      if (hit) { sel.value = hit.value; sel.dispatchEvent(new Event('change')); }
+    }
+    var b = parseInt(p.get('beads'), 10);
+    if ([27, 54, 108].indexOf(b) !== -1) total.value = b;
+    buildRing();
+  }
+
+  // ---- test chime: plays the bell even when the sound switch is off ----
+  $('mc-test-chime').addEventListener('click', function () {
+    ensureCtx();
+    var prev = sound.checked;
+    sound.checked = true;
+    bell();
+    sound.checked = prev;
+  });
+
+  // ---- practice card: a 1080 x 1350 image for stories and status ----
+  $('mc-card').addEventListener('click', function () {
+    var c = document.createElement('canvas');
+    c.width = 1080; c.height = 1350;
+    var x = c.getContext('2d');
+    x.fillStyle = '#0b0b0f'; x.fillRect(0, 0, c.width, c.height);
+    x.strokeStyle = 'rgba(229,193,88,0.4)'; x.lineWidth = 3; x.strokeRect(56, 56, c.width - 112, c.height - 112);
+    x.textAlign = 'center';
+    x.fillStyle = '#e5c158'; x.font = '600 30px Georgia, serif';
+    x.fillText('POOJAPATHVALA · JAPA MALA', c.width / 2, 170);
+    var days = loadDays();
+    x.fillStyle = '#fff8e7'; x.font = '700 170px Georgia, serif';
+    x.fillText(String(days[dayKey()] || 0), c.width / 2, 470);
+    x.fillStyle = '#e5c158'; x.font = '34px Georgia, serif';
+    x.fillText('CHANTS TODAY', c.width / 2, 540);
+    var opt = sel.options[sel.selectedIndex];
+    var name = opt && opt.value !== '' ? opt.text : (text.value.trim().slice(0, 60) || 'My mantra');
+    x.fillStyle = '#f3efe6'; x.font = '44px Georgia, serif';
+    x.fillText(name, c.width / 2, 700);
+    x.fillStyle = '#9c988e'; x.font = '30px sans-serif';
+    x.fillText('Day streak: ' + streak(days) + ' · Ring: ' + ringSize() + ' beads', c.width / 2, 785);
+    x.fillText('poojapathvala.in/mantra-counter', c.width / 2, c.height - 115);
+    var a = document.createElement('a');
+    a.download = 'mala-practice-' + dayKey() + '.png';
+    a.href = c.toDataURL('image/png');
+    a.click();
+  });
+
+  applyDeepLink();
 })();
