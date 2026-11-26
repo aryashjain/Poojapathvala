@@ -102,14 +102,20 @@ export const TOOLS = [
 
 // The navbar: Index first, then the tools. The current page is marked.
 function siteNav(lang, path) {
+  const label = e(loc(lang, 'Tools', 'उपकरण'));
+  return '<nav class="site-nav" aria-label="' + label + '">' + navLinks(lang, path) + '</nav>' +
+    '<details class="nav-menu"><summary>' + e(loc(lang, 'Menu', 'मेनू')) + '</summary>' +
+    '<nav class="nav-menu-list" aria-label="' + label + '">' + navLinks(lang, path) + '</nav></details>';
+}
+
+function navLinks(lang, path) {
   const items = [['/', loc(lang, 'Home', 'मुखपृष्ठ')], ['/index', loc(lang, 'Index', 'सूची')]].concat(
     TOOLS.filter((tool) => tool.path !== '/').map((tool) => [tool.path, loc(lang, tool.en, tool.hi)]));
-  return '<nav class="site-nav" aria-label="' + e(loc(lang, 'Tools', 'उपकरण')) + '"><div class="site-nav-inner">' +
-    items.map(([href, label]) => {
-      const current = href === path || (href === '/' && path === '/');
-      const cls = href === '/geeta-says' ? ' class="nav-cta"' : '';
-      return '<a href="' + e(href) + '"' + cls + (current ? ' aria-current="page"' : '') + '>' + e(label) + '</a>';
-    }).join('') + '</div></nav>';
+  return items.map(([href, text]) => {
+    const current = href === path;
+    const cls = href === '/geeta-says' ? ' class="nav-cta"' : '';
+    return '<a href="' + e(href) + '"' + cls + (current ? ' aria-current="page"' : '') + '>' + e(text) + '</a>';
+  }).join('');
 }
 
 // A quiet link to Geeta Says for pages where someone may be stuck.
@@ -176,10 +182,9 @@ function layout({
     '<a class="brand" href="/" lang="' + lang + '">' +
     '<span class="brand-mark"><img src="/mark-96.png" width="96" height="96" alt=""></span>' +
     '<span class="brand-name">' + e(brand) + '</span></a>' +
-    (showLangToggle ? langToggle(lang, path) : '') +
-    searchForm(lang, 'header') +
-    '</div></header>\n' +
     siteNav(lang, path) +
+    '<div class="header-tools">' + (showLangToggle ? langToggle(lang, path) : '') + searchForm(lang, 'header') + '</div>' +
+    '</div></header>\n' +
     '<main class="' + wrap + '">\n' + body + '\n' + (path.startsWith('/tarot') ? tarotShopBox() + TAROT_NOTE : '') + '</main>\n' +
     '<footer class="site-footer"><div class="' + wrap + ' sf-grid">' +
     '<div class="sf-brand"><span class="sf-name">' + e(brand) + '</span><p>' + e(t(lang, 'tagline')) + '</p></div>' +

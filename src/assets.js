@@ -162,6 +162,43 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
 .site-nav a.nav-cta:hover { background: var(--accent); filter: brightness(1.08); border-color: var(--accent); }
 .site-nav a.nav-cta[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 .zen-ask { display: inline-block; margin-top: .5rem; color: #f1d9a6; font-size: .8rem; pointer-events: auto; }
+/* One sticky header: brand, links, language and a compact search. */
+.site-header { position: sticky; top: 0; z-index: 60; padding: 0; background: var(--surface); border-bottom: 1px solid var(--line); -webkit-backdrop-filter: saturate(1.4) blur(10px); backdrop-filter: saturate(1.4) blur(10px); }
+.header-inner { gap: .85rem; padding: .45rem 0; min-height: 3.1rem; flex-wrap: nowrap; }
+.header-inner .brand { flex: none; gap: .5rem; }
+.header-inner .brand-mark { width: 34px; height: 34px; }
+.header-inner .brand-name { font-size: .98rem; white-space: nowrap; }
+.site-nav { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: .1rem; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: .15rem 0; mask-image: linear-gradient(to right, #000 86%, transparent); -webkit-mask-image: linear-gradient(to right, #000 86%, transparent); }
+.site-nav::-webkit-scrollbar { display: none; }
+.site-nav a { flex: none; white-space: nowrap; padding: .4rem .72rem; border-radius: 999px; color: var(--ink); text-decoration: none; font-size: .86rem; border: 1px solid transparent; transition: background .15s ease, color .15s ease; }
+.site-nav a:hover { background: var(--accent-soft); text-decoration: none; }
+.site-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.site-nav a.nav-cta { color: var(--accent); font-weight: 600; border-color: var(--accent-soft); }
+.site-nav a:focus-visible, .nav-menu summary:focus-visible, .nav-menu-list a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.nav-menu { display: none; position: relative; flex: none; }
+.nav-menu summary { list-style: none; cursor: pointer; padding: .38rem .85rem; border: 1px solid var(--line); border-radius: 999px; font-size: .86rem; color: var(--ink); background: var(--bg); }
+.nav-menu summary::-webkit-details-marker { display: none; }
+.nav-menu[open] summary { border-color: var(--accent); color: var(--accent); }
+.nav-menu-list { position: absolute; right: 0; top: calc(100% + .45rem); width: min(260px, 86vw); display: grid; gap: .1rem; padding: .5rem; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 44px rgba(0,0,0,.18); z-index: 70; max-height: 72vh; overflow-y: auto; }
+.nav-menu-list a { padding: .65rem .8rem; border-radius: 10px; color: var(--ink); text-decoration: none; font-size: .95rem; }
+.nav-menu-list a:hover { background: var(--accent-soft); text-decoration: none; }
+.nav-menu-list a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.header-tools { display: flex; align-items: center; gap: .45rem; flex: none; margin-left: auto; }
+.header-tools .search { position: relative; }
+.header-tools .search input { width: clamp(120px, 14vw, 200px); padding: .36rem .75rem; font-size: .85rem; border-radius: 999px; transition: width .2s ease; }
+.header-tools .search button { padding: .36rem .8rem; font-size: .85rem; border-radius: 999px; }
+@media (max-width: 1000px) { .header-inner .brand-name { display: none; } }
+@media (max-width: 860px) {
+  .site-nav { display: none; }
+  .nav-menu { display: block; margin-left: auto; }
+  .header-inner { gap: .6rem; }
+}
+@media (max-width: 560px) {
+  .header-tools .search input { width: 118px; }
+  .header-tools .search:focus-within input { width: 176px; }
+  .header-tools .search button { display: none; }
+  .lang-toggle { padding: .3rem .55rem; font-size: .8rem; }
+}
 .zen-pill-wrap { text-align: center; margin: 2rem 0 0; }
 .zen-pill { display: inline-block; padding: .55rem 1.1rem; border-radius: 999px; border: 1px solid var(--accent, #b4532a); color: var(--accent, #b4532a); text-decoration: none; font-size: .9rem; }
 .zen-pill:hover { background: var(--accent-soft, #f7e6dc); }
