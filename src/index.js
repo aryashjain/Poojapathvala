@@ -53,6 +53,8 @@ function sitemap(origin, topics) {
     { loc: origin + '/mantra-counter' },
     { loc: origin + '/ritual/release' },
     { loc: origin + '/zen' },
+    { loc: origin + '/moon' },
+    { loc: origin + '/sleep' },
   ];
   for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {
@@ -158,6 +160,13 @@ export default {
 
     if (parts.length === 0) {
       return html(view.homePage({ lang, origin, topics }));
+    }
+
+    if (parts.length === 1 && parts[0] === 'moon') {
+      return html(view.moonPage({ origin, now: Date.now(), birth: url.searchParams.get('birth') }), 200, 'public, max-age=600');
+    }
+    if (parts.length === 1 && parts[0] === 'sleep') {
+      return html(view.sleepPage({ origin }));
     }
 
     if (parts.length === 1 && parts[0] === 'zen') {

@@ -1,0 +1,15 @@
+/* Moon page: cards with high contrast text. */
+.moon-card { background: #1b1d33; color: #f5eedc; border: 1px solid #3c4170; border-radius: 16px; padding: 1.1rem 1.2rem; margin: 1rem 0; }
+.moon-card h2 { margin: 0 0 .6rem; font-size: 1.05rem; color: #ffd98a; font-weight: 600; }
+.moon-card a { color: #ffd98a; }
+.moon-row { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; }
+.moon-disc { flex: none; width: 160px; height: 160px; }
+.moon-name { font-size: 1.4rem; margin: 0 0 .3rem; color: #fff4d6; }
+.moon-note { font-size: .85rem; color: #cfc8b4; margin: .6rem 0 0; }
+.moon-form { display: flex; flex-wrap: wrap; gap: .6rem; align-items: end; }
+.moon-form label { width: 100%; font-weight: 600; color: #f5eedc; }
+.moon-form input { font: inherit; padding: .55rem .7rem; border-radius: 8px; border: 1px solid #3c4170; background: #252847; color: #f5eedc; color-scheme: dark; }
+.moon-btn { font: inherit; font-weight: 600; cursor: pointer; padding: .6rem 1.1rem; border-radius: 999px; border: 1px solid #ffd98a; background: #ffd98a; color: #1b1d33; }
+.moon-error { color: #ffb4a8; font-weight: 600; }
+.moon-list { padding-left: 1.2rem; margin: 0; line-height: 1.6; }
+.moon-links { text-align: center; margin: 1.2rem 0 0; }

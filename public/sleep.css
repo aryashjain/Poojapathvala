@@ -1,0 +1,22 @@
+/* Bedtime wind-down. A night panel look with high contrast text. */
+.sleep-card, .moon-card { background: #1b1d33; color: #f5eedc; border: 1px solid #3c4170; border-radius: 16px; padding: 1.1rem 1.2rem; margin: 1rem 0; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.sleep-card h2, .moon-card h2 { margin: 0 0 .6rem; font-size: 1.05rem; color: #ffd98a; font-weight: 600; }
+.sleep-stage { display: grid; place-items: center; height: 220px; }
+.sleep-circle { width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff4cf, #e9b96a 60%, #b07a2c); box-shadow: 0 0 40px rgba(255,200,120,.35); transition: transform 4s ease-in-out, box-shadow 4s ease-in-out; transform: scale(1); }
+.sleep-circle[data-phase="in"] { transform: scale(1.7); box-shadow: 0 0 70px rgba(255,200,120,.5); }
+.sleep-circle[data-phase="hold"] { transform: scale(1.7); box-shadow: 0 0 70px rgba(255,200,120,.5); }
+.sleep-circle[data-phase="out"] { transform: scale(1); }
+.sleep-cue { text-align: center; font-size: 1.1rem; margin: 0 0 .8rem; color: #ffd98a; }
+.sleep-row { display: flex; flex-wrap: wrap; gap: .55rem; justify-content: center; margin: .6rem 0; }
+.sleep-btn { font: inherit; font-size: .95rem; font-weight: 600; cursor: pointer; min-height: 2.7rem; padding: .5rem 1rem; border-radius: 999px; border: 1px solid #ffd98a; background: transparent; color: #ffe9b8; }
+.sleep-btn[aria-pressed="true"], .sleep-primary { background: #ffd98a; color: #1b1d33; border-color: #ffd98a; }
+.sleep-btn:focus-visible, .sleep-select:focus-visible, .sleep-check input:focus-visible, .moon-btn:focus-visible, .moon-form input:focus-visible { outline: 3px solid #ffd98a; outline-offset: 3px; }
+.sleep-clock { text-align: center; font-size: 2.6rem; font-variant-numeric: tabular-nums; margin: .4rem 0; color: #fff4d6; }
+.sleep-note { font-size: .85rem; color: #cfc8b4; margin: .5rem 0 0; text-align: center; }
+.sleep-slider { display: flex; align-items: center; gap: .6rem; justify-content: center; margin-top: .6rem; }
+.sleep-select { font: inherit; padding: .45rem .6rem; border-radius: 8px; background: #252847; color: #f5eedc; border: 1px solid #3c4170; }
+.sleep-check { list-style: none; padding: 0; margin: 0; display: grid; gap: .55rem; }
+.sleep-check label { display: flex; align-items: center; gap: .6rem; cursor: pointer; font-size: 1rem; }
+.sleep-check input { width: 1.1rem; height: 1.1rem; accent-color: #ffd98a; }
+.sleep-links { text-align: center; margin: 1.2rem 0 0; }
+@media (prefers-reduced-motion: reduce) { .sleep-circle { transition: none !important; } }

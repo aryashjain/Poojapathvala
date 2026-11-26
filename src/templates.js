@@ -6,6 +6,7 @@ import { TOPICS } from './tarot-topics.js';
 import { DEEP } from './tarot-deep.js';
 import { ASSET_VERSION } from './version.js';
 import { activeAffiliates, AFFILIATES } from './affiliates.js';
+import { moonInfo } from './moon.js';
 
 // A small, fixed 300x250 ad box. The slot is filled by app.js.
 function adBox() {
@@ -154,6 +155,8 @@ function layout({
       ['/tarot', loc(lang, 'Tarot reader', 'टैरो रीडर')],
       ['/mantra-counter', loc(lang, 'Mantra counter', 'मंत्र काउंटर')],
       ['/ritual/release', loc(lang, 'Burn your worry', 'चिंता जलाएँ')],
+      ['/moon', loc(lang, 'Moon phase', 'चंद्र चरण')],
+      ['/sleep', loc(lang, 'Bedtime wind-down', 'सोने से पहले')],
     ]) +
     footerGroup(loc(lang, 'About', 'परिचय'), [
       ['/about', loc(lang, 'About us', 'हमारे बारे में')],
@@ -1444,4 +1447,129 @@ export function zenPage({ origin }) {
 // A quiet link to the Zen Space, placed inside the page body.
 export function zenPill() {
   return '<p class="zen-pill-wrap"><a class="zen-pill" href="/zen">Overwhelmed? Take 60 seconds in the Zen Space →</a></p>';
+}
+
+// ---- /moon: today's moon, and the moon on a birth date ----
+const MOON_PHASE_HELP = [
+  ['New Moon', 'The moon is between us and the sun. Dark sky, a time many people use to set intentions.'],
+  ['Waxing Crescent', 'A thin light appears on the right. Good for beginnings and small steps.'],
+  ['First Quarter', 'Half of the moon is lit. A time for decisions and action.'],
+  ['Waxing Gibbous', 'More than half is lit and growing. A time for refining and preparing.'],
+  ['Full Moon', 'The whole face is lit. Many people mark this time with gratitude and reflection.'],
+  ['Waning Gibbous', 'Still bright, now shrinking. A time to share and give thanks.'],
+  ['Last Quarter', 'Half is lit again. A time to let go of what no longer serves you.'],
+  ['Waning Crescent', 'A thin sliver before the new moon. A quiet time for rest.'],
+];
+
+// A simple moon disc drawn in SVG: the lit part is bounded by a half circle and the terminator.
+function moonSvg(illumination, waxing) {
+  const k = Math.max(0, Math.min(1, illumination / 100));
+  const R = 80, cx = 100, cy = 100;
+  let lit;
+  if (k >= 0.995) lit = '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="#f6e7b8"/>';
+  else if (k <= 0.005) lit = '';
+  else {
+    const rx = (R * Math.abs(1 - 2 * k)).toFixed(2);
+    const gib = k > 0.5;
+    let d;
+    if (waxing) {
+      // lit on the right: outer arc on the right, terminator back up the middle
+      d = 'M' + cx + ',' + (cy - R) + ' A' + R + ',' + R + ' 0 0 1 ' + cx + ',' + (cy + R) +
+        ' A' + rx + ',' + R + ' 0 0 ' + (gib ? 1 : 0) + ' ' + cx + ',' + (cy - R) + ' Z';
+    } else {
+      d = 'M' + cx + ',' + (cy - R) + ' A' + R + ',' + R + ' 0 0 0 ' + cx + ',' + (cy + R) +
+        ' A' + rx + ',' + R + ' 0 0 ' + (gib ? 0 : 1) + ' ' + cx + ',' + (cy - R) + ' Z';
+    }
+    lit = '<path d="' + d + '" fill="#f6e7b8"/>';
+  }
+  return '<svg class="moon-disc" viewBox="0 0 200 200" role="img" aria-label="Moon, ' + illumination + ' percent lit" width="200" height="200">' +
+    '<circle cx="100" cy="100" r="80" fill="#1d2038" stroke="#3a3f63" stroke-width="2"/>' + lit + '</svg>';
+}
+
+function moonDate(ms) {
+  return new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata' }).format(new Date(ms));
+}
+
+export function moonPage({ origin, now, birth }) {
+  const today = moonInfo(now);
+  let birthBlock = '';
+  if (birth) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(birth);
+    const ms = m ? Date.UTC(+m[1], +m[2] - 1, +m[3], 12, 0) : NaN;
+    if (!m || Number.isNaN(ms) || ms > now) {
+      birthBlock = '<p class="moon-error" role="alert">Please enter a valid past date.</p>';
+    } else {
+      const b = moonInfo(ms);
+      birthBlock =
+        '<section class="moon-card" aria-labelledby="moon-birth-title"><h2 id="moon-birth-title">The moon on ' + e(moonDate(ms)) + '</h2>' +
+        '<div class="moon-row">' + moonSvg(b.illumination, b.waxing) +
+        '<div><p class="moon-name">' + e(b.name) + '</p><p>' + b.illumination + '% lit · ' + b.age + ' days into the cycle</p></div></div>' +
+        '<p class="moon-note">Phase only. Your moon sign (rashi) needs a full astronomy calculation, which this page does not do.</p></section>';
+    }
+  }
+  const help = MOON_PHASE_HELP.map(([n, d]) => '<li><strong>' + e(n) + '</strong> — ' + e(d) + '</li>').join('');
+  const body =
+    '<header class="page-head"><p class="eyebrow">Moon</p><h1>Moon phase today</h1>' +
+    '<p class="lede">The moon phase right now, the date of the next full moon, and the moon on any birth date.</p></header>' +
+    '<section class="moon-card moon-today" aria-labelledby="moon-today-title"><h2 id="moon-today-title">Today</h2>' +
+    '<div class="moon-row">' + moonSvg(today.illumination, today.waxing) +
+    '<div><p class="moon-name">' + e(today.name) + '</p><p>' + today.illumination + '% lit · ' + today.age + ' days into the cycle</p>' +
+    '<p>Next full moon: <strong>' + e(moonDate(today.nextFullMs)) + '</strong></p></div></div>' +
+    '<p class="moon-note">Calculated from the average lunar cycle. It can differ from the exact moment by about a day.</p></section>' +
+    '<section class="moon-card" aria-labelledby="moon-birth-form-title"><h2 id="moon-birth-form-title">Find the moon on your birth date</h2>' +
+    '<form method="get" action="/moon" class="moon-form"><label for="moon-birth">Birth date</label>' +
+    '<input id="moon-birth" name="birth" type="date" required value="' + e(birth || '') + '" max="' + e(new Date(now).toISOString().slice(0, 10)) + '">' +
+    '<button type="submit" class="moon-btn">Show my birth moon</button></form></section>' +
+    birthBlock +
+    '<section class="moon-card" aria-labelledby="moon-phases-title"><h2 id="moon-phases-title">The eight phases</h2><ul class="moon-list">' + help + '</ul></section>' +
+    '<p class="moon-links"><a href="/sleep">Wind down for sleep</a> · <a href="/zen">The Zen Space</a> · <a href="/">Poojapathvala</a></p>';
+  return layout({
+    lang: 'en',
+    origin,
+    path: '/moon',
+    title: 'Moon Phase Today and Birth Moon Calculator · Poojapathvala',
+    description: 'Today\'s moon phase, illumination and the next full moon, plus the moon phase on any birth date. Calculated from the average lunar cycle.',
+    body,
+    showLangToggle: false,
+    extraCss: ['/moon.css'],
+  });
+}
+
+// ---- /sleep: a bedtime wind-down with a breathing guide, a timer and a checklist ----
+export function sleepPage({ origin }) {
+  const body =
+    '<header class="page-head"><p class="eyebrow">Sleep</p><h1>Bedtime wind-down</h1>' +
+    '<p class="lede">Slow your breath, lower the lights, and let the timer bring you to rest.</p></header>' +
+    '<section class="sleep-card" aria-labelledby="sleep-breath-title"><h2 id="sleep-breath-title">Breathe with the circle</h2>' +
+    '<div class="sleep-stage"><div class="sleep-circle" id="sleep-circle" aria-hidden="true"></div></div>' +
+    '<p class="sleep-cue" id="sleep-cue" aria-live="polite">Breathe in for 4</p>' +
+    '<div class="sleep-row"><button type="button" class="sleep-btn" id="sleep-breath-btn" aria-pressed="false">Start breathing</button></div>' +
+    '<p class="sleep-note">4 counts in, 7 held, 8 out. Repeat as long as you like.</p></section>' +
+    '<section class="sleep-card" aria-labelledby="sleep-timer-title"><h2 id="sleep-timer-title">Wind-down timer</h2>' +
+    '<div class="sleep-row" role="group" aria-label="Choose minutes">' +
+    '<button type="button" class="sleep-btn" data-min="10" aria-pressed="false">10 min</button>' +
+    '<button type="button" class="sleep-btn" data-min="20" aria-pressed="true">20 min</button>' +
+    '<button type="button" class="sleep-btn" data-min="30" aria-pressed="false">30 min</button></div>' +
+    '<p class="sleep-clock" id="sleep-clock" aria-live="polite">20:00</p>' +
+    '<div class="sleep-row"><button type="button" class="sleep-btn sleep-primary" id="sleep-timer-btn">Start timer</button></div>' +
+    '<label class="sleep-slider"><span>Night sounds</span><select id="sleep-sound" class="sleep-select" aria-label="Night sound">' +
+    '<option value="none">None</option><option value="rain">Soft rain</option><option value="river">River</option></select></label>' +
+    '<p class="sleep-note">The sound fades out over the last minute of the timer.</p></section>' +
+    '<section class="sleep-card" aria-labelledby="sleep-list-title"><h2 id="sleep-list-title">Before you sleep</h2>' +
+    '<ul class="sleep-check">' +
+    ['Put the phone face down or across the room', 'Dim the lights', 'Drink a glass of water', 'Write down tomorrow\'s first task', 'Set the room a little cooler'].map((item, i) =>
+      '<li><label><input type="checkbox" data-check="' + i + '"> ' + e(item) + '</label></li>').join('') +
+    '</ul><p class="sleep-note">Your ticks stay on this device.</p></section>' +
+    '<p class="sleep-links"><a href="/moon">See tonight\'s moon</a> · <a href="/zen">The Zen Space</a></p>';
+  return layout({
+    lang: 'en',
+    origin,
+    path: '/sleep',
+    title: 'Bedtime Wind-Down: Breathing, Timer and Night Sounds · Poojapathvala',
+    description: 'A calm bedtime wind-down with a 4-7-8 breathing guide, a sleep timer, soft night sounds and a before-sleep checklist. Free, nothing is stored.',
+    body,
+    showLangToggle: false,
+    extraCss: ['/sleep.css'],
+    extraJs: ['/sleep.js'],
+  });
 }
