@@ -199,7 +199,13 @@ function docNote(lang, topic, doc) {
 
 // Homepage: draw one positive tarot card. Only cards with a positive tone are offered.
 function homeDrawSection(lang, hidden = false) {
-  const positive = CARDS.filter((c) => c.tone === 'p').map((c) => ({ id: c.id, name: c.name, upright: c.upright }));
+  const positive = CARDS.filter((c) => c.tone === 'p').map((c) => ({
+    id: c.id,
+    name: c.name,
+    upright: c.upright,
+    sub: c.arcana === 'major' ? SUIT_LABELS.major : SUIT_LABELS[c.suit],
+    number: c.number,
+  }));
   const data = JSON.stringify(positive).replace(/</g, '\\u003c');
   return (
     '<section class="hc" aria-labelledby="hc-title"' + (hidden ? ' hidden' : '') + '><h2 id="hc-title" class="hc-title">' +

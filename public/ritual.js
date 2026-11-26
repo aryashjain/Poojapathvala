@@ -160,9 +160,7 @@
       reveal.hidden = false;
     }
     status.textContent = 'Burned. Your words are gone from this page.';
-    // Show the positive card draw, then draw one straight away.
-    var draw = document.querySelector('.hc');
-    if (draw) draw.hidden = false;
+    // The positive card pops up now.
     document.dispatchEvent(new Event('pp:burned'));
   }
 

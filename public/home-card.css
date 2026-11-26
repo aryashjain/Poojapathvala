@@ -1,20 +1,49 @@
-/* Homepage positive card draw. Small and light. */
+/* Positive tarot card: gold-framed card face, inline on the tarot page and as a pop-up after the ritual burn. */
 .hc { text-align: center; margin: 1.6rem auto 0; max-width: 560px; }
+.hc[hidden] { display: none; }
 .hc-title { font-size: 1.1rem; margin: 0 0 .6rem; }
 .hc-btn { cursor: pointer; border: 0; font: inherit; }
-.hc-result {
-  margin: 1rem auto 0; padding: 1.2rem 1.3rem; border-radius: 16px; text-align: center;
-  background: var(--surface, #fff); border: 1px solid var(--line, #e8e4dc);
-  box-shadow: 0 10px 28px rgba(60, 35, 10, .08);
-}
+.hc-result { margin: 1.1rem auto 0; display: grid; justify-items: center; gap: .6rem; }
 .hc-result[hidden] { display: none; }
-.hc-in { animation: hc-rise .45s ease-out; }
-@keyframes hc-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.hc-kicker { margin: 0; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent, #b4532a); }
-.hc-name { margin: .35rem 0 .5rem; font-size: 1.3rem; color: var(--ink, #1d1b18); }
-.hc-text { margin: 0 0 .8rem; line-height: 1.6; color: var(--ink, #1d1b18); }
-.hc-links { margin: 0; display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
-.hc-more { color: var(--accent, #b4532a); font-weight: 600; }
-.hc-again { font: inherit; font-size: .9rem; cursor: pointer; padding: .4rem .9rem; border-radius: 999px; border: 1px solid var(--line, #e8e4dc); background: transparent; color: var(--ink, #1d1b18); }
-.hc-again:focus-visible, .hc-btn:focus-visible, .hc-more:focus-visible { outline: 3px solid var(--accent, #b4532a); outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { .hc-in { animation: none; } }
+.hc-kicker { margin: 0; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: #8a4b12; }
+
+/* The card face */
+.hc-tarot {
+  position: relative; width: min(340px, 86vw); padding: 1.3rem 1.25rem 1.1rem; border-radius: 18px; text-align: center;
+  color: #fbf1dc;
+  background: radial-gradient(circle at 50% 0%, #3a2716 0%, #1d140d 62%, #140d08 100%);
+  border: 2px solid #d4a94a;
+  box-shadow: inset 0 0 0 5px #140d08, inset 0 0 0 6px #8c6a2a, 0 22px 48px rgba(20, 10, 0, .35);
+}
+.hc-top { display: flex; justify-content: space-between; align-items: center; gap: .5rem; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: #f1d58a; }
+.hc-num { font-family: var(--serif, Georgia, serif); font-size: 1.05rem; letter-spacing: 0; }
+.hc-name { margin: .8rem 0 .2rem; font-family: var(--serif, Georgia, serif); font-size: 1.55rem; line-height: 1.2; color: #ffd978; }
+.hc-orn { margin: 0 0 .7rem; letter-spacing: .5em; font-size: .8rem; color: #d4a94a; }
+.hc-text { margin: 0 0 .9rem; line-height: 1.6; color: #fbf1dc; font-size: 1rem; }
+.hc-links { margin: 0; }
+.hc-more { color: #ffd978; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.hc-actions { margin: 0; display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
+.hc-again, .hc-close {
+  font: inherit; font-size: .92rem; font-weight: 600; cursor: pointer; padding: .55rem 1.1rem; border-radius: 999px;
+  border: 1px solid #8a4b12; background: #8a4b12; color: #fff;
+}
+.hc-close { background: transparent; color: #fbf1dc; border-color: #d4a94a; }
+.hc-tarot .hc-more:focus-visible, .hc-again:focus-visible, .hc-close:focus-visible, .hc-btn:focus-visible {
+  outline: 3px solid #f6c35a; outline-offset: 3px;
+}
+.hc-in { animation: hc-flip .6s ease-out; }
+@keyframes hc-flip { from { opacity: 0; transform: perspective(700px) rotateX(-18deg) translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Pop-up after the ritual burn */
+.hc-overlay {
+  position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1rem;
+  background: rgba(12, 7, 3, .72); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+}
+.hc-overlay[hidden] { display: none; }
+.hc-dialog { display: grid; justify-items: center; gap: .8rem; max-height: 92vh; overflow: auto; animation: hc-pop .45s ease-out; }
+.hc-dialog-title { margin: 0; font-size: 1rem; letter-spacing: .14em; text-transform: uppercase; color: #ffd978; font-weight: 700; }
+.hc-dialog-body { width: 100%; display: grid; justify-items: center; }
+.hc-dialog-body .hc-result { margin: 0; }
+@keyframes hc-pop { from { opacity: 0; transform: scale(.94) translateY(10px); } to { opacity: 1; transform: none; } }
+.hc-lock { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .hc-in, .hc-dialog { animation: none; } }
