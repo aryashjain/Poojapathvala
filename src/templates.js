@@ -102,12 +102,13 @@ export const TOOLS = [
 
 // The navbar: Index first, then the tools. The current page is marked.
 function siteNav(lang, path) {
-  const items = [['/index', loc(lang, 'Index', 'सूची')], ['/', loc(lang, 'Texts', 'ग्रंथ')]].concat(
+  const items = [['/', loc(lang, 'Home', 'मुखपृष्ठ')], ['/index', loc(lang, 'Index', 'सूची')]].concat(
     TOOLS.filter((tool) => tool.path !== '/').map((tool) => [tool.path, loc(lang, tool.en, tool.hi)]));
   return '<nav class="site-nav" aria-label="' + e(loc(lang, 'Tools', 'उपकरण')) + '"><div class="site-nav-inner">' +
     items.map(([href, label]) => {
       const current = href === path || (href === '/' && path === '/');
-      return '<a href="' + e(href) + '"' + (current ? ' aria-current="page"' : '') + '>' + e(label) + '</a>';
+      const cls = href === '/geeta-says' ? ' class="nav-cta"' : '';
+      return '<a href="' + e(href) + '"' + cls + (current ? ' aria-current="page"' : '') + '>' + e(label) + '</a>';
     }).join('') + '</div></nav>';
 }
 
@@ -1461,7 +1462,7 @@ export function zenPage({ origin }) {
     '<meta property="og:url" content="' + e(origin + '/zen') + '">\n<meta property="og:image" content="' + e(origin + '/og.png') + '">\n' +
     '<link rel="stylesheet" href="/zen.css?v=' + ASSET_VERSION + '">\n</head>\n<body>\n' +
     '<canvas id="zen-canvas" aria-hidden="true"></canvas>\n' +
-    '<header class="zen-head"><a class="zen-brand" href="/">Poojapathvala</a><p>The Zen Space — Breathe, Pour, Let Go</p><a class="zen-ask" href="/geeta-says">Feeling stuck? Ask Geeta Says →</a></header>\n' +
+    '<header class="zen-head"><a class="zen-brand" href="/"><img src="/mark-96.png" width="96" height="96" alt="">Poojapathvala</a><p>The Zen Space — Breathe, Pour, Let Go</p><a class="zen-ask" href="/geeta-says">Feeling stuck? Ask Geeta Says →</a></header>\n' +
     '<section class="zen-release"><h1>Write a thought or burden to release…</h1>' +
     '<label class="sr-only" for="zen-thought">A thought or burden to release</label>' +
     '<input id="zen-thought" type="text" autocomplete="off" maxlength="120" placeholder="For example: overthinking about the future">' +

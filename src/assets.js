@@ -158,6 +158,9 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
 .site-nav a:hover { border-color: var(--line); text-decoration: none; }
 .site-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 .site-nav a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.site-nav a.nav-cta { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+.site-nav a.nav-cta:hover { background: var(--accent); filter: brightness(1.08); border-color: var(--accent); }
+.site-nav a.nav-cta[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
 .zen-ask { display: inline-block; margin-top: .5rem; color: #f1d9a6; font-size: .8rem; pointer-events: auto; }
 .zen-pill-wrap { text-align: center; margin: 2rem 0 0; }
 .zen-pill { display: inline-block; padding: .55rem 1.1rem; border-radius: 999px; border: 1px solid var(--accent, #b4532a); color: var(--accent, #b4532a); text-decoration: none; font-size: .9rem; }

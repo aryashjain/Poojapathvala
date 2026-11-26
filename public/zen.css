@@ -4,7 +4,8 @@ html, body { height: 100%; margin: 0; background: #07081a; }
 body { color: var(--ink); font-family: Georgia, 'Iowan Old Style', serif; overflow: hidden; }
 #zen-canvas { position: fixed; inset: 0; z-index: 0; display: block; }
 .zen-head { position: fixed; top: .9rem; left: 0; right: 0; text-align: center; z-index: 5; pointer-events: none; }
-.zen-brand { pointer-events: auto; color: var(--gold); text-decoration: none; font-size: 1.25rem; letter-spacing: .04em; }
+.zen-brand { pointer-events: auto; color: var(--gold); text-decoration: none; font-size: 1.25rem; letter-spacing: .04em; display: inline-flex; align-items: center; gap: .5rem; }
+.zen-brand img { width: 34px; height: 34px; border-radius: 9px; object-fit: contain; }
 .zen-head p { margin: .2rem 0 0; font-size: .8rem; letter-spacing: .12em; color: var(--gold); opacity: .75; }
 .zen-release { position: fixed; top: 16%; left: 50%; transform: translateX(-50%); width: min(640px, 92vw); z-index: 5; text-align: center; }
 .zen-release h1 { margin: 0 0 .9rem; font-size: clamp(1.1rem, 2.4vw, 1.5rem); font-weight: 400; color: var(--gold); text-shadow: 0 0 18px rgba(246,195,90,.35); }
