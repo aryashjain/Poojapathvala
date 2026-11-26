@@ -633,8 +633,10 @@ export const JS = `
   });
 
   // ---- ads: fill each fixed ad box once ----
-  document.querySelectorAll('ins.adsbygoogle').forEach(function () {
-    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  // Fill each ad slot once. AdSense marks a filled slot with data-adsbygoogle-status, and a second push on it throws.
+  document.querySelectorAll('ins.adsbygoogle').forEach(function (slot) {
+    if (slot.getAttribute('data-adsbygoogle-status') || slot.getAttribute('data-ad-status')) return;
+    try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (err) { /* already filled: nothing to do */ }
   });
 
   // ---- print (text pages) ----
