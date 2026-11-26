@@ -1,0 +1,33 @@
+/* Zen theme for the tarot reader: a night sky, gold accents and glass panels. Scoped to pages with body.theme-zen. */
+.theme-zen {
+  --bg: #07081a; --surface: rgba(18, 18, 34, .8); --ink: #f5ead3; --muted: #cfc6ad;
+  --line: rgba(241, 217, 166, .2); --accent: #f6c35a; --accent-soft: rgba(246, 195, 90, .16);
+  color: var(--ink);
+  background-color: #07081a;
+  background-image:
+    radial-gradient(ellipse at 50% -10%, #17193a 0%, transparent 60%),
+    radial-gradient(circle, rgba(246, 214, 150, .55) 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(220, 225, 255, .35) 1px, transparent 1.4px);
+  background-size: auto, 140px 140px, 97px 97px;
+  background-attachment: fixed;
+}
+.theme-zen .site-header { background: rgba(7, 8, 26, .86); border-bottom-color: var(--line); }
+.theme-zen .site-nav a { color: var(--ink); }
+.theme-zen .site-nav a[aria-current="page"], .theme-zen .site-nav a:hover { background: rgba(246, 195, 90, .16); color: #f6c35a; }
+.theme-zen .search input { background: rgba(30, 30, 52, .7); color: var(--ink); border-color: var(--line); }
+.theme-zen .search input::placeholder { color: rgba(245, 234, 211, .55); }
+.theme-zen .page-head h1, .theme-zen h1, .theme-zen h2 { color: #f6dd9a; }
+.theme-zen .eyebrow { color: var(--accent); }
+.theme-zen .lede, .theme-zen p { color: var(--ink); }
+.theme-zen .btn, .theme-zen .search button, .theme-zen .tarot-cta {
+  background: linear-gradient(180deg, #f6c35a, #d9a23a); color: #1a1206; border-color: #f6c35a;
+}
+.theme-zen .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.theme-zen .tarot-cta:hover, .theme-zen .btn:hover { filter: brightness(1.06); }
+.theme-zen .panel, .theme-zen .shop, .theme-zen .tarot-note, .theme-zen .reader-more { border-color: var(--line); }
+.theme-zen .panel, .theme-zen .shop { background: var(--surface); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.theme-zen .site-footer { background: rgba(7, 8, 26, .7); border-top-color: var(--line); color: var(--muted); }
+.theme-zen .sf-col h2, .theme-zen .sf-name { color: var(--ink); }
+.theme-zen .sf-col a, .theme-zen .sf-brand p, .theme-zen .sf-bottom { color: var(--muted); }
+.theme-zen .sf-col a:hover { color: var(--accent); }
+.theme-zen :focus-visible { outline-color: var(--accent); }

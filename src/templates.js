@@ -141,6 +141,7 @@ function layout({
   type = 'website',
   jsonLd,
   noindex = false,
+  bodyClass = '',
   wide = false,
   showLangToggle = true,
   extraCss = [],
@@ -177,7 +178,7 @@ function layout({
     extraCss.map((href) => '<link rel="stylesheet" href="' + e(href) + '?v=' + ASSET_VERSION + '">\n').join('') +
     (jsonLd ? '<script type="application/ld+json">' + safeJson(jsonLd) + '</script>\n' : '') +
     '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1842686497509208" crossorigin="anonymous"></script>\n' +
-    '</head>\n<body>\n' +
+    '</head>\n<body' + (bodyClass ? ' class="' + e(bodyClass) + '"' : '') + '>\n' +
     '<header class="site-header"><div class="' + wrap + ' header-inner">' +
     '<a class="brand" href="/" lang="' + lang + '">' +
     '<span class="brand-mark"><img src="/mark-96.png" width="96" height="96" alt=""></span>' +
@@ -856,7 +857,8 @@ export function tarotReaderPage({ origin }) {
     description: 'Free online tarot reader. Draw a daily card, a three-card spread, a yes or no answer, or a love or career spread, with upright and reversed meanings.',
     body,
     showLangToggle: false,
-    extraCss: ['/assets/tarot.css', '/home-card.css'],
+    bodyClass: 'theme-zen',
+    extraCss: ['/assets/tarot.css', '/home-card.css', '/zen-theme.css'],
     extraJs: ['/assets/tarot.js', '/home-card.js'],
     jsonLd: {
       '@context': 'https://schema.org',
