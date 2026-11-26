@@ -252,7 +252,7 @@ export function homePage({ lang, origin, topics }) {
     '<h1>' + e(t(lang, 'tagline')) + '</h1>' +
     '<p class="lede">' + e(t(lang, 'homeLede')) + '</p>' +
     searchForm(lang, 'home') +
-    '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a> <a class="tarot-cta" href="/mantra-counter">📿 Mantra counter · मंत्र काउंटर</a> <a class="tarot-cta" href="/ritual/release">🔥 Burn your worry · चिंता जलाएँ</a></p>' +
+    '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a> <a class="tarot-cta" href="/mantra-counter">📿 Mantra counter · मंत्र काउंटर</a> <a class="tarot-cta" href="/ritual/release">🔥 Burn your worry · चिंता जलाएँ</a> <a class="tarot-cta" href="/zen">🪷 Zen space · ज़ेन स्पेस</a></p>' +
     '<p class="kind-links">' + kindLinks(lang, topics) + '</p>' +
     '</section>' +
     '<section class="topics" aria-label="' + e(t(lang, 'collectionsAria')) + '">' +
