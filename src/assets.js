@@ -37,6 +37,8 @@ html[data-theme="sepia"] {
   --accent-soft: #eadbbc;
 }
 html[data-theme="dark"] .search button, html[data-theme="dark"] .btn, html[data-theme="dark"] .step-no { color: #15130f; }
+html[data-theme="dark"] .btn-ghost { color: var(--ink); }
+html[data-theme="dark"] button.on, html[data-theme="dark"] button.active, html[data-theme="dark"] button[aria-pressed="true"] { color: #15130f; }
 html[data-theme="dark"] {
   --bg: #15130f;
   --surface: #1f1c17;

@@ -24,7 +24,7 @@
 .rt-actions { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
 .rt-flame {
   font: inherit; font-weight: 700; cursor: pointer; padding: .8rem 1.6rem; border-radius: 999px; border: 0;
-  background: linear-gradient(180deg, #f6a33a, #c2410c); color: #1c0d02;
+  background: linear-gradient(180deg, #f6a33a, #d9730d); color: #1c0d02;
   box-shadow: 0 8px 22px rgba(194,65,12,.35); user-select: none; touch-action: none;
 }
 .rt-flame:active { transform: scale(.98); }
