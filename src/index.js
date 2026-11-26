@@ -48,7 +48,7 @@ function sitemap(origin, topics) {
     { loc: origin + '/about' },
     { loc: origin + '/contact' },
     { loc: origin + '/privacy' },
-    ...view.KIND_PAGE_KEYS.map((kind) => ({ loc: origin + '/' + kind })),
+    ...view.liveKindKeys(topics).map((kind) => ({ loc: origin + '/' + kind })),
   ];
   for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {

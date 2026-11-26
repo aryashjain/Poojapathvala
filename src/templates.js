@@ -207,9 +207,7 @@ export function homePage({ lang, origin, topics }) {
     '<p class="lede">' + e(t(lang, 'homeLede')) + '</p>' +
     searchForm(lang, 'home') +
     '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a></p>' +
-    '<p class="kind-links">' +
-    KIND_PAGE_KEYS.map((kind) => '<a href="/' + kind + '">' + e(loc(lang, KIND_PAGES[kind].title[0], KIND_PAGES[kind].title[1])) + '</a>').join(' · ') +
-    '</p>' +
+    '<p class="kind-links">' + kindLinks(lang, topics) + '</p>' +
     '</section>' +
     '<section class="topics" aria-label="' + e(t(lang, 'collectionsAria')) + '">' +
     (cards || '<p>' + e(t(lang, 'noCollections')) + '</p>') +
@@ -991,10 +989,20 @@ export function privacyPage({ lang, origin }) {
   });
 }
 
-// ---- Keyword landing pages: one per kind of text, listing every text of that kind. ----
+// ---- Keyword landing pages: one per kind or deity. A page lists the published texts that match. ----
+// A text matches when it has one of the tags, or one of the words appears in its English or Hindi title.
+function matcher(tags, words) {
+  return (doc) => {
+    if ((doc.tags || []).some((tag) => tags.includes(tag))) return true;
+    const en = (doc.title || '').toLowerCase();
+    const hi = doc.hindiTitle || '';
+    return words.some((w) => en.includes(w[0].toLowerCase()) || hi.includes(w[1]));
+  };
+}
+
 const KIND_PAGES = {
   chalisa: {
-    tag: 'chalisa',
+    match: matcher(['chalisa'], [['chalisa', 'चालीसा']]),
     title: ['Chalisa Lyrics in Hindi', 'हिंदी में चालीसा'],
     lede: [
       'Read chalisa lyrics in Hindi: Hanuman, Shiv, Durga, Ganesh, Lakshmi, Shani and more.',
@@ -1002,7 +1010,7 @@ const KIND_PAGES = {
     ],
   },
   aarti: {
-    tag: 'aarti',
+    match: matcher(['aarti'], [['aarti', 'आरती']]),
     title: ['Aarti Lyrics in Hindi', 'हिंदी में आरती'],
     lede: [
       'Read aarti lyrics in Hindi for daily pooja: Ganesh, Shiv, Durga, Hanuman, Lakshmi, Krishna, Ram and more.',
@@ -1010,7 +1018,7 @@ const KIND_PAGES = {
     ],
   },
   stotra: {
-    tag: 'stotra',
+    match: matcher(['stotra', 'stotram', 'stuti'], [['stotra', 'स्तोत्र'], ['stotram', 'स्तोत्रम']]),
     title: ['Stotra in Hindi', 'हिंदी में स्तोत्र'],
     lede: [
       'Read stotras in Hindi with the Sanskrit text: Bajrang Baan, Shiv Tandav, Aditya Hridaya, Bhaktamar and more.',
@@ -1018,26 +1026,101 @@ const KIND_PAGES = {
     ],
   },
   mantra: {
-    tag: 'mantra',
+    match: matcher(['mantra'], [['mantra', 'मंत्र']]),
     title: ['Mantra Lyrics in Hindi', 'हिंदी में मंत्र'],
     lede: [
       'Read mantras with their Hindi text: Gayatri, Mahamrityunjaya and more.',
       'हिंदी पाठ सहित मंत्र पढ़ें: गायत्री, महामृत्युंजय और अन्य।',
     ],
   },
+  puja: {
+    match: matcher(['vidhi', 'samagri'], [['puja', 'पूजा'], ['vidhi', 'विधि'], ['pooja', 'पूजा']]),
+    title: ['Puja Vidhi in Hindi', 'हिंदी में पूजा विधि'],
+    lede: [
+      'Puja vidhi in Hindi, step by step: daily puja, Ganesh, Lakshmi, Shiv, Durga and more.',
+      'हिंदी में चरण-दर-चरण पूजा विधि: नित्य पूजा, गणेश, लक्ष्मी, शिव, दुर्गा और अन्य।',
+    ],
+  },
+  hanuman: {
+    match: matcher(['hanuman'], [['hanuman', 'हनुमान']]),
+    title: ['Hanuman Chalisa, Aarti and Stotra in Hindi', 'हनुमान चालीसा, आरती और स्तोत्र'],
+    lede: [
+      'Hanuman chalisa, aarti, bajrang baan and more, in Hindi.',
+      'हनुमान चालीसा, आरती, बजरंग बाण और अन्य, हिंदी में।',
+    ],
+  },
+  shiv: {
+    match: matcher(['shiv'], [['shiv', 'शिव']]),
+    title: ['Shiv Chalisa, Aarti and Stotra in Hindi', 'शिव चालीसा, आरती और स्तोत्र'],
+    lede: [
+      'Shiv chalisa, shiv aarti, lingashtakam, shiv tandav and more, in Hindi.',
+      'शिव चालीसा, शिव आरती, लिंगाष्टकम, शिव तांडव और अन्य, हिंदी में।',
+    ],
+  },
+  durga: {
+    match: matcher(['durga', 'devi'], [['durga', 'दुर्गा']]),
+    title: ['Durga Chalisa, Aarti and Stotra in Hindi', 'दुर्गा चालीसा, आरती और स्तोत्र'],
+    lede: [
+      'Durga chalisa, durga aarti, durga stotram and more, in Hindi.',
+      'दुर्गा चालीसा, दुर्गा आरती, दुर्गा स्तोत्रम और अन्य, हिंदी में।',
+    ],
+  },
+  ganesh: {
+    match: matcher([], [['ganesh', 'गणेश']]),
+    title: ['Ganesh Chalisa, Aarti and Puja in Hindi', 'गणेश चालीसा, आरती और पूजा'],
+    lede: [
+      'Ganesh chalisa, ganesh aarti and ganesh puja vidhi, in Hindi.',
+      'गणेश चालीसा, गणेश आरती और गणेश पूजा विधि, हिंदी में।',
+    ],
+  },
+  lakshmi: {
+    match: matcher(['lakshmi'], [['lakshmi', 'लक्ष्मी']]),
+    title: ['Lakshmi Chalisa, Aarti and Puja in Hindi', 'लक्ष्मी चालीसा, आरती और पूजा'],
+    lede: [
+      'Lakshmi chalisa, lakshmi aarti and lakshmi puja vidhi, in Hindi.',
+      'लक्ष्मी चालीसा, लक्ष्मी आरती और लक्ष्मी पूजा विधि, हिंदी में।',
+    ],
+  },
+  mahavir: {
+    match: matcher(['mahavir'], [['mahavir', 'महावीर']]),
+    title: ['Mahavir Chalisa and Aarti in Hindi', 'महावीर चालीसा और आरती'],
+    lede: [
+      'Mahavir chalisa and mahavir swami aarti, in Hindi, for Jain worship.',
+      'जैन पूजा के लिए महावीर चालीसा और महावीर स्वामी आरती, हिंदी में।',
+    ],
+  },
 };
 
 export const KIND_PAGE_KEYS = Object.keys(KIND_PAGES);
 
-export function kindPage({ lang, origin, kind, topics }) {
+// Published texts that match a landing page. Pending texts are never listed.
+export function kindItems(kind, topics) {
   const def = KIND_PAGES[kind];
-  if (!def) return null;
+  if (!def) return [];
   const items = [];
   for (const topic of topics) {
     for (const doc of topic.docs) {
-      if (doc.tags && doc.tags.includes(def.tag) && !isPending(doc)) items.push({ topic, doc });
+      if (!isPending(doc) && def.match(doc)) items.push({ topic, doc });
     }
   }
+  return items;
+}
+
+// Pages with at least one text; used by the sitemap and the homepage.
+export function liveKindKeys(topics) {
+  return KIND_PAGE_KEYS.filter((kind) => kindItems(kind, topics).length > 0);
+}
+
+export function kindLinks(lang, topics) {
+  return liveKindKeys(topics)
+    .map((kind) => '<a href="/' + kind + '">' + e(loc(lang, KIND_PAGES[kind].title[0], KIND_PAGES[kind].title[1])) + '</a>')
+    .join(' · ');
+}
+
+export function kindPage({ lang, origin, kind, topics }) {
+  const def = KIND_PAGES[kind];
+  if (!def) return null;
+  const items = kindItems(kind, topics);
   const name = loc(lang, def.title[0], def.title[1]);
   const lede = loc(lang, def.lede[0], def.lede[1]);
   const list = items.map(({ topic, doc }) => docItem(lang, topic, doc, docNote(lang, topic, doc))).join('');
@@ -1055,6 +1138,7 @@ export function kindPage({ lang, origin, kind, topics }) {
     title: name + ' · ' + t(lang, 'brandName'),
     description: lede,
     body,
+    noindex: items.length === 0,
     jsonLd: [
       {
         '@context': 'https://schema.org',
