@@ -1702,6 +1702,12 @@ export function geetaSaysPage({ origin, emotion, capsule }) {
   const description = cap ? cap[3] : emo ? emo.lede : 'Tap the feeling closest to you. Read a short quote and the Bhagavad Gita verse attached to it, then follow a one-minute reset.';
   const path = cap ? '/geeta-says/f/' + capsuleSlug(cap[0]) : emo ? '/geeta-says/' + emotion : '/geeta-says';
   const shareUrl = origin + path;
+  const faq = [
+    ['What is Geeta Says?', 'Geeta Says || is a calm tool. Tap a feeling, read a short quote with the Bhagavad Gita verse attached to it, then follow a one-minute reset.'],
+    ['Are my choices stored?', 'Nothing is sent or stored. The page runs in your browser, and the verse card you save is made on your device.'],
+    ['Where do the verses come from?', 'Each feeling is linked to a verse from the Bhagavad Gita. The Sanskrit is the ancient text, and the meanings and reflections are written for this site.'],
+  ];
+  if (cap) faq.push(['Which verse goes with ' + cap[0] + '?', shown.ref + '. ' + shown.meaning]);
   const shareText = cap ? '“' + cap[3] + '” — Geeta Says || ' + (shown ? shown.ref : '') : '';
   const groups = CAPSULE_GROUPS.map(([key, heading]) => {
     const items = CAPSULES.map((c, i) => [c, i]).filter(([c]) => c[1] === key);
@@ -1731,6 +1737,8 @@ export function geetaSaysPage({ origin, emotion, capsule }) {
     '<div class="gs-actions"><button type="button" class="gs-primary" id="gs-start"' + (emo || cap ? '' : ' hidden') + '>Start the 1-minute reset</button></div>' +
     '<div class="gs-actions"><button type="button" class="gs-secondary" id="gs-export">Save verse card (PNG)</button>' +
     '<button type="button" class="gs-secondary" id="gs-release">Choose another feeling</button></div></section>' +
+    '<section class="gs-card gs-faq" aria-labelledby="gs-faq-title"><h2 id="gs-faq-title">Questions about Geeta Says</h2>' +
+    faq.map(([q, a]) => '<details><summary>' + e(q) + '</summary><p>' + e(a) + '</p></details>').join('') + '</section>' +
     '<p class="gs-cross">Overwhelmed more broadly? Try <a href="/zen">the Zen Space</a> or <a href="/sleep">the bedtime wind-down</a>.</p>' +
     '<script type="application/json" id="gs-data">' + capsuleData() + '</script>' +
     '</div>';
@@ -1744,6 +1752,10 @@ export function geetaSaysPage({ origin, emotion, capsule }) {
     showLangToggle: false,
     extraCss: ['/geeta-says.css'],
     extraJs: ['/geeta-says.js'],
+    jsonLd: [
+      { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Geeta Says ||', url: origin + path, applicationCategory: 'LifestyleApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, description: description },
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+    ],
   });
 }
 
