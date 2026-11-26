@@ -8,14 +8,48 @@
   var input = $('gs-input'), inputStage = $('gs-input-stage'), resultStage = $('gs-result');
   var current = null, pathTimer = null, secs = 60, beads = 0, ac = null;
 
-  function matchVerse(text) {
-    var cleaned = (text || '').toLowerCase(), best = verses[0], top = 0;
-    verses.forEach(function (v) {
-      var score = 0;
-      v.keywords.forEach(function (kw) { if (cleaned.indexOf(kw) !== -1) score += kw.indexOf(' ') !== -1 ? 3 : 2; });
-      if (score > top) { top = score; best = v; }
+  // Rank every verse against the sentence. Phrases count for more than single words.
+  function rankVerses(text) {
+    var cleaned = ' ' + (text || '').toLowerCase().replace(/[^\p{L}\p{N}\s'-]/gu, ' ').replace(/\s+/g, ' ') + ' ';
+    var ranked = verses.map(function (v) {
+      var score = 0, hits = [];
+      v.keywords.forEach(function (kw) {
+        if (cleaned.indexOf(' ' + kw) !== -1 || cleaned.indexOf(kw + ' ') !== -1 || cleaned.indexOf(' ' + kw + ' ') !== -1) {
+          score += kw.indexOf(' ') !== -1 ? 3 : 2;
+          hits.push(kw);
+        }
+      });
+      return { v: v, score: score, hits: hits };
+    }).filter(function (r) { return r.score > 0; });
+    ranked.sort(function (a, b) { return b.score - a.score; });
+    if (!ranked.length) {
+      var fallback = verses.filter(function (v) { return v.id === 'support'; })[0] || verses[0];
+      return [{ v: fallback, score: 0, hits: [] }];
+    }
+    return ranked.slice(0, 4);
+  }
+  var suggestions = [];
+  function showSuggestions() {
+    var box = $('gs-suggest');
+    box.textContent = '';
+    var label = document.createElement('p');
+    label.className = 'gs-step';
+    label.textContent = suggestions.length > 1 ? 'Verses that may fit what you wrote' : 'The verse for what you wrote';
+    box.appendChild(label);
+    suggestions.forEach(function (r, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'gs-chip' + (current && current.id === r.v.id ? ' on' : '');
+      b.setAttribute('data-pick', r.v.id);
+      b.textContent = r.v.ref.replace('Bhagavad Gita ', 'BG ') + (r.hits.length ? ' · ' + r.hits.slice(0, 2).join(', ') : '');
+      box.appendChild(b);
     });
-    return best;
+    $('gs-suggest').hidden = false;
+  }
+  function explainWhy(r) {
+    $('gs-why').textContent = r.hits.length
+      ? 'Matched on: ' + r.hits.join(', ') + '. This verse speaks to that.'
+      : 'No exact words matched, so this verse is a steady starting point.';
   }
   function chime() {
     try {
@@ -35,7 +69,7 @@
     $('gs-ref').textContent = v.ref;
     $('gs-sanskrit').textContent = v.sanskrit;
     $('gs-translit').textContent = v.translit;
-    $('gs-translation').textContent = '“' + v.translation + '”';
+    $('gs-translation').textContent = '“' + v.meaning + '”';
     $('gs-reflection').textContent = v.reflection;
   }
 
@@ -91,7 +125,10 @@
     var raw = input.value.trim();
     input.value = '';
     chime();
-    fill(matchVerse(raw || 'overthinking the future'));
+    suggestions = rankVerses(raw || 'overthinking the future');
+    fill(suggestions[0].v);
+    showSuggestions();
+    explainWhy(suggestions[0]);
     inputStage.hidden = true;
     resultStage.hidden = false;
     startPath();
@@ -135,7 +172,7 @@
     ctx.fillStyle = '#e5c158'; ctx.font = '600 32px Georgia, serif';
     ctx.fillText('GEETA SAYS ||  ' + current.ref.toUpperCase(), c.width / 2, 170);
     ctx.fillStyle = '#f3efe6'; ctx.font = '40px Georgia, serif';
-    wrap(ctx, '“' + current.translation + '”', c.width / 2, 430, 860, 60);
+    wrap(ctx, '“' + current.meaning + '”', c.width / 2, 430, 860, 60);
     ctx.fillStyle = '#c9c4b8'; ctx.font = '28px sans-serif';
     ctx.fillText('poojapathvala.in/geeta-says', c.width / 2, c.height - 110);
     var a = document.createElement('a');
@@ -145,6 +182,12 @@
   }
 
   $('gs-seek').addEventListener('click', seek);
+  $('gs-suggest').addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-pick]') : null;
+    if (!b) return;
+    var pick = suggestions.filter(function (r) { return r.v.id === b.getAttribute('data-pick'); })[0];
+    if (pick) { fill(pick.v); explainWhy(pick); showSuggestions(); }
+  });
   document.querySelectorAll('[data-preset]').forEach(function (b) {
     b.addEventListener('click', function () { input.value = b.getAttribute('data-preset'); input.focus(); });
   });

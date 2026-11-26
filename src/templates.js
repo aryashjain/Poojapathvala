@@ -1609,7 +1609,7 @@ export function sleepPage({ origin }) {
 function verseData() {
   return JSON.stringify(GITA_VERSES.map((v) => ({
     id: v.id, keywords: v.keywords, ref: v.ref, sanskrit: v.sanskrit, translit: v.translit,
-    translation: v.translation, reflection: v.reflection, mantraLine: v.mantraLine, microAction: v.microAction,
+    meaning: v.meaning, reflection: v.reflection, mantraLine: v.mantraLine, microAction: v.microAction,
   }))).replace(/</g, '\\u003c');
 }
 
@@ -1634,9 +1634,11 @@ export function geetaSaysPage({ origin, emotion }) {
     '<button type="button" class="gs-primary" id="gs-seek">Seek clarity and begin the 1-minute reset</button></section>' +
     '<section class="gs-card" id="gs-result" data-verse="' + (shown ? e(shown.id) : '') + '"' + (emo ? '' : ' hidden') + '>' +
     resultStatic +
+    '<div class="gs-suggest" id="gs-suggest"' + (emo ? '' : ' hidden') + '></div>' +
+    '<p class="gs-why" id="gs-why"></p>' +
     '<p class="gs-sanskrit" id="gs-sanskrit">' + e(shown ? shown.sanskrit : '') + '</p>' +
     '<p class="gs-translit" id="gs-translit">' + e(shown ? shown.translit : '') + '</p>' +
-    '<p class="gs-translation" id="gs-translation">“' + e(shown ? shown.translation : '') + '”</p>' +
+    '<p class="gs-translation" id="gs-translation">“' + e(shown ? shown.meaning : '') + '”</p>' +
     '<div class="gs-reflection" id="gs-reflection">' + e(shown ? shown.reflection : '') + '</div>' +
     '<div class="gs-path-head"><span class="gs-step">1-minute pathway to stillness</span><span class="gs-timer" id="gs-timer">01:00</span></div>' +
     '<div class="gs-stage" id="gs-path"><p class="gs-step">Step 1 of 3 · Slow the breath</p><p class="gs-cue">Press start to begin the one-minute reset.</p></div>' +
