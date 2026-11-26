@@ -12,6 +12,7 @@ export const AFFILIATES = {
     { label: 'Lakshmi crystal figure', url: 'https://link.amazon/B03ZipQ78' },
     { label: 'Brass diya', url: 'https://link.amazon/B05fOeNaA' },
     { label: 'Agarbatti and dhoop', url: 'PLACEHOLDER' },
+    { label: 'Pooja essentials', url: 'https://link.amazon/B02WM6VES' },
   ],
   // Shown on the tarot pages, under "Tarot shop".
   tarot: [
