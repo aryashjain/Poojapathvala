@@ -1331,7 +1331,12 @@ export function mantraCounterPage({ origin, topics }) {
     '<header class="mc-hero"><p class="eyebrow">Japa · जप</p><h1>Mantra counter</h1>' +
     '<p class="lede">A 108-bead mala and a chanting timer. Your count stays on this device.</p></header>' +
     '<div class="mc-grid">' +
-    '<section class="mc-card" aria-labelledby="mc-h-mantra"><h2 id="mc-h-mantra">Your mantra</h2>' +
+    '<section class="mc-card mc-input" aria-labelledby="mc-h-mantra"><h2 id="mc-h-mantra">Your mantra</h2>' +
+    '<div class="mc-tabs" role="tablist" aria-label="How to add your mantra">' +
+    '<button type="button" role="tab" id="mc-tab-write" class="mc-tab" aria-controls="mc-panel-write" aria-selected="true" tabindex="0">Write your own</button>' +
+    '<button type="button" role="tab" id="mc-tab-speak" class="mc-tab" aria-controls="mc-panel-speak" aria-selected="false" tabindex="-1">Speak your mantra</button>' +
+    '</div>' +
+    '<div id="mc-panel-write" class="mc-panel" role="tabpanel" aria-labelledby="mc-tab-write">' +
     '<div class="mc-field"><label for="mc-select">Choose from the library</label><select id="mc-select"><option value="">Write your own</option>' + options + '</select></div>' +
     '<div class="mc-field"><label for="mc-text">Mantra text</label><textarea id="mc-text" rows="4" placeholder="Type or paste a mantra"></textarea></div>' +
     '<div id="mc-shimmer" class="mc-shimmer mc-empty" aria-live="polite"></div>' +
@@ -1339,7 +1344,20 @@ export function mantraCounterPage({ origin, topics }) {
     '<div class="mc-field"><label for="mc-secs">Seconds per chant</label><input type="number" id="mc-secs" min="1" max="120" value="6"></div>' +
     '<div class="mc-field"><label for="mc-total">Total chants</label><input type="number" id="mc-total" min="1" max="10000" value="108"></div>' +
     '<label class="mc-switch"><input type="checkbox" id="mc-sound" checked> Bell sound</label>' +
-    '</div></section>' +
+    '</div>' +
+    '</div>' +
+    '<div id="mc-panel-speak" class="mc-panel" role="tabpanel" aria-labelledby="mc-tab-speak" hidden>' +
+    '<p class="hint">Say the mantra once, or several times with a short pause between. The page counts the repeats and plays your first chant back that many times. Your audio stays on this device.</p>' +
+    '<div class="mc-settings">' +
+    '<div class="mc-field"><label for="mc-mic">Microphone</label><select id="mc-mic"><option value="">Default microphone</option></select></div>' +
+    '<div class="mc-field"><label for="mc-heard">Chants to play</label><input type="number" id="mc-heard" min="1" max="1000" value="1"></div>' +
+    '</div>' +
+    '<button id="mc-rec" class="mc-btn mc-rec" type="button" aria-pressed="false">Start recording</button>' +
+    '<p id="mc-rec-state" class="mc-timer-state" aria-live="polite">Not recording</p>' +
+    '<button id="mc-play" class="mc-btn ghost mc-play-btn" type="button" aria-pressed="false" disabled>Play chants</button>' +
+    '<p id="mc-speak-msg" class="mc-msg" aria-live="polite"></p>' +
+    '</div>' +
+    '</section>' +
     '<section class="mc-card mc-counter" aria-labelledby="mc-h-counter"><h2 id="mc-h-counter">Counter</h2>' +
     '<div class="mc-clock" id="mc-clock" aria-label="Current time">--:--:--</div>' +
     '<div class="mc-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="54" class="mc-track"/><circle id="mc-ring" cx="60" cy="60" r="54" class="mc-bar"/></svg>' +
@@ -1355,20 +1373,6 @@ export function mantraCounterPage({ origin, topics }) {
     '<p id="mc-malas" class="mc-malas">Your first mala starts here</p>' +
     '</section></div>' +
     '<div class="mc-grid">' +
-    '<section class="mc-card mc-speak" aria-labelledby="mc-h-speak"><h2 id="mc-h-speak">Speak your mantra</h2>' +
-    '<p class="hint">Say the mantra once, or several times with a short pause between. The page counts the repeats and plays your first chant back that many times. Your audio stays on this device.</p>' +
-    '<div class="mc-settings">' +
-    '<div class="mc-field"><label for="mc-mic">Microphone</label><select id="mc-mic"><option value="">Default microphone</option></select></div>' +
-    '<div class="mc-field"><label for="mc-heard">Chants to play</label><input type="number" id="mc-heard" min="1" max="1000" value="1"></div>' +
-    '</div>' +
-    '<p id="mc-rec-state" class="mc-timer-state" aria-live="polite">Not recording</p>' +
-    '<div class="mc-actions">' +
-    '<button id="mc-rec" class="mc-btn" type="button" aria-pressed="false">Start recording</button>' +
-    '<button id="mc-play" class="mc-btn ghost" type="button" aria-pressed="false" disabled>Play chants</button>' +
-    '</div>' +
-    '<p id="mc-speak-msg" class="mc-msg" aria-live="polite"></p>' +
-    '</section>' +
-    '</div>' +
     '<div class="mc-grid">' +
     '<section class="mc-card" aria-labelledby="mc-h-stats"><h2 id="mc-h-stats">Your japa</h2>' +
     '<div class="mc-stat-row"><div class="mc-stat"><strong id="mc-today">0</strong><span>Today</span></div>' +
