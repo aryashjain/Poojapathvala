@@ -173,7 +173,7 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
 .site-nav a { flex: none; white-space: nowrap; padding: .4rem .72rem; border-radius: 999px; color: var(--ink); text-decoration: none; font-size: .86rem; border: 1px solid transparent; transition: background .15s ease, color .15s ease; }
 .site-nav a:hover { background: var(--accent-soft); text-decoration: none; }
 .site-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.site-nav a.nav-cta { color: var(--accent); font-weight: 600; border-color: var(--accent-soft); }
+.site-nav a.nav-cta { color: var(--accent); font-weight: 600; border-color: transparent; background: none; }
 .site-nav a:focus-visible, .nav-menu summary:focus-visible, .nav-menu-list a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .nav-menu { display: none; position: relative; flex: none; }
 .nav-menu summary { list-style: none; cursor: pointer; padding: .38rem .85rem; border: 1px solid var(--line); border-radius: 999px; font-size: .86rem; color: var(--ink); background: var(--bg); }
