@@ -1,56 +1,15 @@
-// Geeta Says ||: match a worry to a verse in the browser, then run a one-minute reset. Nothing is sent or stored.
+// Geeta Says ||: tap a feeling, read its quote, and see the verse attached to it. Then run a one-minute reset.
+// Everything runs in the browser. Nothing is sent or stored.
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var dataEl = $('gs-data');
   if (!dataEl) return;
-  var verses = [];
-  try { verses = JSON.parse(dataEl.textContent || '[]'); } catch (e) { verses = []; }
-  var input = $('gs-input'), inputStage = $('gs-input-stage'), resultStage = $('gs-result');
+  var data = { verses: [], capsules: [] };
+  try { data = JSON.parse(dataEl.textContent || '{}'); } catch (e) {}
+  var verses = data.verses || [], capsules = data.capsules || [];
+  var capsuleStage = $('gs-capsules'), resultStage = $('gs-result');
   var current = null, pathTimer = null, secs = 60, beads = 0, ac = null;
 
-  // Rank every verse against the sentence. Phrases count for more than single words.
-  function rankVerses(text) {
-    var cleaned = ' ' + (text || '').toLowerCase().replace(/[^\p{L}\p{N}\s'-]/gu, ' ').replace(/\s+/g, ' ') + ' ';
-    var ranked = verses.map(function (v) {
-      var score = 0, hits = [];
-      v.keywords.forEach(function (kw) {
-        if (cleaned.indexOf(' ' + kw) !== -1 || cleaned.indexOf(kw + ' ') !== -1 || cleaned.indexOf(' ' + kw + ' ') !== -1) {
-          score += kw.indexOf(' ') !== -1 ? 3 : 2;
-          hits.push(kw);
-        }
-      });
-      return { v: v, score: score, hits: hits };
-    }).filter(function (r) { return r.score > 0; });
-    ranked.sort(function (a, b) { return b.score - a.score; });
-    if (!ranked.length) {
-      var fallback = verses.filter(function (v) { return v.id === 'support'; })[0] || verses[0];
-      return [{ v: fallback, score: 0, hits: [] }];
-    }
-    return ranked.slice(0, 4);
-  }
-  var suggestions = [];
-  function showSuggestions() {
-    var box = $('gs-suggest');
-    box.textContent = '';
-    var label = document.createElement('p');
-    label.className = 'gs-step';
-    label.textContent = suggestions.length > 1 ? 'Verses that may fit what you wrote' : 'The verse for what you wrote';
-    box.appendChild(label);
-    suggestions.forEach(function (r, i) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'gs-chip' + (current && current.id === r.v.id ? ' on' : '');
-      b.setAttribute('data-pick', r.v.id);
-      b.textContent = r.v.ref.replace('Bhagavad Gita ', 'BG ') + (r.hits.length ? ' · ' + r.hits.slice(0, 2).join(', ') : '');
-      box.appendChild(b);
-    });
-    $('gs-suggest').hidden = false;
-  }
-  function explainWhy(r) {
-    $('gs-why').textContent = r.hits.length
-      ? 'Matched on: ' + r.hits.join(', ') + '. This verse speaks to that.'
-      : 'No exact words matched, so this verse is a steady starting point.';
-  }
   function chime() {
     try {
       if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -64,12 +23,16 @@
       });
     } catch (e) {}
   }
+  function verseFor(id) {
+    var found = verses.filter(function (v) { return v.id === id; })[0];
+    return found || verses[0];
+  }
   function fill(v) {
     current = v;
     $('gs-ref').textContent = v.ref;
     $('gs-sanskrit').textContent = v.sanskrit;
-    $('gs-translit').textContent = v.translit;
-    $('gs-translation').textContent = '“' + v.meaning + '”';
+    $('gs-translit').textContent = v.translit || '';
+    $('gs-translation').textContent = v.meaning;
     $('gs-reflection').textContent = v.reflection;
   }
 
@@ -92,66 +55,62 @@
     stopPath();
     secs = 60; beads = 0;
     renderStep(1);
-    var orb = null;
     pathTimer = setInterval(function () {
       secs--;
       $('gs-timer').textContent = '00:' + (secs < 10 ? '0' : '') + Math.max(0, secs);
       var elapsed = 60 - secs;
-      // a breath cycle is 10 seconds: 4 in, 6 out
       if (elapsed < 20) {
-        var pos = elapsed % 10;
-        orb = $('gs-orb');
-        var cue = $('gs-cue');
-        if (orb) {
-          var inhale = pos < 4;
-          orb.classList.toggle('in', inhale);
-          if (cue) cue.textContent = inhale ? 'Breathe in for 4 seconds' : 'Breathe out for 6 seconds';
-        }
+        var inhale = (elapsed % 10) < 4;
+        var orb = $('gs-orb'), cue = $('gs-cue');
+        if (orb) orb.classList.toggle('in', inhale);
+        if (cue) cue.textContent = inhale ? 'Breathe in for 4 seconds' : 'Breathe out for 6 seconds';
       }
       if (elapsed === 20) renderStep(2);
       if (elapsed === 45 && beads < 9) renderStep(3);
       if (secs <= 0) {
         stopPath();
         $('gs-timer').textContent = 'Complete';
-        var again = document.createElement('button');
-        again.type = 'button'; again.className = 'gs-secondary'; again.id = 'gs-again'; again.textContent = 'Do the reset again';
-        $('gs-path').appendChild(again);
+        if (!$('gs-again')) {
+          var again = document.createElement('button');
+          again.type = 'button'; again.className = 'gs-secondary'; again.id = 'gs-again'; again.textContent = 'Do the reset again';
+          $('gs-path').appendChild(again);
+        }
       }
     }, 1000);
-  }
-
-  // ---- steps ----
-  function seek() {
-    var raw = input.value.trim();
-    input.value = '';
-    chime();
-    suggestions = rankVerses(raw || 'overthinking the future');
-    fill(suggestions[0].v);
-    showSuggestions();
-    explainWhy(suggestions[0]);
-    inputStage.hidden = true;
-    resultStage.hidden = false;
-    startPath();
-    resultStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-  function reset() {
-    stopPath();
-    resultStage.hidden = true;
-    inputStage.hidden = false;
-    input.focus();
   }
   function tapBead(b) {
     if (b.classList.contains('done')) return;
     b.classList.add('done');
     beads++;
-    if (beads === 9) {
-      chime();
-      secs = Math.min(secs, 15);
-      renderStep(3);
-    }
+    if (beads === 9) { chime(); secs = Math.min(secs, 15); renderStep(3); }
   }
 
-  // ---- export a verse card (the worry is never included) ----
+  // ---- a feeling capsule opens its quote and verse ----
+  function openCapsule(index) {
+    var c = capsules[index];
+    if (!c) return;
+    var v = verseFor(c.verse);
+    fill(v);
+    $('gs-label').textContent = c.label;
+    $('gs-quote').textContent = c.quote;
+    $('gs-why').textContent = 'Attached to the feeling “' + c.label + '”.';
+    chime();
+    capsuleStage.hidden = true;
+    resultStage.hidden = false;
+    $('gs-timer').textContent = '01:00';
+    $('gs-start').hidden = false;
+    renderStep(1);
+    $('gs-path').querySelector('.gs-cue').textContent = 'Press start to begin the one-minute reset.';
+    resultStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function back() {
+    stopPath();
+    resultStage.hidden = true;
+    capsuleStage.hidden = false;
+    capsuleStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ---- export a verse card (no personal text is included) ----
   function wrap(ctx, text, x, y, maxW, lh) {
     var words = text.split(' '), line = '';
     for (var n = 0; n < words.length; n++) {
@@ -181,18 +140,12 @@
     a.click();
   }
 
-  $('gs-seek').addEventListener('click', seek);
-  $('gs-suggest').addEventListener('click', function (e) {
-    var b = e.target.closest ? e.target.closest('[data-pick]') : null;
-    if (!b) return;
-    var pick = suggestions.filter(function (r) { return r.v.id === b.getAttribute('data-pick'); })[0];
-    if (pick) { fill(pick.v); explainWhy(pick); showSuggestions(); }
-  });
-  document.querySelectorAll('[data-preset]').forEach(function (b) {
-    b.addEventListener('click', function () { input.value = b.getAttribute('data-preset'); input.focus(); });
+  // ---- wiring ----
+  document.querySelectorAll('[data-capsule]').forEach(function (b) {
+    b.addEventListener('click', function () { openCapsule(parseInt(b.getAttribute('data-capsule'), 10)); });
   });
   $('gs-start').addEventListener('click', function () { chime(); startPath(); $('gs-start').hidden = true; });
-  $('gs-release').addEventListener('click', reset);
+  $('gs-release').addEventListener('click', back);
   $('gs-export').addEventListener('click', exportCard);
   document.addEventListener('click', function (e) {
     var t = e.target;
@@ -202,7 +155,10 @@
   // an emotion page opens with its verse already shown; the reset starts on request
   var preset = resultStage.getAttribute('data-verse');
   if (preset) {
-    var v = verses.filter(function (x) { return x.id === preset; })[0];
-    if (v) { fill(v); inputStage.hidden = true; resultStage.hidden = false; $('gs-start').hidden = false; $('gs-timer').textContent = '01:00'; }
+    fill(verseFor(preset));
+    capsuleStage.hidden = true;
+    resultStage.hidden = false;
+    $('gs-start').hidden = false;
+    $('gs-timer').textContent = '01:00';
   }
 })();
