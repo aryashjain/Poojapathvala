@@ -17,6 +17,14 @@
     --mc-shine-a: #f59e0b; --mc-shine-b: #fde68a;
   }
 }
+html[data-theme="dark"] .mc-app {
+  --mc-ink: #fbf3e4; --mc-muted: #d9c7ae; --mc-maroon: #fcd9a0;
+  --mc-card: #1f1712; --mc-line: #4a3828;
+  --mc-accent: #f59e0b; --mc-accent-hi: #fbbf24;
+  --mc-btn: #f59e0b; --mc-btn-ink: #2a1600; --mc-bead-ink: #2d1600;
+  --mc-shine-a: #f59e0b; --mc-shine-b: #fde68a;
+}
+
 .mc-hero { text-align: center; padding: .5rem 0 0; }
 .mc-hero h1 { margin: .15rem 0 .25rem; color: var(--mc-maroon); }
 .mc-grid { display: grid; gap: 1.1rem; }

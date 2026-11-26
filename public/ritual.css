@@ -36,7 +36,7 @@
   background: var(--surface, #fffdf8); border: 1px solid var(--line, #e5d3b0);
 }
 .rt-quote { font-size: 1.2rem; line-height: 1.6; margin: 0 0 .5rem; }
-.rt-source { font-size: .9rem; color: #5b463a; margin: 0 0 .8rem; }
-.rt-note { font-size: .85rem; text-align: center; max-width: 520px; color: #5b463a; margin: 0; }
+.rt-source { font-size: .9rem; color: var(--muted, #5c4d36); margin: 0 0 .8rem; }
+.rt-note { font-size: .85rem; text-align: center; max-width: 520px; color: var(--muted, #5c4d36); margin: 0; }
 @media (prefers-reduced-motion: reduce) { .rt-card { transition: none; } }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

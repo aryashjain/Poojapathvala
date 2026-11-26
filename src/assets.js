@@ -31,11 +31,12 @@ html[data-theme="sepia"] {
   --bg: #f4ecd8;
   --surface: #faf5e6;
   --ink: #3b2f1e;
-  --muted: #7a6b52;
+  --muted: #5c4d36;
   --line: #e0d3b5;
   --accent: #9a4a1f;
   --accent-soft: #eadbbc;
 }
+html[data-theme="dark"] .search button, html[data-theme="dark"] .btn, html[data-theme="dark"] .step-no { color: #15130f; }
 html[data-theme="dark"] {
   --bg: #15130f;
   --surface: #1f1c17;
