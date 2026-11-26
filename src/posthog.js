@@ -30,9 +30,9 @@ export function posthogBrowserScript(env) {
     (() => {
       const config = ${config};
       const script = document.createElement('script');
-      script.src = config.host + '/static/array.js';
+      script.src = config.host.replace('.i.posthog.com', '-assets.i.posthog.com') + '/static/array.js';
       script.async = true;
-      script.onload = () => window.posthog?.init(config.token, { api_host: config.host });
+      script.onload = () => window.posthog?.init(config.token, { api_host: config.host, defaults: '2026-08-30' });
       document.head.appendChild(script);
     })();
   `;
