@@ -51,6 +51,7 @@ function sitemap(origin, topics) {
     ...view.liveKindKeys(topics).map((kind) => ({ loc: origin + '/' + kind })),
     ...view.DEEP_TOPIC_PATHS.map((path) => ({ loc: origin + path })),
     { loc: origin + '/mantra-counter' },
+    { loc: origin + '/ritual/release' },
   ];
   for (const card of CARDS) entries.push({ loc: origin + '/tarot/card/' + card.id });
   for (const topic of topics) {
@@ -156,6 +157,10 @@ export default {
 
     if (parts.length === 0) {
       return html(view.homePage({ lang, origin, topics }));
+    }
+
+    if (parts.length === 2 && parts[0] === 'ritual' && parts[1] === 'release') {
+      return html(view.ritualPage({ origin }));
     }
 
     if (parts.length === 1 && parts[0] === 'mantra-counter') {

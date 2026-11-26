@@ -1,0 +1,40 @@
+/* Burn your worry. Dark card, warm flame colours, reduced motion respected. */
+.rt-app { display: grid; gap: 1.1rem; justify-items: center; }
+.rt-stage { position: relative; width: min(520px, 100%); }
+.rt-card {
+  --burn: 0;
+  position: relative; border-radius: 16px; padding: 1.2rem;
+  background: radial-gradient(circle at 50% 0%, #2a1d14, #120c08 70%);
+  border: 1px solid #c9a24a; box-shadow: inset 0 0 0 4px #120c08, inset 0 0 0 5px #8a6a2c, 0 18px 40px rgba(0,0,0,.35);
+  -webkit-mask-image: linear-gradient(to top, transparent calc(var(--burn) * 1%), #000 calc(var(--burn) * 1% + 28px));
+          mask-image: linear-gradient(to top, transparent calc(var(--burn) * 1%), #000 calc(var(--burn) * 1% + 28px));
+  transition: box-shadow .3s ease;
+}
+.rt-card:focus-within { box-shadow: inset 0 0 0 4px #120c08, inset 0 0 0 5px #f6c35a, 0 0 0 3px rgba(246,195,90,.35), 0 18px 40px rgba(0,0,0,.35); }
+.rt-card textarea {
+  width: 100%; min-height: 9rem; resize: none; border: 0; outline: 0; background: transparent;
+  color: #f7ead0; font: inherit; font-size: 1.1rem; line-height: 1.6;
+}
+.rt-card textarea::placeholder { color: #bba57c; }
+.rt-card textarea:disabled { opacity: 1; }
+.rt-card textarea:focus-visible { outline: 2px solid #f6c35a; outline-offset: 4px; border-radius: 6px; }
+#rt-fire { position: absolute; inset: 0; pointer-events: none; border-radius: 16px; }
+.rt-actions { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+.rt-flame {
+  font: inherit; font-weight: 700; cursor: pointer; padding: .8rem 1.6rem; border-radius: 999px; border: 0;
+  background: linear-gradient(180deg, #f6a33a, #c2410c); color: #1c0d02;
+  box-shadow: 0 8px 22px rgba(194,65,12,.35); user-select: none; touch-action: none;
+}
+.rt-flame:active { transform: scale(.98); }
+.rt-flame:focus-visible, .rt-reset:focus-visible, .rt-link:focus-visible { outline: 3px solid #f6c35a; outline-offset: 3px; }
+.rt-reset { font: inherit; font-weight: 600; cursor: pointer; padding: .7rem 1.3rem; border-radius: 999px; border: 1px solid currentColor; background: transparent; color: inherit; }
+.rt-status { text-align: center; min-height: 1.4rem; margin: 0; }
+.rt-reveal {
+  width: min(520px, 100%); text-align: center; padding: 1.2rem 1.4rem; border-radius: 16px;
+  background: var(--surface, #fffdf8); border: 1px solid var(--line, #e5d3b0);
+}
+.rt-quote { font-size: 1.2rem; line-height: 1.6; margin: 0 0 .5rem; }
+.rt-source { font-size: .9rem; color: #5b463a; margin: 0 0 .8rem; }
+.rt-note { font-size: .85rem; text-align: center; max-width: 520px; color: #5b463a; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .rt-card { transition: none; } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

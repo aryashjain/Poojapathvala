@@ -1300,3 +1300,50 @@ export function mantraCounterPage({ origin, topics }) {
     extraJs: ['/mantra-counter.js'],
   });
 }
+
+// Burn your worry: a ritual page. The text is never stored or sent. Logic lives in /ritual.js.
+// The reflections below are original, paraphrased in the Stoic spirit; the Gita line is BG 2.47.
+const RITUAL_REFLECTIONS = [
+  { text: 'You cannot control every event. You can choose how you respond to it.', source: 'Stoic reflection' },
+  { text: 'Think about what you can act on today. Let the rest wait its turn.', source: 'Stoic reflection' },
+  { text: 'Most of what we fear has not happened yet. Come back to this moment.', source: 'Stoic reflection' },
+  { text: 'A thought is not a fact. Notice it, then let it pass like smoke.', source: 'Stoic reflection' },
+  { text: 'Ask yourself whether this will matter in a year. If not, set it down.', source: 'Stoic reflection' },
+  { text: 'Do the next right thing. Then do the one after that.', source: 'Stoic reflection' },
+  { text: 'Breathe in, and name one thing you can do. Breathe out, and release the rest.', source: 'Ritual reflection' },
+  { text: 'Regret is a memory with a verdict attached. Learn from the memory, and let go of the verdict.', source: 'Ritual reflection' },
+  { text: 'What is needed now is calm attention, not a perfect answer.', source: 'Ritual reflection' },
+  { text: 'You have got through every hard day so far. This one can be carried too.', source: 'Ritual reflection' },
+  { text: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन॥', source: 'Bhagavad Gita 2.47: You have a right to your action, never to its fruits.' },
+];
+
+export function ritualPage({ origin }) {
+  const data = JSON.stringify(RITUAL_REFLECTIONS).replace(/</g, '\\u003c');
+  const body =
+    '<div class="rt-app">' +
+    '<header class="page-head"><p class="eyebrow">Ritual</p><h1>Burn your worry</h1>' +
+    '<p class="lede">Write what is on your mind, then hold the flame until the card burns. Your words are never stored or sent.</p></header>' +
+    '<div class="rt-stage">' +
+    '<div class="rt-card" id="rt-card"><label class="sr-only" for="rt-text">What is weighing on you</label>' +
+    '<textarea id="rt-text" maxlength="600" placeholder="Write the worry, the loop or the regret here…"></textarea></div>' +
+    '<canvas id="rt-fire" aria-hidden="true"></canvas></div>' +
+    '<div class="rt-actions"><button id="rt-burn" class="rt-flame" type="button" aria-describedby="rt-status">Hold to burn</button>' +
+    '<button id="rt-reset" class="rt-reset" type="button" hidden>Write again</button></div>' +
+    '<p id="rt-status" class="rt-status" aria-live="polite">Write what is on your mind.</p>' +
+    '<section id="rt-reveal" class="rt-reveal" hidden><p id="rt-quote" class="rt-quote"></p><p id="rt-source" class="rt-source"></p>' +
+    '<p><a class="tarot-cta" href="/tarot">Draw a tarot card</a></p></section>' +
+    '<p class="rt-note">Privacy: the text stays in this browser tab. It is not stored, not sent, and is cleared when the card burns. Hold space or enter on the keyboard to burn.</p>' +
+    '<script type="application/json" id="rt-data">' + data + '</script>' +
+    '</div>';
+  return layout({
+    lang: 'en',
+    origin,
+    path: '/ritual/release',
+    title: 'Burn Your Worry: A Private Release Ritual · Poojapathvala',
+    description: 'Write a worry, then hold the flame to burn it away. Nothing you write is stored or sent. A short reflection follows.',
+    body,
+    showLangToggle: false,
+    extraCss: ['/ritual.css'],
+    extraJs: ['/ritual.js'],
+  });
+}
