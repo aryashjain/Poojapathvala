@@ -1397,35 +1397,40 @@ export function ritualPage({ origin, lang = 'en' }) {
 // The Zen Space: a standalone page. Logic lives in /zen.js; styles in /zen.css.
 export function zenPage({ origin }) {
   const title = 'The Zen Space: Release a Thought, Breathe and Draw in Sand · Poojapathvala';
-  const description = 'A calm online space: write a worry and watch it dissolve into stardust, follow the breathing orb, and draw in gold sand or silk. Free, nothing is stored.';
+  const description = 'A calm online space: write a worry and watch it dissolve into stardust, breathe with the light, and draw in gold sand or silk. Free, and nothing is stored.';
   return '<!DOCTYPE html>\n<html lang="en">\n<head>\n' +
     '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
     '<title>' + e(title) + '</title>\n' +
     '<meta name="description" content="' + e(description) + '">\n' +
     '<link rel="canonical" href="' + e(origin + '/zen') + '">\n' +
-    '<meta name="robots" content="index, follow">\n<meta name="theme-color" content="#080710">\n' +
+    '<meta name="robots" content="index, follow">\n<meta name="theme-color" content="#0b0c1e">\n' +
     '<meta property="og:type" content="website">\n<meta property="og:site_name" content="Poojapathvala">\n' +
     '<meta property="og:title" content="' + e(title) + '">\n<meta property="og:description" content="' + e(description) + '">\n' +
     '<meta property="og:url" content="' + e(origin + '/zen') + '">\n<meta property="og:image" content="' + e(origin + '/og.png') + '">\n' +
     '<link rel="stylesheet" href="/zen.css?v=' + ASSET_VERSION + '">\n</head>\n<body>\n' +
     '<canvas id="zen-canvas" aria-hidden="true"></canvas>\n' +
-    '<header class="zen-head"><a class="zen-brand" href="/">Poojapathvala</a><h1>THE ZEN SPACE</h1><p>Breathe, draw, let go</p></header>\n' +
-    '<section class="zen-release"><label for="zen-thought">Write a worry or burden, then press Enter</label>' +
-    '<input id="zen-thought" type="text" autocomplete="off" maxlength="120" placeholder="What is weighing on you right now?">' +
-    '<p class="zen-hint">It crumbles into stardust and drifts into the sand. Nothing you write is stored.</p></section>\n' +
-    '<p id="zen-breath" aria-live="polite">Breathe in… 4 seconds</p>\n' +
+    '<header class="zen-head"><a class="zen-brand" href="/">Poojapathvala</a><p>The Zen Space — Breathe, Pour, Let Go</p></header>\n' +
+    '<section class="zen-release">' +
+    '<h1 id="zen-title">Write a thought or burden to release…</h1>' +
+    '<label class="sr-only" for="zen-thought">A thought or burden to release</label>' +
+    '<input id="zen-thought" type="text" autocomplete="off" maxlength="120" placeholder="For example: overthinking about the future">' +
+    '<p class="zen-steps"><b>1</b> Write &nbsp;·&nbsp; <b>2</b> Press Enter &nbsp;·&nbsp; <b>3</b> Breathe with the light</p>' +
+    '</section>\n' +
+    '<p id="zen-in" class="zen-breath on">Breathe in · 4 seconds</p>\n' +
+    '<p id="zen-out" class="zen-breath">Breathe out · 6 seconds</p>\n' +
     '<footer class="zen-dock">' +
-    '<section class="zen-panel"><h2>Brush</h2><div class="zen-row">' +
-    '<button type="button" data-brush="sand" class="on" aria-pressed="true">Gold sand</button>' +
-    '<button type="button" data-brush="silk" aria-pressed="false">Silk trail</button>' +
-    '<button type="button" id="zen-sweep">Sweep to night sky</button></div></section>' +
-    '<section class="zen-panel"><h2>Breathing</h2><div class="zen-row">' +
-    '<button type="button" id="zen-bilateral" aria-pressed="false">Bilateral sound off</button></div>' +
-    '<p class="zen-hint">Headphones give the full effect.</p></section>' +
-    '<section class="zen-panel"><h2>Soundscape</h2><div class="zen-row">' +
+    '<section class="zen-panel" aria-labelledby="zen-h-draw"><h2 id="zen-h-draw">Draw</h2><div class="zen-row">' +
+    '<button type="button" data-brush="sand" aria-pressed="true">Gold sand</button>' +
+    '<button type="button" data-brush="silk" aria-pressed="false">Silk flow</button>' +
+    '<button type="button" id="zen-sweep">Sweep to night sky</button></div>' +
+    '<p class="zen-note">Everything you draw fades. That is the point.</p></section>' +
+    '<section class="zen-panel" aria-labelledby="zen-h-breathe"><h2 id="zen-h-breathe">Breathing sound</h2><div class="zen-row">' +
+    '<button type="button" id="zen-bilateral" aria-pressed="false">Off</button></div>' +
+    '<p class="zen-note">Headphones give the full effect. The sound moves left and right with the light.</p></section>' +
+    '<section class="zen-panel" aria-labelledby="zen-h-sound"><h2 id="zen-h-sound">Soundscape</h2><div class="zen-row">' +
     '<button type="button" id="zen-bowl">Strike singing bowl</button></div>' +
-    '<label><span>Rain</span><input type="range" id="zen-rain" min="0" max="100" value="0" aria-label="Rain volume"></label>' +
-    '<label><span>Tanpura</span><input type="range" id="zen-drone" min="0" max="100" value="0" aria-label="Tanpura drone volume"></label></section>' +
+    '<label class="zen-slider"><span>Rain</span><input type="range" id="zen-rain" min="0" max="100" value="0" aria-label="Rain volume"></label>' +
+    '<label class="zen-slider"><span>Tanpura</span><input type="range" id="zen-drone" min="0" max="100" value="0" aria-label="Tanpura drone volume"></label></section>' +
     '</footer>\n' +
     '<script src="/zen.js?v=' + ASSET_VERSION + '" defer></script>\n</body>\n</html>\n';
 }
