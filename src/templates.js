@@ -112,7 +112,7 @@ function layout({
     '<meta name="keywords" content="' + e(SITE_KEYWORDS) + '">\n' +
     '<link rel="canonical" href="' + e(url) + '">\n' +
     (noindex ? '<meta name="robots" content="noindex">\n' : '') +
-    '<meta property="og:site_name" content="' + e(brand) + '">\n' +
+    '<meta property="og:site_name" content="Poojapathvala">\n' +
     '<meta property="og:locale" content="' + (lang === 'hi' ? 'hi_IN' : 'en_US') + '">\n' +
     '<meta property="og:type" content="' + type + '">\n' +
     '<meta property="og:title" content="' + e(title) + '">\n' +
