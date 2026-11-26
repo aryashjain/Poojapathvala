@@ -1243,35 +1243,57 @@ export function mantraCounterPage({ origin, topics }) {
   }
   const options = list.map((item, i) => '<option value="' + i + '">' + e(item.title) + '</option>').join('');
   const data = JSON.stringify(list).replace(/</g, '\\u003c');
+  const items = activeAffiliates('items');
   const body =
-    '<header class="page-head"><p class="eyebrow">Japa</p><h1>Mantra counter and mala</h1>' +
-    '<p class="lede">Count japa on a 108-bead mala, or chant with a timer. Your count is saved on this device only.</p></header>' +
-    '<section class="panel mc-panel">' +
-    '<label>Choose a mantra from the library<select id="mc-select"><option value="">Write your own</option>' + options + '</select></label>' +
-    '<label>Your mantra<textarea id="mc-text" rows="4" placeholder="Type or paste a mantra"></textarea></label>' +
-    '<div class="mc-row">' +
-    '<label>Seconds per chant<input type="number" id="mc-secs" min="1" max="120" value="6"></label>' +
-    '<label>Total chants<input type="number" id="mc-total" min="1" max="10000" value="108"></label>' +
-    '<label class="mc-check"><input type="checkbox" id="mc-sound" checked> Bell sound</label>' +
-    '</div></section>' +
-    '<section class="panel mc-panel">' +
+    '<div class="mc-app" id="mc-app">' +
+    '<header class="mc-hero"><p class="eyebrow">Japa · जप</p><h1>Mantra counter</h1>' +
+    '<p class="lede">A 108-bead mala and a chanting timer. Your count stays on this device.</p></header>' +
+    '<div class="mc-grid">' +
+    '<section class="mc-card" aria-labelledby="mc-h-mantra"><h2 id="mc-h-mantra">Your mantra</h2>' +
+    '<div class="mc-field"><label for="mc-select">Choose from the library</label><select id="mc-select"><option value="">Write your own</option>' + options + '</select></div>' +
+    '<div class="mc-field"><label for="mc-text">Mantra text</label><textarea id="mc-text" rows="4" placeholder="Type or paste a mantra"></textarea></div>' +
     '<div id="mc-shimmer" class="mc-shimmer mc-empty" aria-live="polite"></div>' +
+    '<div class="mc-settings">' +
+    '<div class="mc-field"><label for="mc-secs">Seconds per chant</label><input type="number" id="mc-secs" min="1" max="120" value="6"></div>' +
+    '<div class="mc-field"><label for="mc-total">Total chants</label><input type="number" id="mc-total" min="1" max="10000" value="108"></div>' +
+    '<label class="mc-switch"><input type="checkbox" id="mc-sound" checked> Bell sound</label>' +
+    '</div></section>' +
+    '<section class="mc-card mc-counter" aria-labelledby="mc-h-counter"><h2 id="mc-h-counter">Counter</h2>' +
     '<div class="mc-clock" id="mc-clock" aria-label="Current time">--:--:--</div>' +
     '<div class="mc-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="54" class="mc-track"/><circle id="mc-ring" cx="60" cy="60" r="54" class="mc-bar"/></svg>' +
     '<button id="mc-bead" type="button" class="mc-bead" aria-label="Count one chant"><span id="mc-count">0</span><small id="mc-of">chants</small></button></div>' +
-    '<p id="mc-msg" class="status" aria-live="polite"></p>' +
-    '<div class="mc-actions"><button id="mc-auto" class="btn" type="button">Start timer</button><button id="mc-reset" class="btn btn-ghost" type="button">Reset</button></div>' +
+    '<p id="mc-timer-state" class="mc-timer-state" aria-live="polite">Timer paused</p>' +
+    '<p id="mc-msg" class="mc-msg" aria-live="polite"></p>' +
+    '<div class="mc-actions">' +
+    '<button id="mc-auto" class="mc-btn" type="button" aria-pressed="false">Start timer</button>' +
+    '<button id="mc-reset" class="mc-btn ghost" type="button">Reset</button>' +
+    '<button id="mc-focus-btn" class="mc-btn ghost" type="button" aria-pressed="false">Focus mode</button>' +
+    '</div>' +
     '<div id="mc-beads" class="mc-beads" aria-hidden="true"></div>' +
-    '<p class="mc-stats">Today: <strong id="mc-today">0</strong> · Streak: <strong id="mc-streak">0</strong> days</p>' +
-    '<p class="hint">Tap the bead, or press Space. On phones the bead gives a short vibration.</p>' +
-    '</section>' +
-    '<script type="application/json" id="mc-data">' + data + '</script>';
+    '<p id="mc-malas" class="mc-malas">Your first mala starts here</p>' +
+    '</section></div>' +
+    '<div class="mc-grid">' +
+    '<section class="mc-card" aria-labelledby="mc-h-stats"><h2 id="mc-h-stats">Your japa</h2>' +
+    '<div class="mc-stat-row"><div class="mc-stat"><strong id="mc-today">0</strong><span>Today</span></div>' +
+    '<div class="mc-stat"><strong id="mc-streak">0</strong><span>Day streak</span></div></div>' +
+    '<div id="mc-week" class="mc-week" aria-label="Japa count for the last 7 days"></div></section>' +
+    '<section class="mc-card" aria-labelledby="mc-h-keys"><h2 id="mc-h-keys">Keyboard</h2>' +
+    '<dl class="mc-keys"><dt><kbd>Space</kbd></dt><dd>Count one chant</dd>' +
+    '<dt><kbd>T</kbd></dt><dd>Start or pause the timer</dd>' +
+    '<dt><kbd>R</kbd></dt><dd>Reset the counter</dd>' +
+    '<dt><kbd>F</kbd></dt><dd>Focus mode, only the counter</dd>' +
+    '<dt><kbd>Esc</kbd></dt><dd>Leave focus mode</dd></dl>' +
+    '<p class="hint">On phones, the bead gives a short vibration.</p></section>' +
+    '</div>' +
+    (items.length ? shopBox('Japa and puja essentials', items) : '') +
+    '<script type="application/json" id="mc-data">' + data + '</script>' +
+    '</div>';
   return layout({
     lang: 'en',
     origin,
     path: '/mantra-counter',
     title: 'Online Mantra Counter and 108 Bead Japa Mala · Poojapathvala',
-    description: 'Free online japa counter with a 108-bead mala and a chanting timer. Choose a mantra from the library or type your own.',
+    description: 'Free online japa counter with a 108-bead mala, a chanting timer and focus mode. Choose a mantra from the library or type your own.',
     body,
     showLangToggle: false,
     extraCss: ['/mantra-counter.css'],

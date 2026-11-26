@@ -1,4 +1,4 @@
-// Mantra counter: a 108-bead mala, a timed chant mode and a daily count saved on this device.
+// Mantra counter: a 108-bead mala, a timed chant mode, a focus mode and a daily count saved on this device.
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var dataEl = $('mc-data');
@@ -10,10 +10,11 @@
 
   var BEADS = 108;
   var KEY = 'pp-mala-days';
+  var app = $('mc-app');
   var sel = $('mc-select'), text = $('mc-text'), secs = $('mc-secs'), total = $('mc-total'), sound = $('mc-sound');
   var countEl = $('mc-count'), ofEl = $('mc-of'), beadsEl = $('mc-beads'), ringEl = $('mc-ring'), clockEl = $('mc-clock');
-  var autoBtn = $('mc-auto'), resetBtn = $('mc-reset'), msg = $('mc-msg'), shim = $('mc-shimmer');
-  var todayEl = $('mc-today'), streakEl = $('mc-streak');
+  var autoBtn = $('mc-auto'), resetBtn = $('mc-reset'), focusBtn = $('mc-focus-btn'), msg = $('mc-msg'), shim = $('mc-shimmer');
+  var todayEl = $('mc-today'), streakEl = $('mc-streak'), weekEl = $('mc-week'), timerState = $('mc-timer-state');
 
   var count = 0, timer = null, running = false, ctx = null;
 
@@ -35,10 +36,40 @@
     while (days[dayKey(d)] > 0) { n++; d.setDate(d.getDate() - 1); }
     return n;
   }
+  var WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  function renderWeek(days) {
+    if (!weekEl) return;
+    var cells = [], max = 1, d, k, i;
+    for (i = 6; i >= 0; i--) {
+      d = new Date();
+      d.setDate(d.getDate() - i);
+      k = dayKey(d);
+      cells.push({ label: WEEKDAYS[d.getDay()], value: days[k] || 0, today: i === 0 });
+      if ((days[k] || 0) > max) max = days[k];
+    }
+    weekEl.innerHTML = '';
+    cells.forEach(function (c) {
+      var col = document.createElement('div');
+      col.className = 'mc-week-col' + (c.today ? ' is-today' : '');
+      var bar = document.createElement('div');
+      bar.className = 'mc-week-bar';
+      bar.style.height = Math.max(4, Math.round((c.value / max) * 100)) + '%';
+      bar.title = c.value + ' japa';
+      var lab = document.createElement('span');
+      lab.textContent = c.label;
+      var num = document.createElement('small');
+      num.textContent = c.value ? String(c.value) : '';
+      col.appendChild(num);
+      col.appendChild(bar);
+      col.appendChild(lab);
+      weekEl.appendChild(col);
+    });
+  }
   function renderStats() {
     var days = loadDays();
     todayEl.textContent = String(days[dayKey()] || 0);
     streakEl.textContent = String(streak(days));
+    renderWeek(days);
   }
 
   for (var i = 0; i < BEADS; i++) {
@@ -53,10 +84,12 @@
   function renderCount() {
     countEl.textContent = String(count);
     var t = chants();
-    ofEl.textContent = t ? 'of ' + t + ' chants' : 'chants';
+    ofEl.textContent = t ? 'of ' + t : 'chants';
     var full = count === 0 ? 0 : (count % BEADS === 0 ? BEADS : count % BEADS);
     var dots = beadsEl.children;
     for (var j = 0; j < dots.length; j++) dots[j].classList.toggle('on', j < full);
+    var malas = Math.floor(count / BEADS);
+    $('mc-malas').textContent = malas ? malas + (malas === 1 ? ' mala' : ' malas') + ' completed' : 'Your first mala starts here';
   }
 
   function ensureCtx() {
@@ -116,6 +149,8 @@
   function startAuto() {
     running = true;
     autoBtn.textContent = 'Pause timer';
+    autoBtn.setAttribute('aria-pressed', 'true');
+    timerState.textContent = 'Timer running: one chant every ' + clampSecs() + ' seconds';
     msg.textContent = '';
     runRing();
     ensureCtx();
@@ -130,7 +165,16 @@
     timer = null;
     running = false;
     autoBtn.textContent = 'Start timer';
+    autoBtn.setAttribute('aria-pressed', 'false');
+    timerState.textContent = 'Timer paused';
     ringEl.style.animation = 'none';
+  }
+
+  function toggleFocus() {
+    var on = !app.classList.contains('mc-focus');
+    app.classList.toggle('mc-focus', on);
+    focusBtn.textContent = on ? 'Exit focus mode' : 'Focus mode';
+    focusBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
 
   function showText() {
@@ -153,18 +197,20 @@
   secs.addEventListener('change', function () { if (running) runRing(); });
   bead.addEventListener('click', function () { ensureCtx(); tap(); });
   autoBtn.addEventListener('click', function () { if (running) stopAuto(); else startAuto(); });
+  focusBtn.addEventListener('click', toggleFocus);
   resetBtn.addEventListener('click', function () {
     stopAuto();
     count = 0;
-    msg.textContent = '';
+    msg.textContent = 'Counter reset. Today’s total is kept.';
     renderCount();
   });
   document.addEventListener('keydown', function (e) {
-    if (e.code !== 'Space') return;
-    if (/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName || '')) return;
-    e.preventDefault();
-    ensureCtx();
-    tap();
+    if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName || '')) return;
+    if (e.code === 'Space' && !/BUTTON/.test(e.target.tagName || '')) { e.preventDefault(); ensureCtx(); tap(); return; }
+    if (e.key === 't' || e.key === 'T') { if (running) stopAuto(); else startAuto(); }
+    if (e.key === 'r' || e.key === 'R') { resetBtn.click(); }
+    if (e.key === 'f' || e.key === 'F') { toggleFocus(); }
+    if (e.key === 'Escape' && app.classList.contains('mc-focus')) { toggleFocus(); }
   });
 
   tick();
@@ -172,4 +218,5 @@
   showText();
   renderCount();
   renderStats();
+  timerState.textContent = 'Timer paused';
 })();
