@@ -1,0 +1,10 @@
+/* Meditation page: reuses the pacer cards and buttons, adds a stage list and prompt text. */
+.med-prompt { margin: 0; max-width: 34rem; font-size: 1rem; line-height: 1.6; color: var(--ink, #1d1b18); }
+.med-stages { list-style: none; padding: 0; margin: .6rem 0 0; display: grid; gap: .35rem; font-size: .92rem; color: var(--muted, #5c4d36); }
+.med-stages li { padding: .45rem .7rem; border-radius: 10px; border: 1px solid var(--line, #e8e4dc); }
+.med-stages li.med-current { color: var(--ink, #1d1b18); border-color: var(--accent, #b4532a); background: var(--accent-soft, #f7e6dc); font-weight: 600; }
+.med-practices { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; }
+.med-practices h3 { margin: 0 0 .4rem; font-size: 1rem; color: var(--ink, #1d1b18); }
+.med-practices p { margin: 0; font-size: .92rem; line-height: 1.5; color: var(--muted, #5c4d36); }
+.med-links { text-align: center; margin: .6rem 0 0; }
+.med-links a { color: var(--accent, #b4532a); font-weight: 600; }

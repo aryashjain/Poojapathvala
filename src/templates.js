@@ -100,6 +100,7 @@ export const TOOLS = [
   { path: '/moon', en: 'Moon', hi: 'चंद्र', desc: 'Today\'s moon phase, the next full moon, and the moon on your birth date.' },
   { path: '/sleep', en: 'Sleep', hi: 'नींद', desc: 'A bedtime wind-down with breathing, a timer and night sounds.' },
   { path: '/pranayama', en: 'Pranayama', hi: 'प्राणायाम', desc: 'A 1:4:2 breath timer with a bowl cue for each phase and a weekly progress view.' },
+  { path: '/meditation', en: 'Meditation', hi: 'ध्यान', desc: 'A free guided 10-minute meditation for peace and calm, with breath, body and mantra practices.' },
 ];
 
 // The navbar: Index first, then the tools. The current page is marked.
@@ -1491,8 +1492,8 @@ export function ritualPage({ origin, lang = 'en' }) {
 
 // The Zen Space: a standalone page. Logic lives in /zen.js; styles in /zen.css.
 export function zenPage({ origin }) {
-  const title = 'The Zen Space: Release a Thought, Breathe and Draw in Sand · Poojapathvala';
-  const description = 'A calm online space: write a worry and watch it dissolve into stardust, blow out a candle, breathe with the light, and draw in gold sand or silk. Free, and nothing is stored.';
+  const title = 'Zen Meditation and Inner Peace Space: Release, Breathe, Draw · Poojapathvala';
+  const description = 'A free zen meditation and peace space: release a worry into stardust, breathe with the light, draw in gold sand, and blow out a candle. Calm, private and nothing is stored.';
   return '<!DOCTYPE html>\n<html lang="en">\n<head>\n' +
     '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
     '<title>' + e(title) + '</title>\n' +
@@ -1504,7 +1505,7 @@ export function zenPage({ origin }) {
     '<meta property="og:url" content="' + e(origin + '/zen') + '">\n<meta property="og:image" content="' + e(origin + '/og.png') + '">\n' +
     '<link rel="stylesheet" href="/zen.css?v=' + ASSET_VERSION + '">\n</head>\n<body>\n' +
     '<canvas id="zen-canvas" aria-hidden="true"></canvas>\n' +
-    '<header class="zen-head"><a class="zen-brand" href="/"><img src="/mark-96.png" width="96" height="96" alt="">Poojapathvala</a><p>The Zen Space — Breathe, Pour, Let Go</p><a class="zen-ask" href="/geeta-says">Feeling stuck? Ask Geeta Says →</a></header>\n' +
+    '<header class="zen-head"><a class="zen-brand" href="/"><img src="/mark-96.png" width="96" height="96" alt="">Poojapathvala</a><p>The Zen Space — Breathe, Pour, Let Go</p><a class="zen-ask" href="/geeta-says">Feeling stuck? Ask Geeta Says →</a> <a class="zen-ask" href="/meditation">Start a 10-minute meditation →</a></header>\n' +
     '<section class="zen-release"><h1>Write a thought or burden to release…</h1>' +
     '<label class="sr-only" for="zen-thought">A thought or burden to release</label>' +
     '<input id="zen-thought" type="text" autocomplete="off" maxlength="120" placeholder="For example: overthinking about the future">' +
@@ -1776,7 +1777,7 @@ function capsuleData() {
 }
 
 // The index: every tool on the site, in one place.
-const TOOL_GLYPHS = { '/': '📜', '/tarot': '🔮', '/mantra-counter': '📿', '/zen': '🪷', '/geeta-says': '🕉', '/ritual/release': '🔥', '/moon': '🌙', '/sleep': '🌿', '/pranayama': '🌬' };
+const TOOL_GLYPHS = { '/': '📜', '/tarot': '🔮', '/mantra-counter': '📿', '/zen': '🪷', '/geeta-says': '🕉', '/ritual/release': '🔥', '/moon': '🌙', '/sleep': '🌿', '/pranayama': '🌬', '/meditation': '🧘' };
 export function indexPage({ origin }) {
   const cards = TOOLS.map((tool) =>
     '<li><a class="ix-card" href="' + e(tool.path) + '">' +
@@ -1910,5 +1911,54 @@ export function pranayamaPage({ origin }) {
     description: 'A 1:4:2 breath timer for pranayama, with a distinct bowl sound for inhale, hold and exhale, and a weekly progress view. Eyes-closed friendly.',
     body, showLangToggle: false,
     extraCss: ['/pranayama.css'], extraJs: ['/pranayama.js'],
+  });
+}
+
+// Meditation: a guided 10-minute calm practice, practice guides, and visible questions with structured data.
+const MEDITATION_FAQ = [
+  ['What is a 10-minute meditation?', 'It is a short sitting practice in three parts: settling the breath, a slow body check, and open awareness. It is designed to fit into a busy day.'],
+  ['Do I need to be experienced to start?', 'No. Sit comfortably, follow the prompts, and come back to the breath whenever your attention wanders. That return is the practice.'],
+  ['Is meditation for peace?', 'Many people practise meditation to feel calmer and more at ease. It does not replace medical or mental-health care; speak to a professional if you are struggling.'],
+  ['Is my practice stored anywhere?', 'Nothing is stored. The timer and bowl sounds run in your browser only.'],
+];
+export function meditationPage({ origin }) {
+  const faq = MEDITATION_FAQ;
+  const body =
+    '<div class="pr-app">' +
+    '<header class="page-head"><p class="eyebrow">Meditation · ध्यान</p><h1>Meditation for peace and calm</h1>' +
+    '<p class="lede">A free, guided 10-minute practice to settle the mind, with a bowl sound at each change. Close your eyes and follow the prompts.</p></header>' +
+    '<section class="pr-card pr-stage" aria-labelledby="med-session-title"><h2 id="med-session-title">10-minute calm practice</h2>' +
+    '<div class="pr-circle-wrap"><div class="pr-circle" id="pr-circle" data-phase="rest" aria-hidden="true"></div></div>' +
+    '<p class="pr-phase" id="pr-phase" aria-live="polite">Ready when you are</p>' +
+    '<p class="med-prompt" id="med-prompt">Find a comfortable seat. Close your eyes if that feels right.</p>' +
+    '<p class="pr-count" id="med-stage-time" aria-label="Time left in this stage">2:00</p>' +
+    '<p class="pr-round">Total time left: <span id="med-total-time">10:00</span></p>' +
+    '<div class="pr-track" aria-hidden="true"><div class="pr-bar" id="pr-bar"></div></div>' +
+    '<div class="pr-controls">' +
+    '<button type="button" class="pr-btn pr-primary" id="med-start">Start the practice</button>' +
+    '<button type="button" class="pr-btn" id="med-pause" hidden>Pause</button>' +
+    '<button type="button" class="pr-btn" id="med-stop" hidden>Stop</button></div>' +
+    '<ol class="med-stages" id="med-stages" aria-label="Stages"></ol></section>' +
+    '<section class="pr-card" aria-labelledby="med-practices-title"><h2 id="med-practices-title">Practices to try</h2>' +
+    '<div class="med-practices">' +
+    '<article><h3>Breath awareness</h3><p>Count each exhale from one to ten, then begin again. When you lose count, start again at one without judgement.</p></article>' +
+    '<article><h3>Body scan</h3><p>Move attention slowly through the body, from the toes to the crown. Notice sensation without trying to change it.</p></article>' +
+    '<article><h3>Walking meditation</h3><p>Walk slowly for five minutes and feel each step meeting the ground. When the mind wanders, return to the feet.</p></article>' +
+    '<article><h3>Mantra repetition</h3><p>Repeat one short word or phrase silently, in rhythm with the breath. A mala can help you keep count.</p></article>' +
+    '</div>' +
+    '<p class="med-links"><a href="/pranayama">Breath pacer</a> · <a href="/mantra-counter">Mantra counter</a> · <a href="/zen">The Zen Space</a> · <a href="/sleep">Bedtime wind-down</a></p></section>' +
+    '<section class="pr-card" aria-labelledby="med-faq-title"><h2 id="med-faq-title">Questions about meditation</h2>' +
+    faq.map(([q, a]) => '<details><summary>' + e(q) + '</summary><p>' + e(a) + '</p></details>').join('') + '</section>' +
+    '</div>';
+  return layout({
+    lang: 'en', origin, path: '/meditation',
+    title: 'Meditation for Peace: Free 10-Minute Calm Practice · Poojapathvala',
+    description: 'A free guided 10-minute meditation for peace and calm, with bowl cues, breath awareness, body scan and mantra practices.',
+    body, showLangToggle: false,
+    extraCss: ['/pranayama.css', '/meditation.css'], extraJs: ['/meditation.js'],
+    jsonLd: [
+      { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Poojapathvala Meditation for Peace', url: origin + '/meditation', applicationCategory: 'HealthApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, description: 'A free guided 10-minute meditation with bowl cues, plus breath, body scan and mantra practices.' },
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+    ],
   });
 }

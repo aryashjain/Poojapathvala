@@ -61,6 +61,7 @@ function sitemap(origin, topics) {
     ...ANGEL_NUMBERS.map((a) => ({ loc: origin + '/angel-number/' + a.n })),
     { loc: origin + '/sleep' },
     { loc: origin + '/pranayama' },
+    { loc: origin + '/meditation' },
     { loc: origin + '/index' },
     { loc: origin + '/geeta-says' },
     ...Object.keys(EMOTIONS).map((slug) => ({ loc: origin + '/geeta-says/' + slug })),
@@ -196,6 +197,9 @@ export default {
       return html(view.sleepPage({ origin }));
     }
 
+    if (parts.length === 1 && parts[0] === 'meditation') {
+      return html(view.meditationPage({ origin }));
+    }
     if (parts.length === 1 && parts[0] === 'pranayama') {
       return html(view.pranayamaPage({ origin }));
     }
