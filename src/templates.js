@@ -154,6 +154,8 @@ function layout({
   const brand = t(lang, 'brandName');
   return (
     '<!doctype html>\n<html lang="' + lang + '">\n<head>\n' +
+    '<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-TCMJ7JL8"></script>\n' +
+    '<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag(\'js\', new Date());\n</script>\n' +
     '<meta charset="utf-8">\n' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
     '<script src="/assets/theme.js?v=' + ASSET_VERSION + '"></script>\n' +
