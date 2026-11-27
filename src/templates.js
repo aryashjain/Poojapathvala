@@ -297,6 +297,7 @@ export function homePage({ lang, origin, topics }) {
     '<p class="eyebrow">' + e(t(lang, 'homeEyebrow')) + '</p>' +
     '<h1>' + e(t(lang, 'tagline')) + '</h1>' +
     '<p class="lede">' + e(t(lang, 'homeLede')) + '</p>' +
+    '<img class="hero-art" src="/art/lotus.svg" width="96" height="48" alt="" aria-hidden="true">' +
     searchForm(lang, 'home') +
     '<p><a class="tarot-cta" href="/tarot">🔮 Tarot reader · टैरो रीडर</a> <a class="tarot-cta" href="/mantra-counter">📿 Mantra counter · मंत्र काउंटर</a> <a class="tarot-cta" href="/ritual/release">🔥 Burn your worry · चिंता जलाएँ</a> <a class="tarot-cta" href="/zen">🪷 Zen space · ज़ेन स्पेस</a></p>' +
     '<p class="kind-links">' + kindLinks(lang, topics) + '</p>' +
@@ -510,6 +511,7 @@ export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) 
   const body =
     '<nav class="crumbs" aria-label="' + e(t(lang, 'breadcrumb')) + '"><a href="/">' + e(t(lang, 'home')) + '</a><span>/</span>' +
     '<a href="/t/' + e(topic.slug) + '">' + e(topicName) + '</a></nav>' +
+    (doc.slug === 'bhaktamar-stotra' ? '<figure class="art-figure"><img src="/art/tirthankara.svg" width="200" height="240" alt="A seated tirthankara in meditation, an original drawing"><figcaption>Bhaktamar Stotra · Acharya Manatunga</figcaption></figure>' : '') +
     '<article class="article">' +
     '<header class="page-head">' +
     '<p class="eyebrow">' + e(topicName) + '</p>' +

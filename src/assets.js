@@ -197,6 +197,10 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
   .header-tools .search button { display: none; }
   .lang-toggle { padding: .3rem .55rem; font-size: .8rem; }
 }
+.art-figure { margin: 0 auto 1.4rem; text-align: center; max-width: 220px; }
+.art-figure img { width: 100%; height: auto; }
+.art-figure figcaption { font-size: .8rem; color: var(--muted, #5c4d36); margin-top: .3rem; }
+.hero-art { display: block; margin: .4rem auto 0; opacity: .9; }
 .zen-pill-wrap { text-align: center; margin: 2rem 0 0; }
 .zen-pill { display: inline-block; padding: .55rem 1.1rem; border-radius: 999px; border: 1px solid var(--accent, #b4532a); color: var(--accent, #b4532a); text-decoration: none; font-size: .9rem; }
 .zen-pill:hover { background: var(--accent-soft, #f7e6dc); }

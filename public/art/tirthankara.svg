@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" role="img" aria-label="An original line drawing of a seated tirthankara in meditation">
+  <defs>
+    <radialGradient id="halo" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#f6d77a" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#f6d77a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff4d6"/>
+      <stop offset="100%" stop-color="#e9c46a"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="105" r="95" fill="url(#halo)"/>
+  <!-- lotus base -->
+  <path d="M30 205 Q60 188 100 192 Q140 188 170 205 Q140 222 100 220 Q60 222 30 205 Z" fill="#c2410c" opacity="0.85"/>
+  <path d="M55 200 Q100 176 145 200" fill="none" stroke="#fbd38d" stroke-width="2"/>
+  <!-- folded legs -->
+  <path d="M42 196 Q70 150 100 158 Q130 150 158 196 Q130 206 100 200 Q70 206 42 196 Z" fill="url(#body)" stroke="#b7791f" stroke-width="1.5"/>
+  <!-- torso -->
+  <path d="M74 150 Q100 118 126 150 L122 176 Q100 186 78 176 Z" fill="url(#body)" stroke="#b7791f" stroke-width="1.5"/>
+  <!-- hands resting in the lap -->
+  <ellipse cx="100" cy="176" rx="22" ry="9" fill="#fff4d6" stroke="#b7791f" stroke-width="1.2"/>
+  <path d="M86 172 Q100 166 114 172" fill="none" stroke="#b7791f" stroke-width="1"/>
+  <!-- shoulders -->
+  <path d="M70 130 Q100 116 130 130 L126 140 Q100 130 74 140 Z" fill="#fff4d6" stroke="#b7791f" stroke-width="1.2"/>
+  <!-- neck and head -->
+  <rect x="93" y="104" width="14" height="14" rx="4" fill="#fff4d6" stroke="#b7791f" stroke-width="1.2"/>
+  <circle cx="100" cy="88" r="20" fill="url(#body)" stroke="#b7791f" stroke-width="1.5"/>
+  <!-- hair as small curls -->
+  <g fill="#b7791f" opacity="0.8">
+    <circle cx="86" cy="76" r="4"/><circle cx="96" cy="70" r="4"/><circle cx="106" cy="70" r="4"/><circle cx="116" cy="76" r="4"/>
+    <circle cx="82" cy="86" r="3.5"/><circle cx="118" cy="86" r="3.5"/>
+  </g>
+  <!-- calm closed eyes and a small mark on the forehead -->
+  <path d="M90 90 Q93 93 96 90" fill="none" stroke="#7a4a12" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M104 90 Q107 93 110 90" fill="none" stroke="#7a4a12" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="100" cy="80" r="1.6" fill="#b7791f"/>
+  <path d="M96 100 Q100 103 104 100" fill="none" stroke="#7a4a12" stroke-width="1.2" stroke-linecap="round"/>
+</svg>
