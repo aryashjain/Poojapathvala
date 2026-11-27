@@ -201,6 +201,13 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
 .art-figure img { width: 100%; height: auto; }
 .art-figure figcaption { font-size: .8rem; color: var(--muted, #5c4d36); margin-top: .3rem; }
 .hero-art { display: block; margin: .4rem auto 0; opacity: .9; }
+/* Laptops and tablets: brand and tools on the first row, every link visible on the second row, no scrolling. */
+@media (min-width: 861px) {
+  .header-inner { flex-wrap: wrap; row-gap: .35rem; padding: .5rem 0 .4rem; }
+  .site-nav { order: 3; flex: 0 0 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: .1rem .2rem; overflow: visible; min-width: 0; padding: .2rem 0 0; border-top: 1px solid var(--line); margin-top: .1rem; -webkit-mask-image: none; mask-image: none; }
+  .site-nav a { font-size: .84rem; padding: .34rem .6rem; }
+  .header-tools { margin-left: auto; }
+}
 .zen-pill-wrap { text-align: center; margin: 2rem 0 0; }
 .zen-pill { display: inline-block; padding: .55rem 1.1rem; border-radius: 999px; border: 1px solid var(--accent, #b4532a); color: var(--accent, #b4532a); text-decoration: none; font-size: .9rem; }
 .zen-pill:hover { background: var(--accent-soft, #f7e6dc); }
