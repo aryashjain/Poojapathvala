@@ -210,7 +210,7 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
 }
 /* Wide screens: one top bar. Brand, every link and search share a single row. */
 @media (min-width: 1180px) {
-  .header-inner { flex-wrap: nowrap; row-gap: 0; padding: .45rem 0; gap: .9rem; }
+  .site-header .header-inner { flex-wrap: nowrap; row-gap: 0; padding: .45rem 0; gap: .9rem; max-width: 1240px; width: 100%; margin: 0 auto; }
   .site-nav { order: 0; flex: 1 1 auto; justify-content: center; gap: .05rem; padding: 0; border-top: 0; margin-top: 0; min-width: 0; }
   .site-nav a { font-size: .8rem; padding: .34rem .5rem; }
   .header-tools { margin-left: 0; gap: .35rem; }
