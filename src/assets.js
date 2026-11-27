@@ -208,6 +208,14 @@ ins.adsbygoogle iframe, .adsbygoogle iframe { max-width: 300px !important; max-h
   .site-nav a { font-size: .84rem; padding: .34rem .6rem; }
   .header-tools { margin-left: auto; }
 }
+/* Wide screens: one top bar. Brand, every link and search share a single row. */
+@media (min-width: 1180px) {
+  .header-inner { flex-wrap: nowrap; row-gap: 0; padding: .45rem 0; gap: .9rem; }
+  .site-nav { order: 0; flex: 1 1 auto; justify-content: center; gap: .05rem; padding: 0; border-top: 0; margin-top: 0; min-width: 0; }
+  .site-nav a { font-size: .8rem; padding: .34rem .5rem; }
+  .header-tools { margin-left: 0; gap: .35rem; }
+  .header-tools .search input { width: 150px; }
+}
 .zen-pill-wrap { text-align: center; margin: 2rem 0 0; }
 .zen-pill { display: inline-block; padding: .55rem 1.1rem; border-radius: 999px; border: 1px solid var(--accent, #b4532a); color: var(--accent, #b4532a); text-decoration: none; font-size: .9rem; }
 .zen-pill:hover { background: var(--accent-soft, #f7e6dc); }
