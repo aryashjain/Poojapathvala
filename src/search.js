@@ -1,6 +1,52 @@
 // Search over the library's documents. Pure functions so they can be tested
 // in Node and used by the Worker without any extra dependencies.
 
+// Spelling groups: the same word typed in English letters (with common spellings) or in Hindi script.
+// A query term matches any spelling in its group, so "bhaktambar", "bhaktamar" and "भक्तामर" find the same text.
+export const SPELLING_GROUPS = [
+  ['bhaktamar', 'bhaktambar', 'bhaktamber', 'bhaktamaar', 'भक्तामर'],
+  ['jinvani', 'jinwani', 'jinavani', 'जिनवाणी'],
+  ['puja', 'pooja', 'pujaa', 'पूजा'],
+  ['pooja vidhi', 'puja vidhi', 'पूजा विधि'],
+  ['chalisa', 'chalisha', 'chaleesa', 'चालीसा'],
+  ['aarti', 'arti', 'aarati', 'aratee', 'आरती'],
+  ['stotra', 'strota', 'stotram', 'stotr', 'स्तोत्र'],
+  ['mantra', 'mantr', 'मंत्र', 'मन्त्र'],
+  ['navkar', 'namokar', 'namokaar', 'navkaar', 'नवकार', 'णमोकार'],
+  ['bhavna', 'bhavana', 'bhawna', 'भावना'],
+  ['dhal', 'dhala', 'dhaal', 'ढाल', 'छहढाला', 'chhahdhala', 'chahdhala', 'chhaha dhala'],
+  ['tirthankar', 'tirthankara', 'tirthankaar', 'तीर्थंकर'],
+  ['adinath', 'aadinath', 'adinatha', 'आदिनाथ'],
+  ['parshvanath', 'parsvanath', 'parshwanath', 'पार्श्वनाथ'],
+  ['mahavir', 'mahaveer', 'mahavira', 'महावीर'],
+  ['shiv', 'shiva', 'shiv ji', 'शिव'],
+  ['hanuman', 'hanumaan', 'hanumana', 'हनुमान'],
+  ['krishna', 'krsna', 'krisna', 'कृष्ण'],
+  ['ganesh', 'ganesha', 'ganes', 'गणेश'],
+  ['lakshmi', 'laxmi', 'lakshami', 'लक्ष्मी'],
+  ['durga', 'durgaa', 'दुर्गा'],
+  ['gita', 'geeta', 'गीता'],
+  ['vidhi', 'vidhee', 'विधि'],
+  ['shani', 'sani', 'शनि'],
+  ['gayatri', 'gayatree', 'गायत्री'],
+  ['hindi', 'hindee', 'हिन्दी', 'हिंदी'],
+  ['sahasranama', 'sahasranam', 'सहस्रनाम'],
+];
+const VARIANTS = new Map();
+for (const group of SPELLING_GROUPS) {
+  for (const spelling of group) VARIANTS.set(spelling.toLowerCase(), group.map((x) => x.toLowerCase()));
+}
+
+// Every spelling a query term may match. Unknown terms match only themselves.
+export function variantsOf(term) {
+  return VARIANTS.get(term) || [term];
+}
+
+// Keep letters from any script, digits and spaces; drop punctuation a visitor may type.
+export function cleanQuery(query) {
+  return query.toLowerCase().replace(/[^\p{L}\p{N}\p{M}\s-]/gu, ' ').replace(/\s+/g, ' ').trim();
+}
+
 export function plainText(markdown) {
   return markdown
     .replace(/^#{1,6}\s+/gm, '')
@@ -53,17 +99,17 @@ function snippetFor(doc, terms) {
 }
 
 export function searchDocs(docs, query, limit = 20) {
-  const terms = query.toLowerCase().split(/\s+/).filter(Boolean).slice(0, 8);
+  const terms = cleanQuery(query).split(/\s+/).filter(Boolean).slice(0, 8);
   if (terms.length === 0) return [];
 
   const results = [];
   for (const doc of docs) {
     // Every term must appear somewhere, so multi-word searches narrow results.
-    if (!terms.every((term) => doc.haystack.includes(term))) continue;
+    if (!terms.every((term) => variantsOf(term).some((v) => doc.haystack.includes(v)))) continue;
 
     const titleLower = doc.title.toLowerCase();
-    const titleHits = terms.filter((term) => titleLower.includes(term)).length;
-    const bodyHits = terms.reduce((sum, term) => sum + countOccurrences(doc.haystack, term), 0);
+    const titleHits = terms.filter((term) => variantsOf(term).some((v) => titleLower.includes(v))).length;
+    const bodyHits = terms.reduce((sum, term) => sum + Math.max(...variantsOf(term).map((v) => countOccurrences(doc.haystack, v))), 0);
 
     results.push({
       title: doc.title,
