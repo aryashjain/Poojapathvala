@@ -511,7 +511,6 @@ export function docPage({ lang, origin, topic, doc, prev, next, related = [] }) 
   const body =
     '<nav class="crumbs" aria-label="' + e(t(lang, 'breadcrumb')) + '"><a href="/">' + e(t(lang, 'home')) + '</a><span>/</span>' +
     '<a href="/t/' + e(topic.slug) + '">' + e(topicName) + '</a></nav>' +
-    (doc.slug === 'bhaktamar-stotra' ? '<figure class="art-figure"><img src="/art/tirthankara.svg" width="200" height="240" alt="A seated tirthankara in meditation, an original drawing"><figcaption>Bhaktamar Stotra · Acharya Manatunga</figcaption></figure>' : '') +
     '<article class="article">' +
     '<header class="page-head">' +
     '<p class="eyebrow">' + e(topicName) + '</p>' +
