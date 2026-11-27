@@ -2,7 +2,7 @@ export const SECURITY_HEADERS = {
   'x-content-type-options': 'nosniff',
   'referrer-policy': 'strict-origin-when-cross-origin',
   'content-security-policy':
-    "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' https://pagead2.googlesyndication.com https://www.googletagservices.com https://securepubads.g.doubleclick.net https://*.posthog.com; connect-src 'self' https:; worker-src 'self' blob:; img-src 'self' data: https:; frame-src https:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+    "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' https://pagead2.googlesyndication.com https://www.googletagservices.com https://securepubads.g.doubleclick.net https://*.posthog.com https://static.cloudflareinsights.com https://*.adtrafficquality.google; connect-src 'self' https:; worker-src 'self' blob:; img-src 'self' data: https:; frame-src https:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
 };
 
 export function html(body, status = 200, cache = 'public, max-age=300') {
