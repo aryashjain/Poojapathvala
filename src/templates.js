@@ -1077,6 +1077,10 @@ export function privacyPage({ lang, origin }) {
             'We use PostHog to see which pages are visited and how the site is used. PostHog may record your browser details, approximate location and page visits. Server errors are reported to PostHog so we can fix them.',
             'हम PostHog का उपयोग करते हैं ताकि देखा जा सके कि कौन-से पृष्ठ देखे जाते हैं और साइट कैसे इस्तेमाल होती है। PostHog आपके ब्राउज़र की जानकारी, अनुमानित स्थान और पृष्ठ-भ्रमण दर्ज कर सकता है। सर्वर की त्रुटियाँ PostHog को भेजी जाती हैं ताकि हम उन्हें ठीक कर सकें।',
           ],
+          [
+            'We also use Google Tag Manager to load our measurement tags. Tags can set cookies or send page-view data to Google services. We list each tag here when it is added, and you can block cookies in your browser settings.',
+            'हम अपने मापन टैग लोड करने के लिए Google Tag Manager का उपयोग करते हैं। टैग कुकीज़ सेट कर सकते हैं या पेज-दृश्य की जानकारी Google सेवाओं को भेज सकते हैं। जब कोई टैग जोड़ा जाता है तो हम उसे यहाँ सूचीबद्ध करते हैं, और आप अपने ब्राउज़र की सेटिंग में कुकीज़ रोक सकते हैं।',
+          ],
         ],
       },
       {
