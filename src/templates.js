@@ -1506,14 +1506,15 @@ export function zenPage({ origin }) {
     '<meta property="og:url" content="' + e(origin + '/zen') + '">\n<meta property="og:image" content="' + e(origin + '/og.png') + '">\n' +
     '<link rel="stylesheet" href="/zen.css?v=' + ASSET_VERSION + '">\n</head>\n<body>\n' +
     '<canvas id="zen-canvas" aria-hidden="true"></canvas>\n' +
-    '<header class="zen-head"><a class="zen-brand" href="/"><img src="/mark-96.png" width="96" height="96" alt="">Poojapathvala</a><p>The Zen Space — Breathe, Pour, Let Go</p><a class="zen-ask" href="/geeta-says">Feeling stuck? Ask Geeta Says →</a> <a class="zen-ask" href="/meditation">Start a 10-minute meditation →</a></header>\n' +
+    '<header class="zen-top"><div class="zen-top-inner"><a class="zen-brand" href="/"><img src="/mark-96.png" width="96" height="96" alt="">Poojapathvala</a>' +
+    '<nav class="zen-nav" aria-label="Tools">' + navLinks('en', '/zen') + '</nav>' +
+    '<details class="zen-menu"><summary>Menu</summary><nav class="zen-menu-list" aria-label="Tools">' + navLinks('en', '/zen') + '</nav></details></div></header>\n' +
     '<section class="zen-release"><h1>Write a thought or burden to release…</h1>' +
     '<label class="sr-only" for="zen-thought">A thought or burden to release</label>' +
-    '<input id="zen-thought" type="text" autocomplete="off" maxlength="120" placeholder="For example: overthinking about the future">' +
+    '<input id="zen-thought" type="text" autocomplete="off" maxlength="120" placeholder="e.g. overthinking the future">' +
     '<p class="zen-steps"><b>1</b> Write &nbsp;·&nbsp; <b>2</b> Press Enter &nbsp;·&nbsp; <b>3</b> Breathe with the light</p></section>\n' +
     '<div class="zen-preset" id="zen-preset" hidden><p id="zen-preset-msg"></p><button type="button" id="zen-begin">Begin with sound</button></div>\n' +
-    '<p id="zen-in" class="zen-breath on">Breathe in · 4 seconds</p>\n' +
-    '<p id="zen-out" class="zen-breath">Breathe out · 6 seconds</p>\n' +
+    '<div class="zen-breathrow"><p id="zen-in" class="zen-breath on">Breathe in · 4 seconds</p><p id="zen-out" class="zen-breath">Breathe out · 6 seconds</p></div>\n' +
     '<footer class="zen-dock">' +
     '<section class="zen-panel" id="zen-panel-draw" aria-labelledby="zen-h-draw"><h2 id="zen-h-draw">Draw</h2><div class="zen-row">' +
     '<button type="button" data-brush="sand" aria-pressed="true">Gold sand</button>' +
