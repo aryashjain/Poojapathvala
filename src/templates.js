@@ -99,6 +99,7 @@ export const TOOLS = [
   { path: '/ritual/release', en: 'Burn your worry', hi: 'चिंता जलाएँ', desc: 'Write a worry, hold the flame, and watch it burn.' },
   { path: '/moon', en: 'Moon', hi: 'चंद्र', desc: 'Today\'s moon phase, the next full moon, and the moon on your birth date.' },
   { path: '/sleep', en: 'Sleep', hi: 'नींद', desc: 'A bedtime wind-down with breathing, a timer and night sounds.' },
+  { path: '/pranayama', en: 'Pranayama', hi: 'प्राणायाम', desc: 'A 1:4:2 breath timer with a bowl cue for each phase and a weekly progress view.' },
 ];
 
 // The navbar: Index first, then the tools. The current page is marked.
@@ -1769,7 +1770,7 @@ function capsuleData() {
 }
 
 // The index: every tool on the site, in one place.
-const TOOL_GLYPHS = { '/': '📜', '/tarot': '🔮', '/mantra-counter': '📿', '/zen': '🪷', '/geeta-says': '🕉', '/ritual/release': '🔥', '/moon': '🌙', '/sleep': '🌿' };
+const TOOL_GLYPHS = { '/': '📜', '/tarot': '🔮', '/mantra-counter': '📿', '/zen': '🪷', '/geeta-says': '🕉', '/ritual/release': '🔥', '/moon': '🌙', '/sleep': '🌿', '/pranayama': '🌬' };
 export function indexPage({ origin }) {
   const cards = TOOLS.map((tool) =>
     '<li><a class="ix-card" href="' + e(tool.path) + '">' +
@@ -1858,5 +1859,50 @@ export function angelPage({ origin, angel }) {
   return layout({
     lang: 'en', origin, path: '/angel-number/' + angel.n, title, description, body,
     showLangToggle: false, extraCss: ['/moon.css'],
+  });
+}
+
+// Pranayama pacer: a 1 : 4 : 2 breath ratio with a bowl cue for each phase, and a weekly progress view.
+export function pranayamaPage({ origin }) {
+  const body =
+    '<div class="pr-app">' +
+    '<header class="page-head"><p class="eyebrow">Breathwork · प्राणायाम</p><h1>Pranayama pacer</h1>' +
+    '<p class="lede">A 1 : 4 : 2 breath ratio from one base count. Each phase has its own bowl sound, so you can close your eyes.</p></header>' +
+    '<section class="pr-card pr-safety" aria-labelledby="pr-safety-title"><h2 id="pr-safety-title">Before you begin</h2>' +
+    '<p>Breathe comfortably. Stop and breathe normally if you feel dizzy, light-headed or unwell. Do not hold your breath beyond what feels calm.</p>' +
+    '<p>If you have heart, lung or blood-pressure conditions, are pregnant, or are unsure, speak with a doctor before practising breath holds.</p></section>' +
+    '<section class="pr-card" aria-labelledby="pr-setup-title"><h2 id="pr-setup-title">Set your practice</h2>' +
+    '<p class="pr-note">Base count (seconds)</p>' +
+    '<div class="pr-seg" role="group" aria-label="Base count">' +
+    [3, 4, 5, 6, 7, 8].map((n) => '<button type="button" class="pr-btn" data-base="' + n + '" aria-pressed="false">' + n + '</button>').join('') +
+    '</div>' +
+    '<div class="pr-field"><label for="pr-rounds">Rounds</label><input id="pr-rounds" type="number" min="1" max="12" value="4" inputmode="numeric"></div>' +
+    '<p class="pr-preview" id="pr-preview"></p><p class="pr-note" id="pr-estimate"></p></section>' +
+    '<section class="pr-card pr-stage" aria-labelledby="pr-session-title"><h2 id="pr-session-title" class="sr-only">Session</h2>' +
+    '<div class="pr-circle-wrap"><div class="pr-circle" id="pr-circle" data-phase="rest" aria-hidden="true"></div></div>' +
+    '<p class="pr-phase" id="pr-phase" aria-live="polite">Ready when you are</p>' +
+    '<p class="pr-count" id="pr-count" aria-hidden="true">—</p>' +
+    '<p class="pr-round" id="pr-round">Round 1</p>' +
+    '<div class="pr-track" aria-hidden="true"><div class="pr-bar" id="pr-bar"></div></div>' +
+    '<div class="pr-controls">' +
+    '<button type="button" class="pr-btn pr-primary" id="pr-start">Start</button>' +
+    '<button type="button" class="pr-btn" id="pr-pause" hidden>Pause</button>' +
+    '<button type="button" class="pr-btn" id="pr-stop" hidden>Stop</button></div>' +
+    '<p class="pr-note">Inhale: bright bowl · Hold: deep bowl · Exhale: warm bowl. Phones also give a short buzz for each phase.</p></section>' +
+    '<section class="pr-card" aria-labelledby="pr-progress-title"><h2 id="pr-progress-title">This week</h2>' +
+    '<div class="pr-stats"><div class="pr-stat"><strong id="pr-week-sessions">0</strong><span>Sessions completed</span></div>' +
+    '<div class="pr-stat"><strong id="pr-week-minutes">0</strong><span>Minutes practised</span></div></div>' +
+    '<p class="pr-note" id="pr-suggest-text"></p>' +
+    '<button type="button" class="pr-btn" id="pr-accept" hidden>Raise the base count</button>' +
+    '<ul class="pr-log" id="pr-log" aria-label="Recent sessions"></ul></section>' +
+    '<section class="pr-card" aria-labelledby="pr-how-title"><h2 id="pr-how-title">How the progression works</h2>' +
+    '<p class="pr-note">The base count can rise by one step only after at least three completed sessions in a week, and no more than once a week. The highest suggested base count is 8, which gives holds of 32 seconds. You always choose when to change it.</p></section>' +
+    '</div>';
+  return layout({
+    lang: 'en', origin, path: '/pranayama',
+    title: 'Pranayama Pacer: 1:4:2 Breath Timer with Bowl Cues · Poojapathvala',
+    description: 'A 1:4:2 breath timer for pranayama, with a distinct bowl sound for inhale, hold and exhale, and a weekly progress view. Eyes-closed friendly.',
+    body, showLangToggle: false,
+    extraCss: ['/pranayama.css'], extraJs: ['/pranayama.js'],
   });
 }
